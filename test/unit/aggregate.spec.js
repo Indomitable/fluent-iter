@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { fromIterable, range } from "../../src/index";
 
 describe('aggregate tests', () => {
@@ -8,7 +7,7 @@ describe('aggregate tests', () => {
     ].forEach((source, indx) => {
         it('should aggregate collection: ' + indx, () => {
             const res = fromIterable(source).aggregate((a, item) => a + item);
-            expect(res).to.be.equal(9 * 10 / 2);
+            expect(res).toBe(9 * 10 / 2);
         });
     });
 
@@ -21,7 +20,7 @@ describe('aggregate tests', () => {
             const res = function () {
                 return fromIterable(source).aggregate((a, item) => a + item);
             };
-            expect(res).to.throw(TypeError);
+            expect(res).toThrowError(TypeError);
         });
     });
 
@@ -32,7 +31,7 @@ describe('aggregate tests', () => {
         it('should aggregate collection with initial value: ' + indx, () => {
             // use iterable
             const res = fromIterable(source).aggregate((a, item) => a + item, 1);
-            expect(res).to.be.equal(1 + (9 * 10 / 2));
+            expect(res).toBe(1 + (9 * 10 / 2));
         });
     });
 
@@ -43,7 +42,7 @@ describe('aggregate tests', () => {
         it('should get sum of collection: ' + indx, () => {
             // use iterable
             const res = fromIterable(source).sum();
-            expect(res).to.be.equal(9 * 10 / 2);
+            expect(res).toBe(9 * 10 / 2);
         });
     });
 
@@ -51,7 +50,7 @@ describe('aggregate tests', () => {
         const res = function () {
             return fromIterable([]).sum();
         };
-        expect(res).to.throw(TypeError);
+        expect(res).toThrowError(TypeError);
     });
 
     [
@@ -62,7 +61,7 @@ describe('aggregate tests', () => {
             const product = 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9;
             // use iterable
             const res = fromIterable(source).product();
-            expect(res).to.be.equal(product);
+            expect(res).toBe(product);
         });
     });
 
@@ -70,7 +69,7 @@ describe('aggregate tests', () => {
         const res = function () {
             return fromIterable([]).product();
         };
-        expect(res).to.throw(TypeError);
+        expect(res).toThrowError(TypeError);
     });
 
     [
@@ -80,25 +79,25 @@ describe('aggregate tests', () => {
         it('should get min value: ' + indx, () => {
             // use iterable
             const res = fromIterable(source).min();
-            expect(res).to.be.equal(0);
+            expect(res).toBe(0);
         });
     });
 
     it('should get min value with comparer', () => {
         const res = fromIterable([{ age: 10 }, { age: 5 }, { age: 6 }]).min((a, b) => a.age - b.age);
-        expect(res).to.deep.equal({ age: 5 });
+        expect(res).toEqual({ age: 5 });
     });
 
     it('should min throw when no items', () => {
         const res = function () {
             return fromIterable([]).min();
         };
-        expect(res).to.throw(TypeError);
+        expect(res).toThrowError(TypeError);
     });
 
     it('should min equal items', () => {
         const res = fromIterable([1, 2, 1]).min();
-        expect(res).to.be.equal(1);
+        expect(res).toBe(1);
     });
 
     [
@@ -108,25 +107,24 @@ describe('aggregate tests', () => {
         it('should get max value: ' + indx, () => {
             // use iterable
             const res = fromIterable(source).max();
-            expect(res).to.be.equal(9);
+            expect(res).toBe(9);
         });
     });
 
     it('should get max value with comparer', () => {
         const res = fromIterable([{ age: 10 }, { age: 5 }, { age: 6 }]).max((a, b) => a.age - b.age);
-        expect(res).to.deep.equal({ age: 10 });
+        expect(res).toEqual({ age: 10 });
     });
 
     it('should max throw when no items', () => {
         const res = function () {
             return fromIterable([]).max();
         };
-        expect(res).to.throw(TypeError);
+        expect(res).toThrowError(TypeError);
     });
 
     it('should max equal items', () => {
         const res = fromIterable([1, 2, 1, 3, 3]).max();
-        expect(res).to.be.equal(3);
+        expect(res).toBe(3);
     });
 });
-

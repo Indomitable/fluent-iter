@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { from, fromIterable, range } from "../../src";
 
 describe('skip tests', () => {
@@ -8,7 +8,7 @@ describe('skip tests', () => {
     ].forEach((source, indx) => {
         it('should skip first n numbers: ' + indx, () => {
             const output = fromIterable(source).skip(2).toArray();
-            expect(output).to.deep.equal([3, 4, 5]);
+            expect(output).toEqual([3, 4, 5]);
         });
     });
 
@@ -18,7 +18,7 @@ describe('skip tests', () => {
     ].forEach((source, indx) => {
         it('should skip first n numbers after another operation: ' + indx, () => {
             const output = fromIterable(source).where(_ => _ > 2).skip(2).toArray();
-            expect(output).to.deep.equal([5]);
+            expect(output).toEqual([5]);
         });
     });
 
@@ -32,7 +32,7 @@ describe('skip tests', () => {
                 .skip(1)
                 .select(x => `item_${x}`)
                 .toArray();
-            expect(output).to.deep.equal(['item_4', 'item_5']);
+            expect(output).toEqual(['item_4', 'item_5']);
         });
     });
 
@@ -45,7 +45,7 @@ describe('skip tests', () => {
             const res = fromIterable(source)
                 .skip(3)
                 .toArray();
-            expect(res).to.deep.equal([]);
+            expect(res).toEqual([]);
         });
     });
 
@@ -57,7 +57,7 @@ describe('skip tests', () => {
             const output = fromIterable(source)
                 .skip(2)
                 .toArray();
-            expect(output).to.deep.equal([]);
+            expect(output).toEqual([]);
         });
     });
 
@@ -66,8 +66,8 @@ describe('skip tests', () => {
         range(1, 6)
     ].forEach((source, indx) => {
         it('should return all when none to be skipped' + indx, () => {
-            expect(from(source).skip(0).toArray()).to.deep.equal([1, 2, 3, 4, 5]);
-            expect(from(source).skip(-1).toArray()).to.deep.equal([1, 2, 3, 4, 5]);
+            expect(from(source).skip(0).toArray()).toEqual([1, 2, 3, 4, 5]);
+            expect(from(source).skip(-1).toArray()).toEqual([1, 2, 3, 4, 5]);
         });
     });
 });

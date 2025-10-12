@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+
 import { from, range, repeat } from "../../src";
 
 describe('last finalizer', () => {
@@ -10,7 +10,7 @@ describe('last finalizer', () => {
     ].forEach((source, indx) => {
         it('should return last value: ' + indx, () => {
             const val = from(source).where(_ => _ % 2 !== 0).select(_ => _ * 2).last();
-            expect(val).to.equal(10);
+            expect(val).toBe(10);
         });
     });
 
@@ -20,7 +20,7 @@ describe('last finalizer', () => {
     ].forEach((source, indx) => {
         it('should return last value with predicate: ' + indx, () => {
             const val = from(source).last(_ => _ % 2 !== 0);
-            expect(val).to.equal(5);
+            expect(val).toBe(5);
         });
     });
 
@@ -30,7 +30,7 @@ describe('last finalizer', () => {
     ].forEach((source, indx) => {
         it('should return undefined if no value: ' + indx, () => {
             const val = from(source).where(_ => _ > 5).last();
-            expect(val).to.be.undefined;
+            expect(val).toBe(undefined);
         });
     });
 
@@ -40,7 +40,7 @@ describe('last finalizer', () => {
     ].forEach((source, indx) => {
         it('should return undefined if no value - predicate: ' + indx, () => {
             const val = from(source).last(_ => _ > 5);
-            expect(val).to.be.undefined;
+            expect(val).toBe(undefined);
         });
     });
 
@@ -52,7 +52,7 @@ describe('last finalizer', () => {
     ].forEach((source, indx) => {
         it('should lastOrDefault return last value: ' + indx, () => {
             const val = from(source).lastOrDefault(9);
-            expect(val).to.equal(5);
+            expect(val).toBe(5);
         });
     });
 
@@ -62,7 +62,7 @@ describe('last finalizer', () => {
     ].forEach((source, indx) => {
         it('should lastOrDefault return last value with predicate: ' + indx, () => {
             const val = from(source).lastOrDefault(3, x => x === 3);
-            expect(val).to.equal(3);
+            expect(val).toBe(3);
         });
     });
 
@@ -72,7 +72,7 @@ describe('last finalizer', () => {
     ].forEach((source, indx) => {
         it('should lastOrDefault return default if no value: ' + indx, () => {
             const val = from(source).where(_ => _ > 5).lastOrDefault(9);
-            expect(val).to.equal(9);
+            expect(val).toBe(9);
         });
     });
 
@@ -82,7 +82,7 @@ describe('last finalizer', () => {
     ].forEach((source, indx) => {
         it('should lastOrDefault return default if no value with predicate: ' + indx, () => {
             const val = from(source).lastOrDefault(9, x => x === 10);
-            expect(val).to.equal(9);
+            expect(val).toBe(9);
         });
     });
 
@@ -96,7 +96,7 @@ describe('last finalizer', () => {
             const val = function () {
                 return from(source).lastOrThrow();
             };
-            expect(val).to.throw(TypeError)
+            expect(val).toThrowError(TypeError)
         });
     });
 
@@ -106,7 +106,7 @@ describe('last finalizer', () => {
     ].forEach((source, indx) => {
         it('should lastOrThrow return last item: ' + indx, () => {
             const val = from(source).lastOrThrow();
-            expect(val).to.equal(1);
+            expect(val).toBe(1);
         });
     });
 
@@ -116,7 +116,7 @@ describe('last finalizer', () => {
     ].forEach((source, indx) => {
         it('should lastOrThrow return last item - predicate: ' + indx, () => {
             const val = from(source).lastOrThrow(x => x === 2);
-            expect(val).to.equal(2);
+            expect(val).toBe(2);
         });
     });
 
@@ -129,7 +129,7 @@ describe('last finalizer', () => {
     ].forEach((source, indx) => {
         it('should return index ' + indx, () => {
             const output = from(source).lastIndex(_ => _ === 3);
-            expect(output).to.deep.equal(2);
+            expect(output).toEqual(2);
         });
     });
 
@@ -140,7 +140,7 @@ describe('last finalizer', () => {
     ].forEach((source, indx) => {
         it('should return -1 when source is empty' + indx, () => {
             const output = from(source).lastIndex(_ => _ === 2);
-            expect(output).to.deep.equal(-1);
+            expect(output).toEqual(-1);
         });
     });
 
@@ -149,7 +149,7 @@ describe('last finalizer', () => {
         range(1, 6)
     ].forEach((source, indx) => {
         it('should return -1 when not found' + indx, () => {
-            expect(from(source).lastIndex(_ => _ === 10)).to.equal(-1);
+            expect(from(source).lastIndex(_ => _ === 10)).toBe(-1);
         });
     });
 
@@ -158,12 +158,12 @@ describe('last finalizer', () => {
         repeat(2, 3)
     ].forEach((source, indx) => {
         it('should return last found index if multiple values' + indx, () => {
-            expect(from(source).lastIndex(_ => _ === 2)).to.equal(2);
+            expect(from(source).lastIndex(_ => _ === 2)).toBe(2);
         });
     });
 
 
     it('should return last index when multiple times', () => {
-        expect(from([1, 2, 3, 1, 2, 3]).lastIndex(_ => _ === 2)).to.equal(4);
+        expect(from([1, 2, 3, 1, 2, 3]).lastIndex(_ => _ === 2)).toBe(4);
     });
 });

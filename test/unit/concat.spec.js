@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { fromIterable, range } from "../../src";
 
 describe('concat tests', () => {
@@ -10,7 +10,7 @@ describe('concat tests', () => {
     ].forEach((source, indx) => {
         it('should take first n numbers: ' + indx, () => {
             const res = fromIterable(source[0]).concat(source[1]).toArray();
-            expect(res).to.deep.equal(range(0, 20).toArray());
+            expect(res).toEqual(range(0, 20).toArray());
         });
     });
 });

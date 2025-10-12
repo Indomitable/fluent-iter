@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { from, fromIterable, range } from "../../src";
 import { Person, Pet } from "./models";
 
@@ -10,7 +10,7 @@ describe('join tests', () => {
         it('should join sequence: ' + indx, () => {
             // use iterable
             const res0 = fromIterable(source).join(',');
-            expect(res0).to.be.equal('0,1,2,3,4');
+            expect(res0).toBe('0,1,2,3,4');
         });
     });
 
@@ -20,13 +20,13 @@ describe('join tests', () => {
     ].forEach((source, indx) => {
         it('should join different types: ' + indx, () => {
             const res = fromIterable(source).join(',');
-            expect(res).to.be.equal('1,a,null,[object Object],undefined,true');
+            expect(res).toBe('1,a,null,[object Object],undefined,true');
         });
     });
 
     it('should return empty when done over empty sequence', () => {
         const res = fromIterable([]).join(',');
-        expect(res).to.be.equal('');
+        expect(res).toBe('');
     });
 
     const persons = [
@@ -52,7 +52,7 @@ describe('join tests', () => {
     ].forEach((source, indx) => {
         it('should join arrays: ' + indx, () => {
             const res = from(source.persons).join(source.pets, s => s.name, i => i.owner, (person, pet) => ({ person, pet })).toArray();
-            expect(res).to.deep.equal([
+            expect(res).toEqual([
                 { person: persons[0], pet: pets[1] },
                 { person: persons[1], pet: pets[2] },
                 { person: persons[1], pet: pets[3] },

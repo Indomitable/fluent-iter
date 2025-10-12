@@ -1,25 +1,10 @@
 language: node_js
 node_js:
-  - "12"
-jobs:
-  include:
-    - stage: ci
-      install:
-        - yarn --pure-lockfile
-      script:
-        - yarn test
-    - stage: deploy
-      if: tag IS present
-      install:
-        - yarn --pure-lockfile
-      script:
-        - yarn build
-        - yarn benchmark
-      deploy:
-        provider: npm
-        email: v.mladenov@hotmail.com
-        api_key: $NPM_API_KEY
-        skip_cleanup: true  # skip cleanup- if yarn build was forgotten.
-        on:
-          tags: true
+  - "20"
 
+install:
+  - npm install -g bun
+  - bun install
+
+script:
+  - bun test

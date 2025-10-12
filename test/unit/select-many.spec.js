@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { from, fromIterable } from "../../src";
 
 describe('select many tests', () => {
@@ -16,7 +16,7 @@ describe('select many tests', () => {
             const resSelectMany = fromIterable(source)
                 .selectMany(_ => _.item)
                 .toArray();
-            expect(resSelectMany).to.deep.equal([1, 2, 3, 4, 'a', 'b', 'c', 'd']);
+            expect(resSelectMany).toEqual([1, 2, 3, 4, 'a', 'b', 'c', 'd']);
 
             const resFlat = from(source)
                 .selectMany(_ => _.item, (outer, inner) => ({ outer, inner})).toArray();
@@ -26,7 +26,7 @@ describe('select many tests', () => {
                     flatResExpected.push({ outer, inner });
                 }
             }
-            expect(resFlat).to.deep.equal(flatResExpected);
+            expect(resFlat).toEqual(flatResExpected);
         });
     });
 
@@ -52,7 +52,7 @@ describe('select many tests', () => {
     ].forEach((source, indx) => {
         it('should map iterable with empties: ' + indx, () => {
             const resultSelectMany = fromIterable(source).selectMany(_ => _.item).toArray();
-            expect(resultSelectMany).to.deep.equal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+            expect(resultSelectMany).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
             const resFlat = from(source).selectMany(_ => _.item, (outer, inner) => ({ outer, inner })).toArray();
             const flatResExpected = [];
@@ -61,8 +61,8 @@ describe('select many tests', () => {
                     flatResExpected.push({ outer, inner });
                 }
             }
-            expect(resFlat).to.deep.equal(flatResExpected);
-            expect(resFlat.length).to.deep.equal(resultSelectMany.length);
+            expect(resFlat).toEqual(flatResExpected);
+            expect(resFlat.length).toEqual(resultSelectMany.length);
         });
     });
 
@@ -78,10 +78,10 @@ describe('select many tests', () => {
     ].forEach((source, indx) => {
         it('should be possible to continue: ' + indx, () => {
             const resultSelectMany = fromIterable(source).selectMany(_ => _.item).where(i => i === 2).select(_ => _ * 2).toArray();
-            expect(resultSelectMany).to.deep.equal([4]);
+            expect(resultSelectMany).toEqual([4]);
 
             const resultFlat = fromIterable(source).selectMany(_ => _.item, (outer, inner) => ({ outer, inner})).where(i => i.inner === 2).select(_ => _.inner * 2).toArray();
-            expect(resultFlat).to.deep.equal(resultSelectMany);
+            expect(resultFlat).toEqual(resultSelectMany);
         });
     });
 });

@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { from, fromIterable, range } from "../../src";
 
 describe('reverse tests', () => {
@@ -8,7 +8,7 @@ describe('reverse tests', () => {
     ].forEach((source, indx) => {
         it('should reverse string sequence: ' + indx, () => {
             const res = from(source).reverse().toArray();
-            expect(res).to.deep.equals(['d', 'c', 'b', 'a']);
+            expect(res).toEqual(['d', 'c', 'b', 'a']);
         });
     });
 
@@ -18,12 +18,12 @@ describe('reverse tests', () => {
     ].forEach((source, indx) => {
         it('should reverse string sequence: ' + indx, () => {
             const res = from(source).reverse().toArray();
-            expect(res).to.deep.equals(range(99, -1).toArray());
+            expect(res).toEqual(range(99, -1).toArray());
         });
     });
 
     it('should reverse on empty return empty', () => {
         const res = from([]).reverse().toArray();
-        expect(res).to.deep.equals([]);
+        expect(res).toEqual([]);
     });
 });

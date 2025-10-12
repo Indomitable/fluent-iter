@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { fromIterable, range } from "../../src";
 
 describe('select tests', () => {
@@ -9,7 +9,7 @@ describe('select tests', () => {
         it('should map sequence: ' + indx, () => {
             const input = fromIterable(source).select(_ => _ + 'a');
             const result = Array.from(input);
-            expect(result).to.deep.equal(['aa', 'ba', 'ca', 'da']);
+            expect(result).toEqual(['aa', 'ba', 'ca', 'da']);
         });
     });
 
@@ -20,7 +20,7 @@ describe('select tests', () => {
         it('should map after filter: ' + indx, () => {
             const input = fromIterable(source).where(_ => _ !== 'a').select(_ => _ + 'a');
             const result = Array.from(input);
-            expect(result).to.deep.equal(['ba', 'ca', 'da']);
+            expect(result).toEqual(['ba', 'ca', 'da']);
         });
     });
 
@@ -30,7 +30,7 @@ describe('select tests', () => {
     ].forEach((source, indx) => {
         it('should be able to continue: ' + indx, () => {
             const result = fromIterable(source).select(_ => _ + 'a').select(_ => 'b' + _).toArray();
-            expect(result).to.deep.equal(['baa', 'bba', 'bca', 'bda']);
+            expect(result).toEqual(['baa', 'bba', 'bca', 'bda']);
         });
     });
 
@@ -40,8 +40,8 @@ describe('select tests', () => {
     ].forEach((source, indx) => {
         it('should be iterable multiple times: ' + indx, () => {
             const numbers = fromIterable(source).select(_ => _ * 2);
-            expect(Array.from(numbers)).to.deep.equal([2, 4, 6, 8, 10, 12, 14]);
-            expect(Array.from(numbers)).to.deep.equal([2, 4, 6, 8, 10, 12, 14]);
+            expect(Array.from(numbers)).toEqual([2, 4, 6, 8, 10, 12, 14]);
+            expect(Array.from(numbers)).toEqual([2, 4, 6, 8, 10, 12, 14]);
         });
     });
 });

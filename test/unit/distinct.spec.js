@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { from, fromIterable } from "../../src";
 import { Person } from "./models";
 
@@ -9,7 +9,7 @@ describe('distinct tests', () => {
     ].forEach((source, indx) => {
         it('should return distinct values: ' + indx, () => {
             const input = fromIterable(source);
-            expect(input.distinct().toArray()).to.deep.equal([1, 2, 3, 5, 'a']);
+            expect(input.distinct().toArray()).toEqual([1, 2, 3, 5, 'a']);
         });
     });
 
@@ -18,7 +18,7 @@ describe('distinct tests', () => {
     ].forEach((source, indx) => {
         it('should return empty when no values: ' + indx, () => {
             const input = fromIterable(source);
-            expect(input.distinct().toArray()).to.deep.equal([]);
+            expect(input.distinct().toArray()).toEqual([]);
         });
     });
 
@@ -28,7 +28,7 @@ describe('distinct tests', () => {
     ].forEach((source, indx) => {
         it('should use comparer when provided: ' + indx, () => {
             const input = fromIterable(source);
-            expect(input.distinct((a, b) => typeof a === typeof b).toArray()).to.deep.equal([1, 'a']);
+            expect(input.distinct((a, b) => typeof a === typeof b).toArray()).toEqual([1, 'a']);
         });
     });
 
@@ -38,7 +38,7 @@ describe('distinct tests', () => {
     ].forEach((source, indx) => {
         it('should be able to continue: ' + indx, () => {
             const input = fromIterable(source);
-            expect(input.distinct().where(_ => typeof _ === 'string').toArray()).to.deep.equal(['a']);
+            expect(input.distinct().where(_ => typeof _ === 'string').toArray()).toEqual(['a']);
         });
     });
 
@@ -50,7 +50,7 @@ describe('distinct tests', () => {
             new Person(20, 'D'),
         ];
         const res = from(persons).distinct((a, b) => a.age === b.age).toArray();
-        expect(res).to.deep.equals([
+        expect(res).toEqual([
             new Person(10, 'A'),
             new Person(20, 'B'),
         ]);

@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { from, range } from "../../src";
 
 describe('union tests', () => {
@@ -8,7 +8,7 @@ describe('union tests', () => {
     ].forEach((source, indx) => {
         it('should union make a set iterable from both iterables: ' + indx, () => {
             const res = from(source.first).union(source.second).toArray();
-            expect(res).to.deep.equal(range(0, 10).toArray());
+            expect(res).toEqual(range(0, 10).toArray());
         });
     });
 
@@ -18,12 +18,12 @@ describe('union tests', () => {
     ].forEach((source, indx) => {
         it('should union make a set iterable from both strings iterables: ' + indx, () => {
             const res = from(source.first).union(source.second).toArray();
-            expect(res).to.deep.equal(['a', 'b', 'c', 'd']);
+            expect(res).toEqual(['a', 'b', 'c', 'd']);
         });
     });
 
     it('should work with strings', () => {
         const res = from('abcdefg').union('abcjkf').join('');
-        expect(res).to.deep.equal('abcdefgjk')
+        expect(res).toEqual('abcdefgjk')
     });
 });

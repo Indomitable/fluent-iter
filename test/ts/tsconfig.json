@@ -1,23 +1,15 @@
 {
   "compilerOptions": {
-    "module": "es2015",
+    "module": "NodeNext",
     "target": "es2017",
     "sourceMap": false,
-    "types": [
-      "mocha",
-      "chai"
-    ],
+    "types": ["vitest"],
+    "moduleResolution": "nodenext",
     "baseUrl": ".",
     "paths": {
-      "modern-linq": [
-        "../../index.d.ts"
-      ]
+      "modern-linq": ["../../index.d.ts"]
     }
   },
-  "include": [
-      "*.spec.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["*.spec.ts"],
+  "exclude": ["node_modules"]
 }

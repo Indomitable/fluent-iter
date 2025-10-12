@@ -1,5 +1,4 @@
 import { fromIterable, range, from } from "../../src";
-import { expect } from "chai";
 import { Person } from "./models";
 
 describe('order tests', () => {
@@ -10,7 +9,7 @@ describe('order tests', () => {
         it('should be order items: ' + indx, () => {
             const result = fromIterable(source).orderBy(_ => _).toArray();
             const expected = range(1, 101).toArray();
-            expect(result).to.deep.equal(expected);
+            expect(result).toEqual(expected);
         });
     });
 
@@ -21,7 +20,7 @@ describe('order tests', () => {
         it('should be order descending items: ' + indx, () => {
             const result = fromIterable(source).orderByDescending(_ => _).toArray();
             const expected = range(99, -1).toArray();
-            expect(result).to.deep.equal(expected);
+            expect(result).toEqual(expected);
         });
     });
 
@@ -32,7 +31,7 @@ describe('order tests', () => {
         it('should able to order string: ' + indx, () => {
             const result = fromIterable(source).orderBy(_ => _).toArray();
             const expected = ['A', 'AB', 'B', 'C', 'D', 'DA']
-            expect(result).to.deep.equal(expected);
+            expect(result).toEqual(expected);
         });
     });
 
@@ -47,12 +46,12 @@ describe('order tests', () => {
         const res = from(input)
             .orderBy(_ => _.age)
             .toArray();
-        expect(res).to.deep.equals([input[3], input[1], input[2], input[0], input[4]]);
+        expect(res).toEqual([input[3], input[1], input[2], input[0], input[4]]);
 
         const res1 = from(input)
             .orderBy(_ => _.age, (a, b) => a === 40 ? -1 : b === 40 ? 1 : (a < b ? -1 : a > b ? 1 : 0))
             .toArray();
-        expect(res1).to.deep.equals([input[2], input[3], input[1], input[0], input[4]]);
+        expect(res1).toEqual([input[2], input[3], input[1], input[0], input[4]]);
     });
 
     it('should able to order items by key desending', () => {
@@ -66,7 +65,6 @@ describe('order tests', () => {
         const res = from(input)
             .orderByDescending(_ => _.age)
             .toArray();
-        expect(res).to.deep.equals([input[4], input[0], input[2], input[1], input[3]]);
+        expect(res).toEqual([input[4], input[0], input[2], input[1], input[3]]);
     });
 });
-

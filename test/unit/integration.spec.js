@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import {fromIterable, range} from "../../src";
 
 describe('integration tests', () => {
@@ -16,7 +16,7 @@ describe('integration tests', () => {
                     .toArray()
             );
         }
-        expect(pages).to.deep.equal([
+        expect(pages).toEqual([
             [0, 1, 2],
             [3, 4, 5],
             [6, 7, 8],

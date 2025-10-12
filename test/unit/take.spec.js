@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { from, fromIterable, range } from "../../src";
 
 describe('take tests', () => {
@@ -8,7 +8,7 @@ describe('take tests', () => {
     ].forEach((source, indx) => {
         it('should take first n numbers: ' + indx, () => {
             const output0 = fromIterable(source).take(3).toArray();
-            expect(output0).to.deep.equal([1, 2, 3]);
+            expect(output0).toEqual([1, 2, 3]);
         });
     });
 
@@ -18,7 +18,7 @@ describe('take tests', () => {
     ].forEach((source, indx) => {
         it('should take first n numbers after another operation: ' + indx, () => {
             const output0 = fromIterable(source).where(_ => _ > 2).take(3).toArray();
-            expect(output0).to.deep.equal([3, 4, 5]);
+            expect(output0).toEqual([3, 4, 5]);
         });
     });
 
@@ -32,7 +32,7 @@ describe('take tests', () => {
                 .take(3)
                 .select(x => `item_${x}`)
                 .toArray();
-            expect(output0).to.deep.equal(['item_3', 'item_4', 'item_5']);
+            expect(output0).toEqual(['item_3', 'item_4', 'item_5']);
         });
     });
 
@@ -45,7 +45,7 @@ describe('take tests', () => {
             const res = fromIterable(source)
                 .take(3)
                 .toArray();
-            expect(res).to.deep.equal([1, 2]);
+            expect(res).toEqual([1, 2]);
         });
     });
 
@@ -57,7 +57,7 @@ describe('take tests', () => {
             const res = fromIterable(source)
                 .take(1)
                 .toArray();
-            expect(res).to.deep.equal([]);
+            expect(res).toEqual([]);
         });
     });
 
@@ -67,8 +67,8 @@ describe('take tests', () => {
         range(1, 6)
     ].forEach((source, indx) => {
         it('should return empty when none to be taken' + indx, () => {
-            expect(from(source).take(0).toArray()).to.deep.equal([]);
-            expect(from(source).take(-1).toArray()).to.deep.equal([]);
+            expect(from(source).take(0).toArray()).toEqual([]);
+            expect(from(source).take(-1).toArray()).toEqual([]);
         });
     });
 });

@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+
 import { from, range } from "../../src";
 
 describe('take last tests', () => {
@@ -8,7 +8,7 @@ describe('take last tests', () => {
     ].forEach((source, indx) => {
         it('should take last 2 elements: ' + indx, () => {
             const output = from(source).takeLast(2).toArray();
-            expect(output).to.deep.equal([4, 5]);
+            expect(output).toEqual([4, 5]);
         });
     });
 
@@ -19,7 +19,7 @@ describe('take last tests', () => {
     ].forEach((source, indx) => {
         it('should return empty when source is empty' + indx, () => {
             const output = from(source).takeLast(3).toArray();
-            expect(output).to.deep.equal([]);
+            expect(output).toEqual([]);
         });
     });
 
@@ -28,14 +28,14 @@ describe('take last tests', () => {
         range(1, 6)
     ].forEach((source, indx) => {
         it('should return empty when none to be taken' + indx, () => {
-            expect(from(source).takeLast(0).toArray()).to.deep.equal([]);
-            expect(from(source).takeLast(-1).toArray()).to.deep.equal([]);
+            expect(from(source).takeLast(0).toArray()).toEqual([]);
+            expect(from(source).takeLast(-1).toArray()).toEqual([]);
         });
     });
 
 
     it('should able to continue the query', () => {
         const output = range(0, 10).takeLast(3).select(_  => _ * 2).toArray();
-        expect(output).to.deep.equal([14, 16, 18])
+        expect(output).toEqual([14, 16, 18])
     });
 });

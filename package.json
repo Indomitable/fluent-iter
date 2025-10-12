@@ -10,11 +10,10 @@
   "type": "module",
   "types": "index.d.ts",
   "scripts": {
-    "build": "rollup -c ./rollup.config.js",
-    "test-js": "mocha --require @babel/register test/unit/*.spec.js",
-    "test-ts": " tsc -p ./test/ts/tsconfig.json && mocha --require @babel/register test/ts/*.spec.js && rm test/ts/*.spec.js",
-    "test": "yarn test-js && yarn test-ts",
-    "benchmark": "node --experimental-modules --es-module-specifier-resolution=node test/benchmark/start.js"
+    "build": "vite build",
+    "test": "vitest",
+    "benchmark": "bun test/benchmark/start.js",
+    "coverage": "vitest run --coverage"
   },
   "repository": {
     "type": "git",
@@ -42,21 +41,10 @@
     "LICENSE"
   ],
   "devDependencies": {
-    "@babel/cli": "^7.7.7",
-    "@babel/core": "^7.7.7",
-    "@babel/plugin-proposal-private-methods": "^7.7.4",
-    "@babel/preset-env": "^7.7.7",
-    "@babel/register": "^7.7.7",
-    "@types/chai": "^4.2.7",
-    "@types/mocha": "^5.2.7",
-    "babel-plugin-module-resolver": "^4.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "benchmark": "^2.1.4",
-    "chai": "^4.2.0",
-    "microtime": "^3.0.0",
-    "mocha": "^6.2.2",
-    "nyc": "^15.0.0",
-    "rollup": "^1.27.14",
-    "rollup-plugin-babel": "^4.3.3",
-    "typescript": "^3.7.4"
+    "vite": "^7.1.9",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
   }
 }
