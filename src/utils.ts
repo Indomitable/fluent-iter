@@ -3,7 +3,7 @@
  * @param {object} mixin
  * @param {Function[]} destinations
  */
-export function applyMixin(mixin, destinations) {
+export function applyMixin(mixin: object, destinations: Function[]) {
     const keys = Object.keys(mixin);
     for (const dest of destinations) {
         for (const mixinKey of keys) {
@@ -19,11 +19,11 @@ export function applyMixin(mixin, destinations) {
  * @param {Iterable} iterable
  * @return {Iterator} iterator.
  */
-export function getIterator(iterable) {
+export function getIterator<T>(iterable: Iterable<T>): Iterator<T> {
     return iterable[Symbol.iterator]();
 }
 
-function __quickSort(items, left, right, comparer) {
+function __quickSort<T>(items: T[], left: number, right: number, comparer: (a: T, b: T) => number) {
     do {
         let i = left;
         let j = right;
@@ -33,7 +33,7 @@ function __quickSort(items, left, right, comparer) {
             while (j >= 0 && comparer(x, items[j]) < 0) j--;
             if (i > j) break;
             if (i < j) {
-                [ items[i], items[j] ] = [ items[j], items[i] ];
+                [items[i], items[j]] = [items[j], items[i]];
             }
             i++;
             j--;
@@ -56,13 +56,13 @@ function __quickSort(items, left, right, comparer) {
  * @param comparer elements comparer
  * @return {Array} sorted array.
  */
-export function quickSort(items, left, right, comparer) {
-    const copy = [ ...items ]; // copy items.
+export function quickSort<T>(items: T[], left: number, right: number, comparer: (a: T, b: T) => number): T[] {
+    const copy = [...items]; // copy items.
     __quickSort(copy, left, right, comparer);
     return copy;
 }
 
-export function __search(items, value, start, end, comparer) {
+export function __search<T>(items: T[], value: T, start: number, end: number, comparer: (a: T, b: T) => number): number {
     if (start > end) {
         return -1;
     }
@@ -85,13 +85,19 @@ export function __search(items, value, start, end, comparer) {
  * @param comparer comparer function
  * @return {number} index of the value we search.
  */
-export function search(items, value, comparer) {
+export function search<T>(items: T[], value: T, comparer: (a: T, b: T) => number): number {
     const start = 0;
     const end = items.length - 1;
     return __search(items, value, start, end, comparer);
 }
 
-export function __findInsertIndex(items, value, start, end, comparer) {
+export function __findInsertIndex<T>(
+    items: T[],
+    value: T,
+    start: number,
+    end: number,
+    comparer: (a: T, b: T) => number,
+): number {
     const middle = Math.floor((start + end) / 2);
     const result = comparer(items[middle], value);
     if (result === 0) {
@@ -139,7 +145,7 @@ export function __findInsertIndex(items, value, start, end, comparer) {
  * @param {Function} comparer comparer which to check the collections
  * @return {Array} the array with inserted value.
  */
-export function insertOrdered(items, value, comparer) {
+export function insertOrdered<T>(items: T[], value: T, comparer: (a: T, b: T) => number): T[] {
     const start = 0;
     const end = items.length;
     if (start === end) {
@@ -154,46 +160,48 @@ export function insertOrdered(items, value, comparer) {
 /**
  * A helper class which using Set to check for distinct elements.
  */
-export class SetCheck {
+export class SetCheck<T> {
+    #set: Set<T>;
+
     constructor() {
-        this.set = new Set();
+        this.#set = new Set<T>();
     }
 
-    tryAdd(item) {
-        const prevSize = this.set.size;
-        this.set.add(item);
-        return this.set.size > prevSize;
+    tryAdd(item: T) {
+        const prevSize = this.#set.size;
+        this.#set.add(item);
+        return this.#set.size > prevSize;
     }
 
     clear() {
-        this.set.clear();
+        this.#set.clear();
     }
 }
 
-export function defaultSortComparer(a, b) {
-    return a < b ? -1 : (a > b ? 1 : 0);
+export function defaultSortComparer(a: number, b: number): 1 | -1 | 0 {
+    return a < b ? -1 : a > b ? 1 : 0;
 }
 
-export function defaultEqualityComparer(a, b) {
+export function defaultEqualityComparer(a: number, b: number): boolean {
     return a === b;
 }
 
-export function defaultElementSelector(item) {
+export function defaultElementSelector<T>(item: T): T {
     return item;
 }
 
-export function doneValue() {
-    return {done: true};
+export function doneValue(): IteratorReturnResult<undefined> {
+    return { done: true, value: undefined };
 }
 
-export function iteratorResultCreator(value) {
+export function iteratorResultCreator<T>(value: T): IteratorYieldResult<T> {
     return { done: false, value };
 }
 
-export function emptyIterator() {
+export function emptyIterator<T>(): Iterator<T> {
     return {
         next() {
             return doneValue();
-        }
-    }
+        },
+    };
 }

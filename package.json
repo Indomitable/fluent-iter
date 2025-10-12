@@ -3,7 +3,13 @@
   "version": "0.9.2",
   "description": "Linq implementation for JS",
   "main": "index.js",
-  "module": "index.esm.js",
+  "module": "index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "author": "Ventsislav Mladenov",
   "license": "MIT",
   "private": false,
@@ -11,9 +17,10 @@
   "types": "index.d.ts",
   "scripts": {
     "build": "vite build",
-    "test": "vitest",
-    "benchmark": "bun test/benchmark/start.js",
-    "coverage": "vitest run --coverage"
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "benchmark": "bun test/benchmark/start.js"
   },
   "repository": {
     "type": "git",
@@ -32,9 +39,9 @@
     "iterator"
   ],
   "files": [
+    "dist",
     "src/",
     "index.d.ts",
-    "index.esm.js",
     "index.js",
     "package.json",
     "README.md",

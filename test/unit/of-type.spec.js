@@ -1,4 +1,4 @@
-import { fromIterable, from } from "../../index.esm";
+import { fromIterable, from } from "../../index";
 
 describe("oftype tests", () => {
     it("should check for primary types", () => {

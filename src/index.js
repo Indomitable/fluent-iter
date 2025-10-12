@@ -1,6 +1,6 @@
 import { applyMixin } from './utils';
 
-import LinqIterable from './iterables/initial/linq';
+import IterableIterable from './iterables/initial/iterable';
 import ArrayIterable from './iterables/initial/array';
 import ArrayLikeIterable from './iterables/initial/array-like';
 import ObjectIterable from './iterables/initial/object';
@@ -30,7 +30,7 @@ import { IntersectIterable } from "./iterables/intersect";
 
 // note: if using class as output we can just apply the mixin to BaseLinqIterable.
 applyMixin(linqMixin, [
-    LinqIterable,
+    IterableIterable,
     ArrayIterable,
     ArrayLikeIterable,
     ObjectIterable,

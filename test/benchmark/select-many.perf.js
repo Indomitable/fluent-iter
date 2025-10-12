@@ -1,5 +1,5 @@
-import { from } from '../../index.esm.js';
-import Benchmark from 'benchmark';
+import { from } from "../../index.js";
+import Benchmark from "benchmark";
 
 const input = [
     { values: [1, 2, 3, 4] },
@@ -10,29 +10,37 @@ const input = [
     { values: [19, 20, 21] },
 ];
 
-const extract = i => i.values;
+const extract = (i) => i.values;
 
-export const arraySpeadBenchmark = new Benchmark('[select-many] Array push', () => {
-    const result = [];
-    for (const outer of input) {
-        const inner = extract(outer);
-        Array.prototype.push.apply(result, inner);
-    }
-});
-
-export const selectManyBenchmark = new Benchmark('[select-many] selectMany', () => {
-    const result = from(input).selectMany(extract).toArray();
-});
-
-export const generatorBenchmark = new Benchmark('[select-many] generator func', () => {
-    function* generator() {
+export const arraySpeadBenchmark = new Benchmark(
+    "[select-many] Array push",
+    () => {
+        const result = [];
         for (const outer of input) {
             const inner = extract(outer);
-            for (const value of inner) {
-                yield value;
+            Array.prototype.push.apply(result, inner);
+        }
+    },
+);
+
+export const selectManyBenchmark = new Benchmark(
+    "[select-many] selectMany",
+    () => {
+        const result = from(input).selectMany(extract).toArray();
+    },
+);
+
+export const generatorBenchmark = new Benchmark(
+    "[select-many] generator func",
+    () => {
+        function* generator() {
+            for (const outer of input) {
+                const inner = extract(outer);
+                for (const value of inner) {
+                    yield value;
+                }
             }
         }
-    }
-    const result = Array.from(generator());
-});
-
+        const result = Array.from(generator());
+    },
+);

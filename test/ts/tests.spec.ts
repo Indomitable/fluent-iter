@@ -11,7 +11,7 @@ import {
     fromObject,
     range,
     repeat,
-} from "../../index.esm.js";
+} from "../../index.js";
 import { Person, Pet } from "../unit/models.js";
 
 describe("typescript tests", () => {
