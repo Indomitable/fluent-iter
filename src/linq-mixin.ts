@@ -30,13 +30,13 @@ import takeLastIterator from "./iterables/take-last.ts";
 // import { LastFinalizer } from "./finalizers/last.js";
 // import { IntersectIterable } from "./iterables/intersect.js";
 
-import {Equality, InternalIterable, Mapper, Predicate} from "./interfaces.ts";
+import {Equality, Mapper, Predicate} from "./interfaces.ts";
 import type { LinqIterable } from "./linq-iterable.ts";
 import skipLastIterator from "./iterables/skip-last.js";
 import distinctIterator from "./iterables/distinct.js";
 
 
-export class Linq<TValue> implements LinqIterable<TValue>, InternalIterable<TValue> {
+export class Linq<TValue> implements LinqIterable<TValue> {
     readonly #source: Iterable<TValue>;
     constructor(source: Iterable<TValue>) {
         this.#source = source;
@@ -88,9 +88,6 @@ export class Linq<TValue> implements LinqIterable<TValue>, InternalIterable<TVal
     }
     [Symbol.iterator](): Iterator<TValue, any, any> {
         return this.#source[Symbol.iterator]();
-    }
-    public getInner() {
-        return this.#source;
     }
 }
 

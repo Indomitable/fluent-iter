@@ -1,24 +1,12 @@
 import {IterableGenerator} from "../utils.js";
-import {InternalIterable} from "../interfaces.js";
 
 /**
  * Return flatten mapped array [[1, 2], [3, 4]].selectMany(x => x) === [1, 2, 3, 4, 5]
  */
 export default function selectManyIterator<TValue, TInner, TResult>(
-    input: InternalIterable<TValue>,
+    input: Iterable<TValue>,
     innerSelector: (item: TValue) => TInner[],
     resultCreator?: (outer: TValue, inner: TInner) => TResult): Iterable<TInner | TResult> {
-    const inner = input.getInner();
-    if (Array.isArray(inner)) {
-        if (!resultCreator) {
-            return inner.flatMap(innerSelector);
-        } else {
-            return inner.flatMap(item => {
-                const items = innerSelector(item);
-                return items.map(i => resultCreator(item, i));
-            });
-        }
-    }
     return new IterableGenerator(() => selectManyGenerator(input, innerSelector, resultCreator));
 }
 

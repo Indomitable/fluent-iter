@@ -1,6 +1,6 @@
-export interface InternalIterable<T> extends Iterable<T> {
-    getInner(): Iterable<T>;
-}
+// export interface InternalIterable<T> extends Iterable<T> {
+//     getInner(): Iterable<T>;
+// }
 
 export type Predicate<T> = (item: T) => boolean;
 

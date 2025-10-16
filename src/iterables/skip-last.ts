@@ -1,14 +1,9 @@
 /**
  * Return skip last N elements from sequence
  */
-import type {InternalIterable} from "../interfaces.ts";
 import {doneValue, getIterator, iteratorResultCreator} from "../utils.ts";
 
-export default function skipLastIterator<TValue>(input: InternalIterable<TValue>, count: number): Iterable<TValue> {
-    const inner = input.getInner();
-    if (Array.isArray(inner)) {
-        return inner.slice(0, inner.length - count);
-    }
+export default function skipLastIterator<TValue>(input: Iterable<TValue>, count: number): Iterable<TValue> {
     return new SkipLastIterable(input, count);
 }
 

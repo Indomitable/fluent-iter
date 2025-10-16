@@ -1,14 +1,13 @@
-import type {InternalIterable} from "../interfaces.ts";
 import {IterableGenerator} from "../utils.ts";
 
 /**
  * Return skip first elements until condition got falsy and return rest
  */
-export default function skipWhileIterator<TValue>(input: InternalIterable<TValue>, condition: (item: TValue, index: number) => boolean): Iterable<TValue> {
+export default function skipWhileIterator<TValue>(input: Iterable<TValue>, condition: (item: TValue, index: number) => boolean): Iterable<TValue> {
     return new IterableGenerator(() => skipWhileGenerator(input, condition));
 }
 
-function* skipWhileGenerator<TValue>(input: InternalIterable<TValue>, condition: (item: TValue, index: number) => boolean): Generator<TValue> {
+function* skipWhileGenerator<TValue>(input: Iterable<TValue>, condition: (item: TValue, index: number) => boolean): Generator<TValue> {
     let flag = false;
     let index = 0;
     for (const item of input) {

@@ -1,11 +1,10 @@
-import type {InternalIterable, Mapper} from "../interfaces.ts";
+import type {Mapper} from "../interfaces.ts";
 
-export function toArrayCollector<T, R>(source: InternalIterable<T>, map?: Mapper<T, R>): T[] | R[] {
-    const inner = source.getInner();
+export function toArrayCollector<T, R>(source: Iterable<T>, map?: Mapper<T, R>): T[] | R[] {
     if (!map) {
-        return Array.isArray(inner) ? inner : Array.from(source);
+        return Array.from(source);
     } else {
-        return Array.isArray(inner) ? inner.map(map) : Array.from(source).map(map);
+        return Array.from(source).map(map);
     }
 }
 

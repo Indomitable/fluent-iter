@@ -1,18 +1,13 @@
 /**
  * Take last N elements
  */
-import type {InternalIterable} from "../interfaces.ts";
-import {IterableGenerator} from "../utils.js";
+import {IterableGenerator} from "../utils.ts";
 
-export default function takeLastIterator<TValue>(input: InternalIterable<TValue>, count: number): Iterable<TValue> {
-    const inner = input.getInner();
-    if (Array.isArray(inner)) {
-        return inner.slice(inner.length - count);
-    }
+export default function takeLastIterator<TValue>(input: Iterable<TValue>, count: number): Iterable<TValue> {
     return new IterableGenerator(() => takeLastGenerator(input, count));
 }
 
-function* takeLastGenerator<TValue>(input: InternalIterable<TValue>, count: number): Generator<TValue> {
+function* takeLastGenerator<TValue>(input: Iterable<TValue>, count: number): Generator<TValue> {
     const queue = new LimitedQueue<TValue>(count);
     for (const item of input) {
         queue.push(item);

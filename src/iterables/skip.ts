@@ -1,18 +1,13 @@
-import type {InternalIterable} from "../interfaces.ts";
 import {IterableGenerator} from "../utils.js";
 
 /**
  * Skip first N numbers of source and return the rest
  */
-export default function skipIterator<TValue>(input: InternalIterable<TValue>, count: number): Iterable<TValue> {
-    const inner = input.getInner();
-    if (Array.isArray(inner)) {
-        return inner.slice(count, inner.length);
-    }
+export default function skipIterator<TValue>(input: Iterable<TValue>, count: number): Iterable<TValue> {
     return new IterableGenerator(() => skipGenerator(input, count));
 }
 
-function* skipGenerator<TValue>(input: InternalIterable<TValue>, count: number): Generator<TValue> {
+function* skipGenerator<TValue>(input: Iterable<TValue>, count: number): Generator<TValue> {
     let skipped = 0;
     for (const item of input) {
         if (skipped < count) {
