@@ -1,5 +1,5 @@
-
-import { from, fromIterable } from "../../src";
+import { describe, it, expect } from "vitest";
+import { from, fromIterable } from "../../src/index.ts";
 
 describe('select many tests', () => {
     [
@@ -14,12 +14,12 @@ describe('select many tests', () => {
     ].forEach((source, indx) => {
         it('should map iterable: ' + indx, () => {
             const resSelectMany = fromIterable(source)
-                .selectMany(_ => _.item)
+                .selectMany<string|number>(_ => _.item)
                 .toArray();
             expect(resSelectMany).toEqual([1, 2, 3, 4, 'a', 'b', 'c', 'd']);
 
             const resFlat = from(source)
-                .selectMany(_ => _.item, (outer, inner) => ({ outer, inner})).toArray();
+                .selectMany<string|number, {}>(_ => _.item, (outer, inner) => ({ outer, inner})).toArray();
             const flatResExpected = [];
             for (const outer of source) {
                 for (const inner of outer.item) {
@@ -77,10 +77,15 @@ describe('select many tests', () => {
         ])
     ].forEach((source, indx) => {
         it('should be possible to continue: ' + indx, () => {
-            const resultSelectMany = fromIterable(source).selectMany(_ => _.item).where(i => i === 2).select(_ => _ * 2).toArray();
+            const resultSelectMany = fromIterable(source).selectMany<string|number>(_ => _.item).where(i => i === 2).select(_ => _ * 2).toArray();
             expect(resultSelectMany).toEqual([4]);
 
-            const resultFlat = fromIterable(source).selectMany(_ => _.item, (outer, inner) => ({ outer, inner})).where(i => i.inner === 2).select(_ => _.inner * 2).toArray();
+            const resultFlat = fromIterable(source).selectMany<string|number, { inner: number|string }>(_ => _.item, (outer, inner) => ({ outer, inner}))
+                .select(i => i.inner)
+                .where<number>(i => typeof i === 'number')
+                .where(i => i === 2)
+                .select(_ => _ * 2)
+                .toArray();
             expect(resultFlat).toEqual(resultSelectMany);
         });
     });

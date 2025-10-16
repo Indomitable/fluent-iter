@@ -1,4 +1,5 @@
-import { from, fromIterable } from "../../index.js";
+import { describe, it, expect } from "vitest";
+import { from, fromIterable } from "../../src/index.ts";
 
 describe("where tests", () => {
     [[1, 2, 3, 4, 5, 6, 7], new Set([1, 2, 3, 4, 5, 6, 7])].forEach(
@@ -25,7 +26,7 @@ describe("where tests", () => {
 
     [[1, 2, 3, 4, 5, 6, 7], new Set([1, 2, 3, 4, 5, 6, 7])].forEach(
         (source, indx) => {
-            it("should be iteratable multiple times: " + indx, () => {
+            it("should be iterable multiple times: " + indx, () => {
                 const numbers = fromIterable(source).where((_) => _ % 2 === 0);
                 expect(Array.from(numbers)).toEqual([2, 4, 6]);
                 expect(Array.from(numbers)).toEqual([2, 4, 6]);

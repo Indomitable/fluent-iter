@@ -1,12 +1,17 @@
-import { doneValue, getIterator, iteratorResultCreator } from "../../utils";
+import {InternalIterable} from "../../interfaces.ts";
+import {doneValue, getIterator, iteratorResultCreator} from "../../utils.ts";
 
-export default class ArrayLikeIterable<T> {
-    #source: ArrayLike<T>;
+export default function arrayLikeIterator<T>(source: ArrayLike<T>): Iterable<T> {
+    return new ArrayLikeIterable(source);
+}
+
+class ArrayLikeIterable<T> implements InternalIterable<T> {
+    readonly #source: ArrayLike<T>;
     constructor(source: ArrayLike<T>) {
         this.#source = source;
     }
 
-    get(): T[] | ArrayLikeIterable<T> {
+    getInner(): T[] | ArrayLikeIterable<T> {
         return Array.isArray(this.#source) ? this.#source : this;
     }
 

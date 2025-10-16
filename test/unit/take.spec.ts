@@ -1,5 +1,5 @@
-
-import { from, fromIterable, range } from "../../src";
+import { describe, it, expect } from "vitest";
+import { from, fromIterable, range } from "../../src/index.ts";
 
 describe('take tests', () => {
     [

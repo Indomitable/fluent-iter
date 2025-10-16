@@ -1,11 +1,21 @@
-import { doneValue, iteratorResultCreator } from "../../utils";
+import {doneValue, iteratorResultCreator} from "../../utils.js";
+import {InternalIterable} from "../../interfaces.js";
 
-export default class ObjectIterable<TValue extends object, TKey extends keyof TValue, TResult> {
-    #source: TValue;
-    #resultCreator: (key: TKey, value: TValue[TKey]) => TResult;
+export default function* objectIterator<TValue extends {}, TKey extends keyof TValue, TResult>(source: TValue, resultCreator?: (key: TKey, value: TValue[TKey]) => TResult): Iterable<{ key: string, value: TValue[TKey] } | TResult> {
+    return new ObjectIterable(source, resultCreator);
+    // if (!resultCreator) {
+    //     return Object.entries(source).map(([key, value]) => ({key, value}));
+    // } else {
+    //     return Object.entries(source).map(([key, value]) => resultCreator(key as TKey, value as TValue[TKey]));
+    // }
+}
+
+class ObjectIterable<TValue extends object, TKey extends keyof TValue, TResult> implements InternalIterable<TResult> {
+    readonly #source: TValue;
+    readonly #resultCreator: (key: TKey, value: TValue[TKey]) => TResult;
     constructor(source: TValue, resultCreator?: (key: TKey, value: TValue[TKey]) => TResult) {
         this.#source = source;
-        this.#resultCreator = typeof resultCreator === 'undefined' ? ObjectIterable.__defaultResultCreator<TKey, TValue, TResult> : resultCreator;
+        this.#resultCreator = resultCreator ?? ObjectIterable.__defaultResultCreator<TKey, TValue, TResult>;
     }
 
     static __defaultResultCreator<TKey extends keyof TValue, TValue, TResult>(key: TKey, value: TValue[TKey]): TResult {
@@ -31,7 +41,7 @@ export default class ObjectIterable<TValue extends object, TKey extends keyof TV
         };
     }
 
-    get() {
+    getInner() {
         return this;
     }
 }

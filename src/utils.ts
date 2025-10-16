@@ -1,18 +1,57 @@
-/**
- * Apply mixin to a class
- * @param {object} mixin
- * @param {Function[]} destinations
- */
-export function applyMixin(mixin: object, destinations: Function[]) {
-    const keys = Object.keys(mixin);
-    for (const dest of destinations) {
-        for (const mixinKey of keys) {
-            if (!dest.prototype[mixinKey]) {
-                dest.prototype[mixinKey] = mixin[mixinKey];
+import { LinqIterable } from './linq-iterable.ts';
+import linqMixin from './linq-mixin.js';
+
+// /**
+//  * Apply mixin to a class
+//  * @param {object} mixin
+//  * @param {Function[]} destinations
+//  */
+// export function applyMixin(mixin: object, destinations: Function[]) {
+//     const keys = Object.keys(mixin);
+//     for (const dest of destinations) {
+//         for (const mixinKey of keys) {
+//             if (!dest.prototype[mixinKey]) {
+//                 dest.prototype[mixinKey] = mixin[mixinKey];
+//             }
+//         }
+//     }
+// }
+
+export function applyMixin<T extends object>(
+    mixin: T,
+    destinations: Function[]
+): void {
+    Object.getOwnPropertyNames(mixin).forEach((key) => {
+        destinations.forEach((dest) => {
+            if (!(key in dest.prototype)) {
+                Object.defineProperty(
+                    dest.prototype,
+                    key,
+                    Object.getOwnPropertyDescriptor(mixin, key) || {
+                        value: mixin[key as keyof T],
+                    }
+                );
             }
-        }
-    }
+        });
+    });
 }
+
+// export function LinqMixin<T>() {
+//     return function <C extends { new(...args: any[]): any }>(
+//         constructor: C
+//     ): C & { new(...args: any[]): InstanceType<C> & LinqIterable<T> } {
+//         Object.getOwnPropertyNames(linqMixin).forEach((key) => {
+//             Object.defineProperty(
+//                 constructor.prototype,
+//                 key,
+//                 Object.getOwnPropertyDescriptor(linqMixin, key) || {
+//                     value: linqMixin[key as keyof LinqIterable<T>],
+//                 }
+//             );
+//         });
+//         return constructor as any;
+//     };
+// }
 
 /**
  * Helper function to be use to access Symbol.iterator of iterable
@@ -204,4 +243,15 @@ export function emptyIterator<T>(): Iterator<T> {
             return doneValue();
         },
     };
+}
+
+export class IterableGenerator<T> implements Iterable<T> {
+    readonly #generator: () => Generator<T>;
+    constructor(generator: () => Generator<T>) {
+        this.#generator = generator;
+    }
+
+    [Symbol.iterator]() {
+        return this.#generator();
+    }
 }

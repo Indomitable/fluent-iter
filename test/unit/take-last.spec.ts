@@ -1,5 +1,5 @@
-
-import { from, range } from "../../src";
+import { describe, it, expect } from "vitest";
+import {from, range, repeat} from "../../src/index.ts";
 
 describe('take last tests', () => {
     [
@@ -15,7 +15,7 @@ describe('take last tests', () => {
 
     [
         [],
-        range()
+        repeat(1, 0)
     ].forEach((source, indx) => {
         it('should return empty when source is empty' + indx, () => {
             const output = from(source).takeLast(3).toArray();
@@ -37,5 +37,11 @@ describe('take last tests', () => {
     it('should able to continue the query', () => {
         const output = range(0, 10).takeLast(3).select(_  => _ * 2).toArray();
         expect(output).toEqual([14, 16, 18])
+    });
+
+    it('should able to execute multiple times', () => {
+        const output = range(0, 10).takeLast(3).select(_  => _ * 2);
+        expect(Array.from(output)).toEqual([14, 16, 18]);
+        expect(Array.from(output)).toEqual([14, 16, 18]);
     });
 });

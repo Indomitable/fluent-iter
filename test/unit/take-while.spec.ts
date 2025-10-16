@@ -1,5 +1,5 @@
-
-import { fromIterable, range } from "../../src";
+import { describe, it, expect } from "vitest";
+import {fromIterable, range, repeat} from "../../src/index.ts";
 
 describe('take while tests', () => {
     [
@@ -15,7 +15,7 @@ describe('take while tests', () => {
 
     [
         [],
-        range()
+        repeat(1, 0)
     ].forEach((source, indx) => {
         it('should return empty when source is empty' + indx, () => {
             const output = fromIterable(source).takeWhile(v => v < 4).toArray();
