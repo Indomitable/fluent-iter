@@ -9,45 +9,6 @@ export function getIterator<T>(iterable: Iterable<T>): Iterator<T> {
     return iterable[Symbol.iterator]();
 }
 
-function __quickSort<T>(items: T[], left: number, right: number, comparer: Comparer<T>) {
-    do {
-        let i = left;
-        let j = right;
-        let x = items[i + ((j - i) >> 1)];
-        do {
-            while (i < items.length && comparer(x, items[i]) > 0) i++;
-            while (j >= 0 && comparer(x, items[j]) < 0) j--;
-            if (i > j) break;
-            if (i < j) {
-                [items[i], items[j]] = [items[j], items[i]];
-            }
-            i++;
-            j--;
-        } while (i <= j);
-        if (j - left <= right - i) {
-            if (left < j) __quickSort(items, left, j, comparer);
-            left = i;
-        } else {
-            if (i < right) __quickSort(items, i, right, comparer);
-            right = j;
-        }
-    } while (left < right);
-}
-
-/**
- * Sorts an array using quick sort algorithm
- * @param items array to sort
- * @param left start
- * @param right end
- * @param comparer elements comparer
- * @return {Array} sorted array.
- */
-export function quickSort<T>(items: T[], left: number, right: number, comparer: Comparer<T>): T[] {
-    const copy = [...items]; // copy items.
-    __quickSort(copy, left, right, comparer);
-    return copy;
-}
-
 export function __search<T>(items: T[], value: T, start: number, end: number, comparer: Comparer<T>): number {
     if (start > end) {
         return -1;
