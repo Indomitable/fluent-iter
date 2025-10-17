@@ -25,12 +25,14 @@ import pageIterator from "./iterables/page.ts";
 import {intersectIterator, unionIterator} from "./iterables/set-iterators.ts";
 import concatIterator from "./iterables/concat.ts";
 import {sortAscendingIterator, sortDescendingIterator} from "./iterables/order.ts";
+import {groupByIterator} from "./iterables/group.ts";
 
 import type {Action, Comparer, Equality, Mapper, Predicate} from "./interfaces.ts";
-import type { LinqIterable } from "./linq-iterable.ts";
+import type { IGrouping, LinqIterable} from "./linq-iterable.ts";
 
 export class Linq<TValue> implements LinqIterable<TValue> {
     readonly #source: Iterable<TValue>;
+
     constructor(source: Iterable<TValue>) {
         this.#source = source;
     }
@@ -74,6 +76,14 @@ export class Linq<TValue> implements LinqIterable<TValue> {
     ofClass<TOutput extends TValue>(type: { new (...args: any[]): TOutput, prototype: TOutput }): LinqIterable<TOutput> {
         const filter = (item: TValue) => item instanceof type;
         return new Linq<TOutput>(whereIterator<TValue>(this, filter) as Iterable<TOutput>);
+    }
+    groupBy<TKey>(keySelector: (item: TValue, index: number) => TKey): LinqIterable<IGrouping<TKey, TValue>>;
+    groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): LinqIterable<IGrouping<TKey, TElement>>;
+    groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement, resultCreator: (key: TKey, items: Iterable<TElement>) => TResult): LinqIterable<TResult>;
+    groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey,
+                                     elementSelector?: (item: TValue, index: number) => TElement,
+                                     resultCreator?: (key: TKey, items: Iterable<TElement>) => TResult): LinqIterable<IGrouping<TKey, TValue> | IGrouping<TKey, TElement> | TResult> {
+        return new Linq(groupByIterator(this, keySelector, elementSelector, resultCreator));
     }
     orderBy<TKey>(keySelector: (item: TValue) => TKey, comparer?: Comparer<TKey>): LinqIterable<TValue> {
         return new Linq(sortAscendingIterator(this, keySelector, comparer));

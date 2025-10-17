@@ -153,6 +153,26 @@ export function emptyIterator<T>(): Iterator<T> {
     };
 }
 
+export function group<TValue, TKey, TElement>(
+    iterable: Iterable<TValue>,
+    keySelector: (item: TValue, index: number) => TKey,
+    elementSelector: (item: TValue, index: number) => TElement): Map<TKey, TElement[]> {
+    const map = new Map<TKey, TElement[]>();
+    let i = 0;
+    for (const item of iterable) {
+        const key = keySelector(item, i);
+        if ((key !== null && typeof key === 'object') || typeof key === "function") {
+            throw new TypeError('groupBy method does not support keys to be objects or functions');
+        }
+        const element = elementSelector(item, i);
+        const value = map.get(key) || [];
+        value.push(element);
+        map.set(key, value);
+        i++;
+    }
+    return map;
+}
+
 export class IterableGenerator<T> implements Iterable<T> {
     readonly #generator: () => Generator<T>;
     constructor(generator: () => Generator<T>) {

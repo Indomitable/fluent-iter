@@ -122,18 +122,18 @@ export interface LinqIterable<TValue> extends Iterable<TValue> {
      * Selects all items of base type
      * @param type
      */
-    ofClass<TOutput extends TValue>(type: { new (...args: any[]): TOutput, prototype: TOutput }): LinqIterable<TOutput>;
+    ofClass<TOutput extends TValue>(type: { prototype: TOutput }): LinqIterable<TOutput>;
 
-    // /**
-    //  * Group items
-    //  * @param keySelector group key selector
-    //  */
-    // groupBy<TKey>(keySelector: (item: TValue, index: number) => TKey): LinqIterable<IGrouping<TKey, TValue>>;
+    /**
+     * Group items
+     * @param keySelector group key selector
+     */
+    groupBy<TKey>(keySelector: (item: TValue, index: number) => TKey): LinqIterable<IGrouping<TKey, TValue>>;
 
-    // groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): LinqIterable<IGrouping<TKey, TElement>>;
+    groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): LinqIterable<IGrouping<TKey, TElement>>;
 
-    // groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement,
-    //     resultCreator: (key: TKey, items: LinqIterable<TElement>) => TResult): LinqIterable<TResult>;
+    groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement,
+        resultCreator: (key: TKey, items: Iterable<TElement>) => TResult): LinqIterable<TResult>;
 
     /**
      * Order by iterable by a key
@@ -394,6 +394,6 @@ export interface LinqIterable<TValue> extends Iterable<TValue> {
     isElementsEqual<TAnotherValue>(iterable: Iterable<TAnotherValue>, comparer: (a: TValue, b: TAnotherValue) => boolean): boolean;
 }
 
-export interface IGrouping<TKey, TValue> extends LinqIterable<TValue> {
+export interface IGrouping<TKey, TValue> extends Iterable<TValue> {
     key: TKey;
 }
