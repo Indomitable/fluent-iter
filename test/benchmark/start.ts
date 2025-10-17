@@ -1,5 +1,5 @@
-import { from } from "../../index";
-import * as benchmarks from "./export";
+import * as benchmarks from "./export.ts";
+import { from } from "../../index.ts";
 
 import Benchmark from "benchmark";
 
@@ -12,34 +12,46 @@ if (suitParamIndex > -1) {
 }
 
 const regEx = new RegExp("^\\[(.+)]\\s(.+)$");
-const keys = Object.keys(benchmarks);
-keys.forEach((k) => {
-    const bench = benchmarks[k];
-    const benchSuit = regEx.exec(bench.name)[1];
+Object.values(benchmarks).forEach((bench) => {
+    const benchSuit = regEx.exec(bench.name!)![1];
     if (!suitName || benchSuit === suitName) {
-        suit.add(bench.name, bench.fn);
+        suit.add(bench.name!, bench.fn);
     }
 });
 
-suit.on("complete", function () {
-    const formatNumber = (num) => {
+interface BenchData {
+    category: string;
+    name: string;
+    bench: Benchmark;
+    // fastest: {
+    //     name: string;
+    //     ops: string;
+    //     error: number;
+    // };
+    // benches: {
+    //     name: string;
+    // }
+}
+
+suit.on("complete", function (this: Benchmark[]) {
+    const formatNumber = (num: string) => {
         if (num.indexOf(".") > -1 || num.length < 4) {
             return num;
         }
         return from(num)
             .reverse()
             .page(3)
-            .where((_) => _)
+            .where((_) => !!_)
             .groupBy(
-                (arr, i) => i,
+                (_, i) => i,
                 (_) => _.reverse().join(""),
-                (key, items) => items.first(),
+                (_, items) => from(items).first(),
             )
             .reverse()
             .join(",");
     };
 
-    const benchFormat = (bench, showError) => {
+    const benchFormat = (bench: { name: string, ops: string, error: number }, showError?: boolean) => {
         if (showError) {
             return `${bench.name} (${formatNumber(bench.ops)} op/sec) error margin: \xb1${bench.error.toFixed(2)}%`;
         } else {
@@ -47,9 +59,9 @@ suit.on("complete", function () {
         }
     };
 
-    const getBenchData = (_) => {
+    const getBenchData = (_: BenchData) => {
         return {
-            name: _.name,
+            name: _.name!,
             ops: _.bench.hz.toFixed(_.bench.hz < 100 ? 2 : 0),
             error: _.bench.stats.rme,
         };
@@ -57,24 +69,24 @@ suit.on("complete", function () {
 
     const benchCategories = from(this)
         .select((b) => {
-            const match = regEx.exec(b.name);
+            const match = regEx.exec(b.name!)!;
             return {
-                category: match[1],
-                name: match[2],
+                category: match[1]!,
+                name: match[2]!,
                 bench: b,
-            };
+            } as BenchData;
         })
         .groupBy(
             (_) => _.category,
             (_) => _,
             (key, items) => {
-                const fastestBench = items.max(
+                const fastestBench = from(items).max(
                     (a, b) => a.bench.hz - b.bench.hz,
                 );
                 return {
                     name: key,
                     fastest: getBenchData(fastestBench),
-                    benches: items
+                    benches: from(items)
                         .orderByDescending((_) => _.bench.hz)
                         .select(getBenchData),
                 };
@@ -86,7 +98,7 @@ suit.on("complete", function () {
             `\n${category.name} benchmark: Fastest method: ${benchFormat(category.fastest)}`,
         );
         for (const bench of category.benches) {
-            const slower = (category.fastest.ops / bench.ops).toFixed(2);
+            const slower = (+category.fastest.ops / +bench.ops).toFixed(2);
             console.log(
                 `\t${benchFormat(bench, true)}, slower: ${slower} times`,
             );

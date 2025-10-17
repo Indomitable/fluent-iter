@@ -1,6 +1,5 @@
 import Benchmark from "benchmark";
-import { Person } from "../unit/models";
-import { from, range, repeat } from "../../index";
+import { from, range, repeat } from "../../index.ts";
 
 const iterable = new Set(repeat(0, 1000).concat(repeat(1, 1000)));
 const array = Array.from(iterable);

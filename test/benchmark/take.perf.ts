@@ -1,12 +1,12 @@
-import { range, from } from "../../index.js";
 import Benchmark from "benchmark";
+import { range, from } from "../../index.ts";
 
 const arrayLength = 1000;
 const iterable = new Set(range(0, arrayLength));
 const array = Array.from(iterable);
 const lengthToTake = 100;
 
-export const arraySliceBenchmark = new Benchmark("[take] Array slice", () => {
+export const takeArraySliceBenchmark = new Benchmark("[take] Array slice", () => {
     array.slice(0, lengthToTake);
 });
 

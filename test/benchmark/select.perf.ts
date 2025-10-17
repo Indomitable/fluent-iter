@@ -1,4 +1,4 @@
-import { range, from } from "../../index.js";
+import { range, from } from "../../index.ts";
 import Benchmark from "benchmark";
 
 const arrayLength = 1000;

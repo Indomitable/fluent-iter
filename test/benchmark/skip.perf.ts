@@ -1,5 +1,5 @@
-import { range, from } from "../../index.js";
 import Benchmark from "benchmark";
+import { range, from } from "../../index.ts";
 
 const arrayLength = 1000;
 const lengthToSkip = 100;
@@ -7,7 +7,7 @@ const lengthToSkip = 100;
 const iterable = new Set(range(0, arrayLength));
 const array = Array.from(iterable);
 
-export const arraySliceBenchmark = new Benchmark("[skip] Array slice", () => {
+export const skipArraySliceBenchmark = new Benchmark("[skip] Array slice", () => {
     array.slice(lengthToSkip, arrayLength);
 });
 

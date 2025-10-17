@@ -1,5 +1,5 @@
-import { range, from } from "../../index.js";
 import Benchmark from "benchmark";
+import { range, from } from "../../index.ts";
 
 const arrayLength = 1000;
 const iterable = new Set(range(arrayLength, 0));

@@ -1,5 +1,5 @@
-import { from } from "../../index.js";
 import Benchmark from "benchmark";
+import { from } from "../../index.ts";
 
 const input = [
     { values: [1, 2, 3, 4] },
@@ -10,12 +10,12 @@ const input = [
     { values: [19, 20, 21] },
 ];
 
-const extract = (i) => i.values;
+const extract = (i: { values: number[] }) => i.values;
 
-export const arraySpeadBenchmark = new Benchmark(
+export const arraySpeedBenchmark = new Benchmark(
     "[select-many] Array push",
     () => {
-        const result = [];
+        const result: number[] = [];
         for (const outer of input) {
             const inner = extract(outer);
             Array.prototype.push.apply(result, inner);
@@ -26,7 +26,7 @@ export const arraySpeadBenchmark = new Benchmark(
 export const selectManyBenchmark = new Benchmark(
     "[select-many] selectMany",
     () => {
-        const result = from(input).selectMany(extract).toArray();
+        from(input).selectMany(extract).toArray();
     },
 );
 
@@ -41,6 +41,6 @@ export const generatorBenchmark = new Benchmark(
                 }
             }
         }
-        const result = Array.from(generator());
+        Array.from(generator());
     },
 );
