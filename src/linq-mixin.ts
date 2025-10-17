@@ -1,46 +1,40 @@
 import whereIterator from "./iterables/where.ts";
 import selectIterator from "./iterables/select.ts";
 import selectManyIterator from "./iterables/select-many.ts";
-// import { FirstFinalizer } from "./finalizers/first.js";
-// import { SingleFinalizer } from "./finalizers/single.js";
 import takeIterator from "./iterables/take.ts";
 import skipIterator from "./iterables/skip.ts";
-// import { AllFinalizer } from "./finalizers/all.js";
-// import { AnyFinalizer } from "./finalizers/any.js";
-// import { DistinctIterable } from "./iterables/distinct.js";
-// import { GroupIterable } from "./iterables/group.js";
-// import { CountFinalizer } from "./finalizers/count.js";
-// import { AggregateFinalizer } from "./finalizers/aggregate.js";
-// import { OrderIterable, OrderIterableDescending } from "./iterables/order.js";
-// import { ConcatIterable } from "./iterables/concat.js";
-// import { ForEachFinalizer } from "./finalizers/for-each.js";
-// import { ElementAtFinalizer } from "./finalizers/element-at.js";
-import { toArrayCollector } from "./finalizers/to-array.ts";
-// import { UnionIterable } from "./iterables/union.js";
-// import { GroupJoinIterable } from "./iterables/group-join.js";
-// import { JoinIterable } from "./iterables/join.js";
-// import { EqualFinalizer } from "./finalizers/equal.js";
-// import { PageIterable } from "./iterables/page.js";
-// import { defaultSortComparer } from "./utils.js";
-// import { ReverseIterable } from "./iterables/reverse.js";
+import toArrayCollector from "./finalizers/to-array.ts";
 import takeWhileIterator from "./iterables/take-while.ts";
 import skipWhileIterator from "./iterables/skip-while.ts";
 import takeLastIterator from "./iterables/take-last.ts";
-// import { SkipLastIterable } from "./iterables/skip-last.js";
-// import { LastFinalizer } from "./finalizers/last.js";
-// import { IntersectIterable } from "./iterables/intersect.js";
+import skipLastIterator from "./iterables/skip-last.ts";
+import distinctIterator from "./iterables/distinct.ts";
+import {allAndEveryCollector, allCollector} from "./finalizers/all.ts";
+import anyCollector from "./finalizers/any.ts";
+import countCollector from "./finalizers/count.ts";
+import aggregateCollector from "./finalizers/aggregate.ts";
+import {defaultSortComparer} from "./utils.ts";
+import elementAtCollector from "./finalizers/element-at.ts";
+import forEachCollector from "./finalizers/for-each.ts";
+import {isElementsEqual, sequenceEqual} from "./finalizers/equal.ts";
+import {single, singleOrDefault} from "./finalizers/single.ts";
+import {last, lastIndex, lastOrDefault, lastOrThrow} from "./finalizers/last.ts";
+import {first, firstIndex, firstOrDefault, firstOrThrow} from "./finalizers/first.ts";
+import reverseIterator from "./iterables/reverse.ts";
+import pageIterator from "./iterables/page.ts";
+import {intersectIterator, unionIterator} from "./iterables/set-iterators.ts";
+import concatIterator from "./iterables/concat.ts";
+import {sortAscendingIterator, sortDescendingIterator} from "./iterables/order.ts";
 
-import {Equality, Mapper, Predicate} from "./interfaces.ts";
+import type {Action, Comparer, Equality, Mapper, Predicate} from "./interfaces.ts";
 import type { LinqIterable } from "./linq-iterable.ts";
-import skipLastIterator from "./iterables/skip-last.js";
-import distinctIterator from "./iterables/distinct.js";
-
 
 export class Linq<TValue> implements LinqIterable<TValue> {
     readonly #source: Iterable<TValue>;
     constructor(source: Iterable<TValue>) {
         this.#source = source;
     }
+
     where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): LinqIterable<TSubValue>;
     where(predicate: Predicate<TValue>): LinqIterable<TValue>;
     where<TSubValue>(predicate: Predicate<TValue>): LinqIterable<TValue> | LinqIterable<TSubValue> {
@@ -81,10 +75,125 @@ export class Linq<TValue> implements LinqIterable<TValue> {
         const filter = (item: TValue) => item instanceof type;
         return new Linq<TOutput>(whereIterator<TValue>(this, filter) as Iterable<TOutput>);
     }
+    orderBy<TKey>(keySelector: (item: TValue) => TKey, comparer?: Comparer<TKey>): LinqIterable<TValue> {
+        return new Linq(sortAscendingIterator(this, keySelector, comparer));
+    }
+    orderByDescending<TKey>(keySelector: (item: TValue) => TKey, comparer?: Comparer<TKey>): LinqIterable<TValue> {
+        return new Linq(sortDescendingIterator(this, keySelector, comparer));
+    }
+    concat(secondIterable: Iterable<TValue>): LinqIterable<TValue> {
+        return new Linq(concatIterator(this, secondIterable));
+    }
+    union(secondIterable: Iterable<TValue>): LinqIterable<TValue> {
+        return new Linq(unionIterator(this, secondIterable));
+    }
+    intersect(secondIterable: Iterable<TValue>): LinqIterable<TValue> {
+        return new Linq(intersectIterator(this, secondIterable));
+    }
+    page(pageSize: number): LinqIterable<TValue[]> {
+        return new Linq(pageIterator(this, pageSize));
+    }
+    reverse(): LinqIterable<TValue> {
+        return new Linq(reverseIterator(this));
+    }
     toArray(): TValue[];
     toArray<TResult>(map: Mapper<TValue, TResult>): TResult[];
     toArray<TResult>(map?: Mapper<TValue, TResult>): TValue[] | TResult[] {
         return toArrayCollector(this, map);
+    }
+    toMap<TKey>(keySelector: (item: TValue) => TKey): Map<TKey, TValue>;
+    toMap<TKey, TElement>(keySelector: (item: TValue) => TKey, elementSelector: (item: TValue) => TElement): Map<TKey, TElement>;
+    toMap<TKey, TElement>(keySelector: (item: TValue) => TKey, elementSelector?: (item: TValue) => TElement): Map<TKey, TValue|TElement> {
+        return new Map(this.select(item => [keySelector(item), elementSelector ? elementSelector(item) : item]));
+    }
+    toSet(): Set<TValue> {
+        return new Set<TValue>(this);
+    }
+    first(predicate?: Predicate<TValue>): TValue | undefined {
+        return first(this, predicate);
+    }
+    firstOrDefault(def: TValue, predicate?: Predicate<TValue>): TValue {
+        return firstOrDefault(this, def, predicate);
+    }
+    firstOrThrow(predicate?: Predicate<TValue>): TValue | never {
+        return firstOrThrow(this, predicate);
+    }
+    firstIndex(predicate: Predicate<TValue>): number {
+        return firstIndex(this, predicate);
+    }
+    last(predicate?: Predicate<TValue>): TValue | undefined {
+        return last(this, predicate);
+    }
+    lastOrDefault(def: TValue, predicate?: Predicate<TValue>): TValue {
+        return lastOrDefault(this, def, predicate);
+    }
+    lastOrThrow(predicate?: Predicate<TValue>): TValue | never {
+        return lastOrThrow(this, predicate);
+    }
+    lastIndex(predicate: (item: TValue) => boolean): number {
+        return lastIndex(this, predicate);
+    }
+    single(predicate?: Predicate<TValue>): TValue | never {
+        return single(this, predicate);
+    }
+    singleOrDefault(def: TValue, predicate?: Predicate<TValue>): TValue | never {
+        return singleOrDefault(this, def, predicate);
+    }
+    all(predicate: (item: TValue) => boolean): boolean {
+        return allCollector(this, predicate);
+    }
+    allAndEvery(predicate: (item: TValue) => boolean): boolean {
+        return allAndEveryCollector(this, predicate);
+    }
+    any(predicate?: ((item: TValue) => boolean) | undefined): boolean {
+        return anyCollector(this, predicate);
+    }
+    count(predicate?: ((item: TValue) => boolean) | undefined): number {
+        return countCollector(this, predicate);
+    }
+    aggregate(accumulator: (result: TValue, item: TValue, index: number) => TValue): TValue | never;
+    aggregate<TResult=TValue>(accumulator: (result: TResult, item: TValue, index: number) => TResult, initial: TResult): TResult;
+    aggregate<TResult=TValue>(accumulator: (result: TResult, item: TValue, index: number) => TResult, initial?: TResult): TResult | TValue | never {
+        return aggregateCollector(this, accumulator, initial);
+    }
+    sum(): TValue {
+        return aggregateCollector(this, (a, i) => (a as any) + (i as any) as any);
+    }
+    product(): TValue {
+        return aggregateCollector(this, (a, i) => (a as any) * (i as any) as any);
+    }
+    min(comparer?: Comparer<TValue>): TValue | never {
+        const compare = comparer ?? defaultSortComparer;
+        return aggregateCollector(this, (a, b) => {
+            const comp = compare(a, b);
+            return comp < 0 ? a : (comp > 0 ? b : a);
+        });
+    }
+    max(comparer?: Comparer<TValue>): TValue | never {
+        const compare = typeof comparer === 'undefined' ? defaultSortComparer : comparer;
+        return aggregateCollector(this, (a, b) => {
+            const comp = compare(a, b);
+            return comp < 0 ? b : (comp > 0 ? a : b);
+        });
+    }
+    join(separator: string): string {
+        return this.toArray().join(separator);
+    }
+    elementAt(index: number): TValue | undefined {
+        return elementAtCollector(this, index);
+    }
+    forEach(action: Action<TValue>): void {
+        return forEachCollector(this, action);
+    }
+    isEqual(iterable: Iterable<TValue>): boolean;
+    isEqual<TSecond=TValue>(second: Iterable<TSecond>, comparer: (a: TValue, b: TSecond) => boolean): boolean;
+    isEqual<TSecond=TValue>(second: Iterable<TSecond>, comparer?: (first: TValue, second: TSecond) => boolean): boolean {
+        return sequenceEqual(this, second, comparer);
+    }
+    isElementsEqual(iterable: Iterable<TValue>): boolean;
+    isElementsEqual<TSecond=TValue>(second: Iterable<TSecond>, comparer: (a: TValue, b: TSecond) => boolean): boolean;
+    isElementsEqual<TSecond=TValue>(second: Iterable<TSecond>, comparer?: (first: TValue, second: TSecond) => boolean): boolean {
+        return isElementsEqual(this, second, comparer);
     }
     [Symbol.iterator](): Iterator<TValue, any, any> {
         return this.#source[Symbol.iterator]();

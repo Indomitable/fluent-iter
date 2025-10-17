@@ -1,57 +1,4 @@
-import { LinqIterable } from './linq-iterable.ts';
-import linqMixin from './linq-mixin.js';
-
-// /**
-//  * Apply mixin to a class
-//  * @param {object} mixin
-//  * @param {Function[]} destinations
-//  */
-// export function applyMixin(mixin: object, destinations: Function[]) {
-//     const keys = Object.keys(mixin);
-//     for (const dest of destinations) {
-//         for (const mixinKey of keys) {
-//             if (!dest.prototype[mixinKey]) {
-//                 dest.prototype[mixinKey] = mixin[mixinKey];
-//             }
-//         }
-//     }
-// }
-
-export function applyMixin<T extends object>(
-    mixin: T,
-    destinations: Function[]
-): void {
-    Object.getOwnPropertyNames(mixin).forEach((key) => {
-        destinations.forEach((dest) => {
-            if (!(key in dest.prototype)) {
-                Object.defineProperty(
-                    dest.prototype,
-                    key,
-                    Object.getOwnPropertyDescriptor(mixin, key) || {
-                        value: mixin[key as keyof T],
-                    }
-                );
-            }
-        });
-    });
-}
-
-// export function LinqMixin<T>() {
-//     return function <C extends { new(...args: any[]): any }>(
-//         constructor: C
-//     ): C & { new(...args: any[]): InstanceType<C> & LinqIterable<T> } {
-//         Object.getOwnPropertyNames(linqMixin).forEach((key) => {
-//             Object.defineProperty(
-//                 constructor.prototype,
-//                 key,
-//                 Object.getOwnPropertyDescriptor(linqMixin, key) || {
-//                     value: linqMixin[key as keyof LinqIterable<T>],
-//                 }
-//             );
-//         });
-//         return constructor as any;
-//     };
-// }
+import {Comparer} from "./interfaces.js";
 
 /**
  * Helper function to be use to access Symbol.iterator of iterable
@@ -62,7 +9,7 @@ export function getIterator<T>(iterable: Iterable<T>): Iterator<T> {
     return iterable[Symbol.iterator]();
 }
 
-function __quickSort<T>(items: T[], left: number, right: number, comparer: (a: T, b: T) => number) {
+function __quickSort<T>(items: T[], left: number, right: number, comparer: Comparer<T>) {
     do {
         let i = left;
         let j = right;
@@ -95,13 +42,13 @@ function __quickSort<T>(items: T[], left: number, right: number, comparer: (a: T
  * @param comparer elements comparer
  * @return {Array} sorted array.
  */
-export function quickSort<T>(items: T[], left: number, right: number, comparer: (a: T, b: T) => number): T[] {
+export function quickSort<T>(items: T[], left: number, right: number, comparer: Comparer<T>): T[] {
     const copy = [...items]; // copy items.
     __quickSort(copy, left, right, comparer);
     return copy;
 }
 
-export function __search<T>(items: T[], value: T, start: number, end: number, comparer: (a: T, b: T) => number): number {
+export function __search<T>(items: T[], value: T, start: number, end: number, comparer: Comparer<T>): number {
     if (start > end) {
         return -1;
     }
@@ -124,7 +71,7 @@ export function __search<T>(items: T[], value: T, start: number, end: number, co
  * @param comparer comparer function
  * @return {number} index of the value we search.
  */
-export function search<T>(items: T[], value: T, comparer: (a: T, b: T) => number): number {
+export function search<T>(items: T[], value: T, comparer: Comparer<T>): number {
     const start = 0;
     const end = items.length - 1;
     return __search(items, value, start, end, comparer);
@@ -184,7 +131,7 @@ export function __findInsertIndex<T>(
  * @param {Function} comparer comparer which to check the collections
  * @return {Array} the array with inserted value.
  */
-export function insertOrdered<T>(items: T[], value: T, comparer: (a: T, b: T) => number): T[] {
+export function insertOrdered<T>(items: T[], value: T, comparer: Comparer<T>): T[] {
     const start = 0;
     const end = items.length;
     if (start === end) {
@@ -217,11 +164,11 @@ export class SetCheck<T> {
     }
 }
 
-export function defaultSortComparer(a: number, b: number): 1 | -1 | 0 {
+export function defaultSortComparer<T>(a: T, b: T): 1 | -1 | 0 {
     return a < b ? -1 : a > b ? 1 : 0;
 }
 
-export function defaultEqualityComparer(a: number, b: number): boolean {
+export function defaultEqualityComparer<T>(a: T, b: T): boolean {
     return a === b;
 }
 

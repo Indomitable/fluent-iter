@@ -1,7 +1,6 @@
-import {doneValue, iteratorResultCreator} from "../../utils.js";
-import {InternalIterable} from "../../interfaces.js";
+import {doneValue, iteratorResultCreator} from "../../utils.ts";
 
-export default function* objectIterator<TValue extends {}, TKey extends keyof TValue, TResult>(source: TValue, resultCreator?: (key: TKey, value: TValue[TKey]) => TResult): Iterable<{ key: string, value: TValue[TKey] } | TResult> {
+export default function objectIterator<TValue extends {}, TKey extends keyof TValue, TResult>(source: TValue, resultCreator?: (key: TKey, value: TValue[TKey]) => TResult): Iterable<{ key: string, value: TValue[TKey] } | TResult> {
     return new ObjectIterable(source, resultCreator);
     // if (!resultCreator) {
     //     return Object.entries(source).map(([key, value]) => ({key, value}));
@@ -10,7 +9,7 @@ export default function* objectIterator<TValue extends {}, TKey extends keyof TV
     // }
 }
 
-class ObjectIterable<TValue extends object, TKey extends keyof TValue, TResult> implements InternalIterable<TResult> {
+class ObjectIterable<TValue extends object, TKey extends keyof TValue, TResult> implements Iterable<TResult> {
     readonly #source: TValue;
     readonly #resultCreator: (key: TKey, value: TValue[TKey]) => TResult;
     constructor(source: TValue, resultCreator?: (key: TKey, value: TValue[TKey]) => TResult) {
@@ -39,9 +38,5 @@ class ObjectIterable<TValue extends object, TKey extends keyof TValue, TResult> 
                 }
             }
         };
-    }
-
-    getInner() {
-        return this;
     }
 }
