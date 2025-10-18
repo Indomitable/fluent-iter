@@ -387,12 +387,13 @@ describe("typescript tests", () => {
             }))
             .orderBy(_ => _.key);
 
-        //.single();
-        for (const i of query) {
-            // console.log(JSON.stringify(i));
-        }
-        for (const i of query) {
-            // console.log(JSON.stringify(i));
-        }
+        expect(query.toArray()).toEqual([
+            {"key":false,"items":[{"odd":false,"even":true,"num":24},{"odd":false,"even":true,"num":18}]},
+            {"key":true,"items":[{"odd":true,"even":false,"num":21},{"odd":true,"even":false,"num":15}]}
+        ]);
+        expect(query.toArray()).toEqual([
+            {"key":false,"items":[{"odd":false,"even":true,"num":24},{"odd":false,"even":true,"num":18}]},
+            {"key":true,"items":[{"odd":true,"even":false,"num":21},{"odd":true,"even":false,"num":15}]}
+        ]);
     });
 });

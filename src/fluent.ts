@@ -31,6 +31,7 @@ import groupJoinIterator from "./iterables/group-join.ts";
 
 import type {Action, Comparer, Equality, Mapper, Predicate} from "./interfaces.ts";
 import type { IGrouping, FluentIterable} from "./fluent-iterable.ts";
+import zipIterable from "./iterables/zip.js";
 
 export default class Fluent<TValue> implements FluentIterable<TValue> {
     readonly #source: Iterable<TValue>;
@@ -138,6 +139,9 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
     toArray<TResult>(map: Mapper<TValue, TResult>): TResult[];
     toArray<TResult>(map?: Mapper<TValue, TResult>): TValue[] | TResult[] {
         return toArrayCollector(this, map);
+    }
+    zip<TOuter>(second: Iterable<TOuter>): FluentIterable<[TValue, TOuter]> {
+        return new Fluent(zipIterable(this, second));
     }
     toMap<TKey>(keySelector: (item: TValue) => TKey): Map<TKey, TValue>;
     toMap<TKey, TElement>(keySelector: (item: TValue) => TKey, elementSelector: (item: TValue) => TElement): Map<TKey, TElement>;

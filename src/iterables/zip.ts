@@ -10,6 +10,7 @@ export default function zipIterable<TThis, TOuter>(first: Iterable<TThis>, secon
                 if (firstResult.done || secondResult.done) {
                     break;
                 }
+                yield [firstResult.value, secondResult.value];
             }
         }
     }

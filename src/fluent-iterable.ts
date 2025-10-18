@@ -179,6 +179,11 @@ export interface FluentIterable<TValue> extends Iterable<TValue> {
     concat(secondIterable: Iterable<TValue>): FluentIterable<TValue>;
 
     /**
+     * zip two iterables together, where the result is an iterable of tuples, finishes when one of the iterables is finished.
+     */
+    zip<TOuter>(second: Iterable<TOuter>): FluentIterable<[TValue, TOuter]>;
+
+    /**
      * Produce a union of two iterables where the result is distinct values from both.
      * @param secondIterable
      * @param keySelector extract key which to be used for comparison.
