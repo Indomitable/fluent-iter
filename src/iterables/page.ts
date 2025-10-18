@@ -1,4 +1,4 @@
-import {IterableGenerator} from "../utils.js";
+import {IterableGenerator} from "../utils.ts";
 
 export default function pageIterator<TValue>(source: Iterable<TValue>, pageSize: number): Iterable<TValue[]> {
     return new IterableGenerator(() => pageGenerator(source, pageSize));

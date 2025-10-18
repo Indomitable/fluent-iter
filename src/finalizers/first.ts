@@ -1,4 +1,4 @@
-import type {Predicate} from "../interfaces.js";
+import type {Predicate} from "../interfaces.ts";
 
 export function first<TValue>(source: Iterable<TValue>, predicate?: Predicate<TValue>): TValue | undefined {
     for (const item of source) {

@@ -1,4 +1,4 @@
-import {IterableGenerator} from "../utils.js";
+import {IterableGenerator} from "../utils.ts";
 
 /**
  * Skip first N numbers of source and return the rest

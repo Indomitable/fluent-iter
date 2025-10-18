@@ -1,4 +1,4 @@
-import {Predicate} from "../interfaces.js";
+import {Predicate} from "../interfaces.ts";
 
 export function last<TValue>(source: Iterable<TValue>, predicate?: Predicate<TValue>): TValue | undefined {
     let value;

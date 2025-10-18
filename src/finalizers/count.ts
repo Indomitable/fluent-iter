@@ -1,4 +1,4 @@
-import type {Predicate} from "../interfaces.js";
+import type {Predicate} from "../interfaces.ts";
 
 export default function countCollector<TValue>(source: Iterable<TValue>, predicate?: Predicate<TValue>): number {
     let cnt = 0;

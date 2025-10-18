@@ -1,5 +1,5 @@
 import { LinqIterable } from './linq-iterable.ts';
-import Linq from "./linq-mixin.js";
+import Linq from "./linq-mixin.ts";
 import rangeGenerator from "./generators/range.ts";
 import repeatGenerator from "./generators/repeat.ts";
 import arrayLikeIterator from "./iterables/initial/array-like.ts";

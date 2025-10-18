@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { from, fromIterable } from "../../src/index.ts";
-import { Person } from "./models.js";
+import { Person } from "./models.ts";
 
 describe('distinct tests', () => {
     [

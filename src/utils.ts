@@ -1,4 +1,4 @@
-import {Comparer} from "./interfaces.js";
+import {Comparer} from "./interfaces.ts";
 
 /**
  * Helper function to be use to access Symbol.iterator of iterable

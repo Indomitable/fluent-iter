@@ -26,6 +26,8 @@ import {intersectIterator, unionIterator} from "./iterables/set-iterators.ts";
 import concatIterator from "./iterables/concat.ts";
 import {sortAscendingIterator, sortDescendingIterator} from "./iterables/order.ts";
 import {groupByIterator} from "./iterables/group.ts";
+import joinIterator from "./iterables/join.ts";
+import groupJoinIterator from "./iterables/group-join.ts";
 
 import type {Action, Comparer, Equality, Mapper, Predicate} from "./interfaces.ts";
 import type { IGrouping, LinqIterable} from "./linq-iterable.ts";
@@ -90,6 +92,26 @@ export class Linq<TValue> implements LinqIterable<TValue> {
     }
     orderByDescending<TKey>(keySelector: (item: TValue) => TKey, comparer?: Comparer<TKey>): LinqIterable<TValue> {
         return new Linq(sortDescendingIterator(this, keySelector, comparer));
+    }
+    groupJoin<TInner, TKey, TResult>(joinIterable: Iterable<TInner>,
+                                     sourceKeySelector: (item: TValue) => TKey,
+                                     joinIterableKeySelector: (item: TInner, index: number) => TKey,
+                                     resultCreator: (outer: TValue, inner: TInner[]) => TResult): LinqIterable<TResult> {
+        return new Linq(groupJoinIterator(this, joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator));
+    }
+    join(separator: string): string;
+    join<TInner, TKey, TResult>(joinIterable: Iterable<TInner>,
+                                sourceKeySelector: (item: TValue) => TKey,
+                                joinIterableKeySelector: (item: TInner, index: number) => TKey,
+                                resultCreator: (outer: TValue, inner: TInner) => TResult): LinqIterable<TResult>;
+    join<TInner, TKey, TResult>(firstArgument: Iterable<TInner> | string,
+                                sourceKeySelector?: (item: TValue) => TKey,
+                                joinIterableKeySelector?: (item: TInner, index: number) => TKey,
+                                resultCreator?: (outer: TValue, inner: TInner) => TResult): LinqIterable<TResult> | string {
+        if (typeof firstArgument === 'string') {
+            return this.select(item => '' + item).toArray().join(firstArgument);
+        }
+        return new Linq(joinIterator(this, firstArgument, sourceKeySelector!, joinIterableKeySelector!, resultCreator!));
     }
     concat(secondIterable: Iterable<TValue>): LinqIterable<TValue> {
         return new Linq(concatIterator(this, secondIterable));
@@ -186,9 +208,6 @@ export class Linq<TValue> implements LinqIterable<TValue> {
             return comp < 0 ? b : (comp > 0 ? a : b);
         });
     }
-    join(separator: string): string {
-        return this.toArray().join(separator);
-    }
     elementAt(index: number): TValue | undefined {
         return elementAtCollector(this, index);
     }
@@ -209,191 +228,5 @@ export class Linq<TValue> implements LinqIterable<TValue> {
         return this.#source[Symbol.iterator]();
     }
 }
-
-// let iterable = {} as LinqIterable<any>;
-// iterable = {
-    // where<T>(predicate: Predicate<T>): LinqIterable<T> {
-    //     return whereIterator(this, predicate) as LinqIterable<T>;
-    // },
-    // select<T, R>(map: Mapper<T, R>): LinqIterable<R> {
-    //     return selectIterator(this, map) as LinqIterable<R>;
-    // },
-    // selectMany(innerSelector, resultCreator) {
-    //     const SelectManyIterable = import("./iterables/select-many.ts").SelectManyIterable;
-    //     return new SelectManyIterable(this, innerSelector, resultCreator);
-    // },
-    // take(count) {
-    //     return new TakeIterable(this, count);
-    // },
-    // takeWhile(condition) {
-    //     return new TakeWhileIterable(this, condition);
-    // },
-    // takeLast(count) {
-    //     return new TakeLastIterable(this, count);
-    // },
-    // skip(count) {
-    //     return new SkipIterable(this, count);
-    // },
-    // skipWhile(condition) {
-    //     return new SkipWhileIterable(this, condition);
-    // },
-    // skipLast(count) {
-    //     return new SkipLastIterable(this, count);
-    // },
-    // distinct(comparer) {
-    //     return new DistinctIterable(this, comparer);
-    // },
-    // ofType(type) {
-    //     const WhereIterable = import("./iterables/where").WhereIterable;
-    //     if (typeof type === 'string') {
-    //         return new WhereIterable(this, function (item) {
-    //             return typeof item === type;
-    //         });
-    //     } else {
-    //         return new WhereIterable(this, type);
-    //     }
-    // },
-    // ofClass(classType) {
-    //     const WhereIterable = import("./iterables/where").WhereIterable;
-    //     return new WhereIterable(this, function (item) {
-    //         return item instanceof classType;
-    //     });
-    // },
-    // groupBy(keySelector, elementSelector, resultCreator) {
-    //     return new GroupIterable(this, keySelector, elementSelector, resultCreator);
-    // },
-    // orderBy(keySelector, comparer) {
-    //     return new OrderIterable(this, keySelector, comparer);
-    // },
-    // orderByDescending(keySelector, comparer) {
-    //     return new OrderIterableDescending(this, keySelector, comparer);
-    // },
-    // groupJoin(joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator) {
-    //     return new GroupJoinIterable(this, joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator);
-    // },
-    // join(joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator) {
-    //     if (arguments.length === 1) {
-    //         return this.select(_ => '' + _).toArray().join(/*separator*/joinIterable); // join items of sequence in string. here joinIterable === separator
-    //     }
-    //     return new JoinIterable(this, joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator);
-    // },
-    // concat(secondIterable) {
-    //     return new ConcatIterable(this, secondIterable);
-    // },
-    // union(secondIterable) {
-    //     return new UnionIterable(this, secondIterable);
-    // },
-    // intersect(secondIterable, comparer) {
-    //     return new IntersectIterable(this, secondIterable, comparer);
-    // },
-    // page(pageSize) {
-    //     return new PageIterable(this, pageSize);
-    // },
-    // reverse() {
-    //     return new ReverseIterable(this);
-    // },
-    // toArray<T, R>(map?: Mapper<T, R>): T[] | R[] {
-    //     return ToArrayFinalizer.get<T, R>(this as any, map);
-    // },
-    // toMap(keySelector, valueSelector) {
-    //     const transformValue = typeof valueSelector === 'undefined';
-    //     return new Map(this.select(_ => [
-    //         keySelector(_),
-    //         transformValue ? _ : valueSelector(_)
-    //     ])
-    //     );
-    // },
-    // toSet() {
-    //     return new Set(this.get());
-    // },
-    // first(predicate) {
-    //     return FirstFinalizer.get(this, predicate);
-    // },
-    // firstOrDefault(def, predicate) {
-    //     return FirstFinalizer.getOrDefault(this, def, predicate);
-    // },
-    // firstOrThrow(predicate) {
-    //     return FirstFinalizer.getOrThrow(this, predicate);
-    // },
-    // firstIndex(predicate) {
-    //     return FirstFinalizer.firstIndex(this, predicate);
-    // },
-    // last(predicate) {
-    //     return LastFinalizer.get(this, predicate);
-    // },
-    // lastOrDefault(def, predicate) {
-    //     return LastFinalizer.getOrDefault(this, def, predicate);
-    // },
-    // lastOrThrow(predicate) {
-    //     return LastFinalizer.getOrThrow(this, predicate);
-    // },
-    // lastIndex(predicate) {
-    //     return LastFinalizer.lastIndex(this, predicate);
-    // },
-    // single(predicate) {
-    //     return SingleFinalizer.get(this, predicate);
-    // },
-    // singleOrDefault(def, predicate) {
-    //     return SingleFinalizer.getOrDefault(this, def, predicate);
-    // },
-    // all(predicate) {
-    //     return AllFinalizer.get(this, predicate)
-    // },
-    // allAndEvery(predicate) {
-    //     return AllFinalizer.getAllAndEvery(this, predicate)
-    // },
-    // any(predicate) {
-    //     return AnyFinalizer.get(this, predicate)
-    // },
-    // count(predicate) {
-    //     return CountFinalizer.get(this, predicate);
-    // },
-    // aggregate(accumulator, initial) {
-    //     switch (arguments.length) {
-    //         case 1: {
-    //             return AggregateFinalizer.get(this, accumulator);
-    //         }
-    //         case 2: {
-    //             // here the resultCreator actually is the initial
-    //             return AggregateFinalizer.getWithInitial(this, accumulator, initial);
-    //         }
-    //         default: {
-    //             throw new RangeError('invalid arguments');
-    //         }
-    //     }
-    // },
-    // sum() {
-    //     return AggregateFinalizer.get(this, (r, i) => r + i);
-    // },
-    // product() {
-    //     return AggregateFinalizer.get(this, (r, i) => r * i);
-    // },
-    // min(comparer) {
-    //     const compare = typeof comparer === 'undefined' ? defaultSortComparer : comparer;
-    //     return AggregateFinalizer.get(this, (a, b) => {
-    //         const comp = compare(a, b);
-    //         return comp < 0 ? a : (comp > 0 ? b : a);
-    //     });
-    // },
-    // max(comparer) {
-    //     const compare = typeof comparer === 'undefined' ? defaultSortComparer : comparer;
-    //     return AggregateFinalizer.get(this, (a, b) => {
-    //         const comp = compare(a, b);
-    //         return comp < 0 ? b : (comp > 0 ? a : b);
-    //     });
-    // },
-    // elementAt(index) {
-    //     return ElementAtFinalizer.get(this, index);
-    // },
-    // forEach(action) {
-    //     return ForEachFinalizer.get(this, action);
-    // },
-    // isEqual(iterable, comparer) {
-    //     return EqualFinalizer.get(this, iterable, comparer);
-    // },
-    // isElementsEqual(iterable, comparer) {
-    //     return EqualFinalizer.getDifferentPosition(this, iterable, comparer);
-    // }
-// };
 
 export default Linq;

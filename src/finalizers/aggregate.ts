@@ -1,10 +1,10 @@
-import {getIterator} from "../utils.js";
+import {getIterator} from "../utils.ts";
 
 export default function aggregateCollector<TValue, TAccumulate>(source: Iterable<TValue>, accumulator: (acc: TAccumulate, item: TValue, index: number) => TAccumulate, initial?: TAccumulate): TAccumulate {
     let res: TAccumulate;
     const iterator = getIterator(source);
     let index = 0;
-    if (initial) {
+    if (typeof initial !== 'undefined') {
         res = initial;
     } else {
         const first = iterator.next();

@@ -1,6 +1,6 @@
-
-import { from, fromIterable, range } from "../../src";
-import { Person, Pet } from "./models";
+import { describe, it, expect } from "vitest";
+import { from, fromIterable, range } from "../../src/index.ts";
+import { Person, Pet } from "./models.ts";
 
 describe('join tests', () => {
     [
