@@ -8,7 +8,7 @@ export const distinctCompareIterableBenchmark = new Benchmark(
     "[distinct] Distinct iterable with compare",
     () => {
         from(iterable)
-            .distinct((a, b) => a === b)
+            .distinct((a) => a)
             .toArray();
     },
 );
@@ -24,7 +24,7 @@ export const distinctCompareArrayBenchmark = new Benchmark(
     "[distinct] Distinct array with compare",
     () => {
         from(array)
-            .distinct((a, b) => a === b)
+            .distinct((a) => a)
             .toArray();
     },
 );

@@ -205,7 +205,7 @@ describe("typescript tests", () => {
         const res0 = Array.from(repeat("a", 5).distinct());
         expect(res0).toEqual(["a"]);
 
-        const res1 = Array.from(repeat(1, 3).distinct((a, b) => a === b));
+        const res1 = Array.from(repeat(1, 3).distinct((a) => a));
         expect(res1).toEqual([1]);
     });
 

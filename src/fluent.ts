@@ -33,10 +33,11 @@ import {sortAscendingIterator, sortDescendingIterator} from "./iterables/order.t
 import {groupByIterator} from "./iterables/group.ts";
 import joinIterator from "./iterables/join.ts";
 import groupJoinIterator from "./iterables/group-join.ts";
-
-import type {Action, Comparer, Equality, Mapper, Predicate} from "./interfaces.ts";
-import type { IGrouping, FluentIterable} from "./fluent-iterable.ts";
 import zipIterable from "./iterables/zip.js";
+
+import type {Action, Comparer, Mapper, Predicate} from "./interfaces.ts";
+import type { FluentIterable, IGrouping } from 'fluent-iter';
+
 
 export default class Fluent<TValue> implements FluentIterable<TValue> {
     readonly #source: Iterable<TValue>;

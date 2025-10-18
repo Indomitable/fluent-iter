@@ -15,7 +15,8 @@
     "allowJs": true,
     "alwaysStrict": true,
     "types": [
-      "vitest"
+      "vitest",
+      "./index.d.ts"
     ]
   },
   "exclude": [

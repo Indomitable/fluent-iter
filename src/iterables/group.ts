@@ -1,4 +1,4 @@
-import type {IGrouping} from "../fluent-iterable.ts";
+import type {IGrouping} from "fluent-iter";
 import {createIterable, getIterator, group} from "../utils.ts";
 
 export function groupByIterator<TValue, TKey, TElement, TResult>(

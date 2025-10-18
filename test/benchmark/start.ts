@@ -3,7 +3,7 @@ import { from } from "../../index.ts";
 
 import Benchmark from "benchmark";
 
-const suit = new Benchmark.Suite("modern-linq bechrmark tests");
+const suit = new Benchmark.Suite("fluent-iter bechrmark tests");
 
 const suitParamIndex = process.argv.indexOf("--suit");
 let suitName = "";
@@ -23,14 +23,6 @@ interface BenchData {
     category: string;
     name: string;
     bench: Benchmark;
-    // fastest: {
-    //     name: string;
-    //     ops: string;
-    //     error: number;
-    // };
-    // benches: {
-    //     name: string;
-    // }
 }
 
 suit.on("complete", function (this: Benchmark[]) {

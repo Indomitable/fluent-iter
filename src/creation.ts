@@ -1,4 +1,4 @@
-import { FluentIterable } from './fluent-iterable.ts';
+import type { FluentIterable } from 'fluent-iter';
 import Fluent from "./fluent.ts";
 import arrayLikeIterator from "./iterables/initial/array-like.ts";
 import objectIterator from "./iterables/initial/object.ts";

@@ -1,9 +1,9 @@
 {
-  "name": "modern-linq",
+  "name": "fluent-iter",
   "version": "0.9.2",
-  "description": "Linq implementation for JS",
-  "main": "index.js",
-  "module": "index.js",
+  "description": "Ability to work with iterables in a fluent way.",
+  "main": "index.ts",
+  "module": "index.ts",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -33,9 +33,9 @@
     "registry": "https://registry.npmjs.org"
   },
   "keywords": [
+    "fluent",
     "iterable",
     "linq",
-    "C#",
     "iterator"
   ],
   "files": [
@@ -51,8 +51,6 @@
     "@types/benchmark": "^2.1.5",
     "@vitest/coverage-v8": "^3.2.4",
     "benchmark": "^2.1.4",
-    "vite": "^7.1.9",
-    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
   }
 }

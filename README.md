@@ -1,6 +1,7 @@
-Modern-Linq
+Fluent-Iter
 -------
-Modern-Linq is a library that brings the C# linq functionality into JavaScript. It is based on the native Iterable funtionality in JavaScript.
+Fluent-Iter is a library that allows you to work with iterables in a fluent way.
+It is full written in TypeScript and has no dependencies.
 
 Examples:
 ```js
@@ -39,75 +40,69 @@ for (const item of query) {
 ```
 Remarks:
 
-1. The data is processed in the moment when is requested.
+1. The data is processed at the moment when is requested.
 2. The sequence is immutable the output !== input  
 
+Operators:
 
-Some of the methods are using native Array implementation if the provided source is an Array
-Methods with native fallback:
-- `select`: uses Array.prototype.map 
-- `where`: uses Array.prototype.filter
-- `take`: uses Array.prototype.slice
-- `skip`: uses Array.prototype.slice
-- `distinct`: if no comparer is provided it uses native Set class
-- `count`: returns Array.prototype.length
-- `orderBy`: Array.prototype.sort
-- `concat`: uses spread operator
+Transformers
+- where : filter iterable by predicate
+- select : transform iterable using mapping function
+- selectMany : flatten an iterable and can transform it to another iterable
+- ofType : produces typed iterable, used to filter by type
+- ofClass: filters iterable for elements of a given class
+- orderBy : Order iterable ascending by a key
+- orderByDescending : Order iterable descending by a key
+- groupJoin: Do a group join (left join) between current and external iterable. For each item of current sequence get array of items from external sequence.
+- join: Do an inner join between current and external sequence. For each item of current sequence get a item from external sequence.
+- page: Split iterable into chunks of a given size.
+- reverse: Reverse iterable.
 
-Methods implemented:
-- `aggregate`
-- `any`
-- `all`
-- `concat`
-- `count`
-- `distinct`
-- `elementAt`
-- `first`
-- `firstOrDefault`
-- `groupJoin`
-- `join`
-- `intersect`
-- `last`
-- `lastOrDefault`
-- `max`
-- `min`
-- `ofType`
-- `orderBy`
-- `range`
-- `repeat`
-- `reverse`
-- `select`
-- `selectMany`
-- `isEqual` ( sequenceEqual )
-- `single`
-- `skip`
-- `skipLast`
-- `skipWhile`
-- `sum`
-- `take`
-- `takeLast`
-- `takeWhile`
-- `union`
-- `where`
+Slicing
+- take : take first n elements
+- takeWhile : take elements while predicate is true
+- takeLast : take last n elements
+- skip : skip first n elements
+- skipWhile : skip elements while predicate is true
+- skipLast : skip last n elements
 
-- `toArray` ( toList )
-- `toMap` ( toDictionary )
-- `toSet`
+Combinations:
+- concat: Concat this iterable with another
+- distinct: removes duplicate elements
+- zip: zip two iterables together, where the result is an iterable of tuples, finishes when one of the iterables is finished.
+- union: Produce a union of two iterables where the result is distinct values from both.
+- intersect: Return an intersection of two iterables where the result is distinct values.
+- difference: Return elements from the first iterable that are not in the second. Only distinct values are returned.
+- except: Return elements from the first iterable that are not in the second. (TODO)
+- symmetricDifference: Return a symmetric difference ( distinct values except intersection ) of two iterables where the result is distinct values.
 
-Waiting for implementation:
-- `contains`
-- `except`
-- `zip`
+Aggregators:
+- toArray(): convert iterable to array
+- toMap(): Create a map object from sequence
+- toSet(): Creates a set from current sequence
+- first : first element in iterable or first element that satisfies predicate
+- firstOrDefault: like first but with default value
+- firstOrThrows: like first but throws if no element is found
+- firstIndex: like first but returns index of element
+- last: last element in iterable or last element that satisfies predicate
+- lastOrDefault: like last but with default value
+- lastOrThrows: like last but throws if no element is found
+- lastIndex: like last but returns index of element
+- single: single element in iterable or single element that satisfies predicate. Throws if more than one element is found.
+- singleOrDefault: like single but with default value when nothing found. Throws if more than one element is found.
+- all: check if all elements in iterable satisfy predicate
+- allAndEvery: like all but requires to have at least one element
+- any: check if at least one element in iterable satisfies predicate
+- count: count elements in iterable or count of elements that satisfy predicate
+- aggregate: Produce single value form sequence values. The initial value is the second argument.
+- sum: Sum all elements in iterable
+- product: Multiply all elements in iterable
+- min: Get minimum value in iterable
+- max: Get maximum value in iterable
+- join: join all items from iterable with string concatenation
+- elementAt: get element at index
 
-Extra methods
-- `isElementsEqual`: checks if two sequences have same elements, no matter of the position.
-- `product`: get the product of sequence.
-- `join` (with string argument): join all elements of sequence and concat with separator
-- `allAndEvery`: check a condition against all elements of sequence and sequence should not be empty.
-- `firstOrThrow`: returns first element if none throw error.
-- `lastOrThrow`: returns last element if none throw error.
-- `fistIndex`: return index of first element which is true for a predicate
-- `lastIndex`: return index of last element which is true for a predicate
-
-Build status:  
-[![Build Status](https://travis-ci.com/Indomitable/modern-linq.svg?branch=master)](https://travis-ci.com/Indomitable/modern-linq)
+Misc:
+- forEach: iterate over iterable and execute a function for each element
+- isEqual: check if two iterables are equal. Same elements and order.
+- isElementsEqual: check if two iterables are equal. Same elements but order can be different.
