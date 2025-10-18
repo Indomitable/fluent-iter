@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig.json",
+  "compilerOptions": {
+    "module": "nodenext",
+    "target": "esnext",
+    "lib": [
+      "esnext"
+    ],
+    "declaration": true,
+    "strict": true,
+    "sourceMap": false,
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "allowJs": true,
+    "alwaysStrict": true,
+    "types": [
+      "vitest",
+      "./index.d.ts"
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

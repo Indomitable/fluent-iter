@@ -1,149 +1,156 @@
-declare module 'modern-linq' {
-    export interface LinqIterable<TValue> extends Iterable<TValue> {
+declare module 'fluent-iter' {
+    export interface FluentIterable<TValue> extends Iterable<TValue> {
         /**
          * Filters the iterable using predicate function typed overload
          * @param predicate
          */
-        where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): LinqIterable<TSubValue>;
+        where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentIterable<TSubValue>;
 
         /**
          * Filters the iterable using predicate function
          * @param predicate
          */
-        where(predicate: (item: TValue) => boolean): LinqIterable<TValue>;
+        where(predicate: (item: TValue) => boolean): FluentIterable<TValue>;
 
         /**
          * Maps the iterable items
          * @param map map function
          */
-        select<TOutput>(map: (item: TValue) => TOutput): LinqIterable<TOutput>;
+        select<TOutput>(map: (item: TValue) => TOutput): FluentIterable<TOutput>;
 
         /**
          * Flat Iterable of collections
          * @param innerSelector Function which returns an inner collection
          */
-        selectMany<TInner>(innerSelector: (item: TValue) => TInner[]): LinqIterable<TInner>;
+        selectMany<TInner>(innerSelector: (item: TValue) => TInner[]): FluentIterable<TInner>;
 
         /**
          * Flat iterable of collection
          * @param innerSelector Function which returns an inner collection
          * @param resultCreator Function thish converts pair of outer and inner element to result.
          */
-        selectMany<TInner, TResult>(innerSelector: (item: TValue) => TInner[], resultCreator: (outer: TValue, inner: TInner) => TResult): LinqIterable<TResult>;
+        selectMany<TInner, TResult>(innerSelector: (item: TValue) => TInner[], resultCreator: (outer: TValue, inner: TInner) => TResult): FluentIterable<TResult>;
+
         /**
          * Take first N items from iterable
          * @param count
          */
-        take(count: number): LinqIterable<TValue>;
+        take(count: number): FluentIterable<TValue>;
+
         /**
          * Return items while condition return true
          * @param condition
          */
-        takeWhile(condition: (item: TValue, index: number) => boolean): LinqIterable<TValue>;
+        takeWhile(condition: (item: TValue, index: number) => boolean): FluentIterable<TValue>;
+
         /**
          * Take last N items from iterable
          * @param count
          */
-        takeLast(count: number): LinqIterable<TValue>;
+        takeLast(count: number): FluentIterable<TValue>;
+
         /**
          * Skip first N items from iterable
          * @param count
          */
-        skip(count: number): LinqIterable<TValue>;
+        skip(count: number): FluentIterable<TValue>;
+
         /**
          * Skip items while condition return true, get the rest
          * @param condition
          */
-        skipWhile(condition: (item: TValue, index: number) => boolean): LinqIterable<TValue>;
+        skipWhile(condition: (item: TValue, index: number) => boolean): FluentIterable<TValue>;
+
         /**
          * Skip last N items from iterable
          * @param count
          */
-        skipLast(count: number): LinqIterable<TValue>;
+        skipLast(count: number): FluentIterable<TValue>;
+
         /**
          * Return distinct items. Can specify optional item comparer
-         * @param comparer function to compare elements for equality
+         * @param keySelector function to get key for comparison.
          */
-        distinct(comparer?: (a: TValue, b: TValue) => boolean): LinqIterable<TValue>;
+        distinct<TKey>(keySelector?: (item: TValue) => TKey): FluentIterable<TValue>;
 
         /**
          * Selects all items of type string
          * @param type
          */
-        ofType(type: 'string'): LinqIterable<string>;
+        ofType(type: 'string'): FluentIterable<string>;
 
         /**
          * Selects all items of type number
          * @param type
          */
-        ofType(type: 'number'): LinqIterable<number>;
+        ofType(type: 'number'): FluentIterable<number>;
 
         /**
          * Selects all items of type boolean
          * @param type
          */
-        ofType(type: 'boolean'): LinqIterable<boolean>;
+        ofType(type: 'boolean'): FluentIterable<boolean>;
 
         /**
          * Selects all items of type undefined
          * @param type
          */
-        ofType(type: 'undefined'): LinqIterable<undefined>;
+        ofType(type: 'undefined'): FluentIterable<undefined>;
 
         /**
          * Selects all items of type function
          * @param type
          */
-        ofType(type: 'function'): LinqIterable<Function>;
+        ofType(type: 'function'): FluentIterable<Function>;
 
         /**
          * Selects all items of type object
          * @param type
          */
-        ofType(type: 'object'): LinqIterable<object>;
+        ofType(type: 'object'): FluentIterable<object>;
 
         /**
          * Selects all items of type symbol
          * @param type
          */
-        ofType(type: 'symbol'): LinqIterable<Symbol>;
+        ofType(type: 'symbol'): FluentIterable<Symbol>;
 
         /**
          * Selects all items of base type
          * @param typeCheck
          */
-        ofType<TOutput extends TValue>(typeCheck: (item: TValue) => item is TOutput): LinqIterable<TOutput>;
+        ofType<TOutput extends TValue>(typeCheck: (item: TValue) => item is TOutput): FluentIterable<TOutput>;
 
         /**
          * Selects all items of base type
          * @param type
          */
-        ofClass<TOutput extends TValue>(type: { prototype: TOutput }): LinqIterable<TOutput>;
+        ofClass<TOutput extends TValue>(type: { prototype: TOutput }): FluentIterable<TOutput>;
 
         /**
          * Group items
          * @param keySelector group key selector
          */
-        groupBy<TKey>(keySelector: (item: TValue, index: number) => TKey): LinqIterable<IGrouping<TKey, TValue>>;
+        groupBy<TKey>(keySelector: (item: TValue, index: number) => TKey): FluentIterable<IGrouping<TKey, TValue>>;
 
-        groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): LinqIterable<IGrouping<TKey, TElement>>;
+        groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): FluentIterable<IGrouping<TKey, TElement>>;
 
         groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement,
-                                         resultCreator: (key: TKey, items: LinqIterable<TElement>) => TResult): LinqIterable<TResult>;
+                                         resultCreator: (key: TKey, items: Iterable<TElement>) => TResult): FluentIterable<TResult>;
 
         /**
-         * Order by iterable by a key
+         * Order iterable ascending by a key
          * @param keySelector
          * @param comparer optional comparer.
          */
-        orderBy<TKey>(keySelector: (item: TValue) => TKey, comparer?: (first: TKey, second: TKey) => number): LinqIterable<TValue>;
+        orderBy<TKey>(keySelector: (item: TValue) => TKey, comparer?: (first: TKey, second: TKey) => number): FluentIterable<TValue>;
 
         /**
-         * Order by descending iterable by a key
+         * Order iterable descending by a key
          * @param keySelector
          * @param comparer optional comparer.
          */
-        orderByDescending<TKey>(keySelector: (item: TValue) => TKey, comparer?: (first: TKey, second: TKey) => number): LinqIterable<TValue>;
+        orderByDescending<TKey>(keySelector: (item: TValue) => TKey, comparer?: (first: TKey, second: TKey) => number): FluentIterable<TValue>;
 
         /**
          * Do a group join (left join) between current and external iterable. For each item of current sequence get array of items from external sequence.
@@ -155,8 +162,7 @@ declare module 'modern-linq' {
         groupJoin<TInner, TKey, TResult>(joinIterable: Iterable<TInner>,
                                          sourceKeySelector: (item: TValue) => TKey,
                                          joinIterableKeySelector: (item: TInner, index: number) => TKey,
-                                         resultCreator: (outer: TValue, inner: TInner[]) => TResult): LinqIterable<TResult>;
-
+                                         resultCreator: (outer: TValue, inner: TInner[]) => TResult): FluentIterable<TResult>;
 
         /**
          * Do an inner join between current and external sequence. For each item of current sequence get a item from external sequence.
@@ -168,37 +174,58 @@ declare module 'modern-linq' {
         join<TInner, TKey, TResult>(joinIterable: Iterable<TInner>,
                                     sourceKeySelector: (item: TValue) => TKey,
                                     joinIterableKeySelector: (item: TInner, index: number) => TKey,
-                                    resultCreator: (outer: TValue, inner: TInner) => TResult): LinqIterable<TResult>;
+                                    resultCreator: (outer: TValue, inner: TInner) => TResult): FluentIterable<TResult>;
+
         /**
          * Concat this iterable with another
          * @param secondIterable
          */
-        concat(secondIterable: Iterable<TValue>): LinqIterable<TValue>;
+        concat(secondIterable: Iterable<TValue>): FluentIterable<TValue>;
+
+        /**
+         * zip two iterables together, where the result is an iterable of tuples, finishes when one of the iterables is finished.
+         */
+        zip<TOuter>(second: Iterable<TOuter>): FluentIterable<[TValue, TOuter]>;
 
         /**
          * Produce a union of two iterables where the result is distinct values from both.
          * @param secondIterable
+         * @param keySelector extract key which to be used for comparison.
          */
-        union(secondIterable: Iterable<TValue>): LinqIterable<TValue>;
+        union<TKey = TValue>(secondIterable: Iterable<TValue>, keySelector?: (item: TValue) => TKey): FluentIterable<TValue>;
 
 
         /**
          * Return an intersection of two iterables where the result is distinct values.
          * @param secondIterable
-         * @param comparer optional predicate, if none is provided a default one (===) is used.
+         * @param keySelector extract key which to be used for comparison.
          */
-        intersect(secondIterable: Iterable<TValue>, comparer?: (first: TValue, second: TValue) => boolean): LinqIterable<TValue>;
+        intersect<TKey = TValue>(secondIterable: Iterable<TValue>, keySelector?: (item: TValue) => TKey): FluentIterable<TValue>;
+
+        /**
+         * Return a difference of two iterables where the result is distinct values.
+         * @param secondIterable
+         * @param keySelector extract key which to be used for comparison.
+         */
+        difference<TKey = TValue>(secondIterable: Iterable<TValue>, keySelector?: (item: TValue) => TKey): FluentIterable<TValue>;
+
+        /**
+         * Return a symmetric difference ( distinct values except intersection ) of two iterables where the result is distinct values.
+         * @param secondIterable
+         * @param keySelector extract key which to be used for comparison.
+         */
+        symmetricDifference<TKey = TValue>(secondIterable: Iterable<TValue>, keySelector?: (item: TValue) => TKey): FluentIterable<TValue>;
 
         /**
          * Create a paging
          * @param pageSize
          */
-        page(pageSize: number): LinqIterable<TValue[]>;
+        page(pageSize: number): FluentIterable<TValue[]>;
 
         /**
          * Reverse the sequence
          */
-        reverse(): LinqIterable<TValue[]>;
+        reverse(): FluentIterable<TValue>;
 
         /**
          * Creates an array from iterable
@@ -314,14 +341,14 @@ declare module 'modern-linq' {
          * Return count of items.
          * @param predicate if predicate is supplied then return the count of items that return true.
          */
-        count(predicate?: (item: TValue) => boolean): boolean;
+        count(predicate?: (item: TValue) => boolean): number;
 
         /**
          * Produce single value form sequence values. The initial value is first element.
          * @param accumulator function which produces the result.
          * @throws TypeError when no elements
          */
-        aggregate<TResult>(accumulator: (result: TResult, item: TValue, index: number) => TResult): TResult | never;
+        aggregate(accumulator: (result: TValue, item: TValue, index: number) => TValue): TValue | never;
 
         /**
          * Produce single value form sequence values. The initial value is the second argument.
@@ -380,6 +407,7 @@ declare module 'modern-linq' {
          * @param iterable
          */
         isEqual(iterable: Iterable<TValue>): boolean;
+
         isEqual<TAnotherValue>(iterable: Iterable<TAnotherValue>, comparer: (a: TValue, b: TAnotherValue) => boolean): boolean;
 
         /**
@@ -388,64 +416,23 @@ declare module 'modern-linq' {
          * @example from([1, 2, 3]).isElementEqual([3, 1, 2]) === true
          */
         isElementsEqual(iterable: Iterable<TValue>): boolean;
+
         isElementsEqual<TAnotherValue>(iterable: Iterable<TAnotherValue>, comparer: (a: TValue, b: TAnotherValue) => boolean): boolean;
     }
 
-    export interface IGrouping<TKey, TValue> extends LinqIterable<TValue> {
+    export interface IGrouping<TKey, TValue> extends Iterable<TValue> {
         key: TKey;
     }
 
-    /**
-     * Creates a select js iterable from iterable (arrays, map, set ...)
-     * @param iterable
-     */
-    export function fromIterable<TValue>(iterable: Iterable<TValue>): LinqIterable<TValue>;
+    export function from<TValue>(iterable: Iterable<TValue> | ArrayLike<TValue>): FluentIterable<TValue>;
+    export function from<TValue extends {}, TKey extends keyof TValue>(value: TValue): FluentIterable<{ key: string, value: TValue[TKey] }>;
 
-    /**
-     * Creates a select js iterable from an object resolving keys using Object.keys(). Returns enumerable keys.
-     * @param value
-     * @return sequence of key/value object.
-     */
-    export function fromObject<TValue extends {}, TKey extends keyof TValue>(value: TValue): LinqIterable<{ key: string, value: TValue[TKey] }>;
+    export function fromIterable<TValue>(iterable: Iterable<TValue>): FluentIterable<TValue>;
+    export function repeat<TValue>(value: TValue, times: number): FluentIterable<TValue>;
+    export function range(from: number, to: number): FluentIterable<number>
 
-    /**
-     * Creates a select js iterable from an object resolving keys using Object.keys(). Returns enumerable keys.
-     * @param value
-     * @return sequence of key/value object.
-     */
-    export function fromObject<TValue extends {}, TKey extends keyof TValue, TResult>(value: TValue, resultCreator: (key: TKey, value: TValue[TKey]) => TResult): LinqIterable<TResult>;
+    export function fromArrayLike<TValue>(arrayLike: ArrayLike<TValue>): FluentIterable<TValue>;
 
-    /**
-     * Creates linq iterable from array like object
-     * @param arrayLike
-     */
-    export function fromArrayLike<TValue>(arrayLike: ArrayLike<TValue>): LinqIterable<TValue>;
-
-    /**
-     * Creates a select js iterable containing a [from, to) range of numbers
-     * if from is less than to return ascending range
-     * if from is greater that to return descending range
-     * if from === to returns empty iterable
-     */
-    export function range(from: number, to: number): LinqIterable<number>;
-
-    /**
-     * General from function which except various source types
-     * @param iterable or array like objects
-     */
-    export function from<TValue>(iterable: Iterable<TValue>|ArrayLike<TValue>): LinqIterable<TValue>;
-
-    /**
-     * Alias for fromObject function.
-     * @param value
-     */
-    export function from<TValue extends {}, TKey extends keyof TValue>(value: TValue): LinqIterable<{ key: string, value: TValue[TKey] }>;
-
-    /**
-     * Creates a select js iterable containing a [from, to) range of numbers
-     * if from is less than to return ascending range
-     * if from is greater that to return descending range
-     * if from === to returns empty iterable
-     */
-    export function repeat<TValue>(value: TValue, times: number): LinqIterable<TValue>;
+    export function fromObject<TValue extends {}, TKey extends keyof TValue>(value: TValue): FluentIterable<{ key: string, value: TValue[TKey] }>;
+    export function fromObject<TValue extends {}, TKey extends keyof TValue, TResult>(value: TValue, resultCreator: (key: TKey, value: TValue[TKey]) => TResult): FluentIterable<TResult>;
 }

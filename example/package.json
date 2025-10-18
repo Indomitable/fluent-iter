@@ -1,0 +1,14 @@
+{
+  "name": "example-fluent-iter",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "fluent-iter": "^1.0.1"
+  }
+}

@@ -1,0 +1,37 @@
+import Benchmark from "benchmark";
+import { from, range, repeat } from "../../index.ts";
+
+const iterable = new Set(repeat(0, 1000).concat(repeat(1, 1000)));
+const array = Array.from(iterable);
+
+export const distinctCompareIterableBenchmark = new Benchmark(
+    "[distinct] Distinct iterable with compare",
+    () => {
+        from(iterable)
+            .distinct((a) => a)
+            .toArray();
+    },
+);
+
+export const distinctIterableBenchmark = new Benchmark(
+    "[distinct] Distinct iterable",
+    () => {
+        from(iterable).distinct().toArray();
+    },
+);
+
+export const distinctCompareArrayBenchmark = new Benchmark(
+    "[distinct] Distinct array with compare",
+    () => {
+        from(array)
+            .distinct((a) => a)
+            .toArray();
+    },
+);
+
+export const distinctArrayBenchmark = new Benchmark(
+    "[distinct] Distinct array",
+    () => {
+        from(array).distinct().toArray();
+    },
+);
