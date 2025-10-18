@@ -423,4 +423,16 @@ declare module 'fluent-iter' {
     export interface IGrouping<TKey, TValue> extends Iterable<TValue> {
         key: TKey;
     }
+
+    export function from<TValue>(iterable: Iterable<TValue> | ArrayLike<TValue>): FluentIterable<TValue>;
+    export function from<TValue extends {}, TKey extends keyof TValue>(value: TValue): FluentIterable<{ key: string, value: TValue[TKey] }>;
+
+    export function fromIterable<TValue>(iterable: Iterable<TValue>): FluentIterable<TValue>;
+    export function repeat<TValue>(value: TValue, times: number): FluentIterable<TValue>;
+    export function range(from: number, to: number): FluentIterable<number>
+
+    export function fromArrayLike<TValue>(arrayLike: ArrayLike<TValue>): FluentIterable<TValue>;
+
+    export function fromObject<TValue extends {}, TKey extends keyof TValue>(value: TValue): FluentIterable<{ key: string, value: TValue[TKey] }>;
+    export function fromObject<TValue extends {}, TKey extends keyof TValue, TResult>(value: TValue, resultCreator: (key: TKey, value: TValue[TKey]) => TResult): FluentIterable<TResult>;
 }

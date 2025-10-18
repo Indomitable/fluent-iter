@@ -1,15 +1,9 @@
 {
   "name": "fluent-iter",
-  "version": "0.9.2",
+  "version": "1.0.1",
   "description": "Ability to work with iterables in a fluent way.",
   "main": "index.ts",
   "module": "index.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
-  },
   "author": "Ventsislav Mladenov",
   "license": "MIT",
   "private": false,
@@ -42,7 +36,7 @@
     "dist",
     "src/",
     "index.d.ts",
-    "index.js",
+    "index.ts",
     "package.json",
     "README.md",
     "LICENSE"
@@ -52,5 +46,8 @@
     "@vitest/coverage-v8": "^3.2.4",
     "benchmark": "^2.1.4",
     "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }
