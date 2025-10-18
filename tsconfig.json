@@ -4,7 +4,10 @@
     "module": "nodenext",
     "target": "esnext",
     "lib": [
-      "esnext"
+      "esnext",
+      "ESNext.AsyncIterable",
+      "DOM",
+      "DOM.AsyncIterable"
     ],
     "declaration": true,
     "strict": true,

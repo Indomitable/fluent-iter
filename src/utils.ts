@@ -182,3 +182,9 @@ export function createIterable<T>(generator: () => Generator<T>): Iterable<T> {
         [Symbol.iterator]: generator,
     }
 }
+
+export function delay(ms: number): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
