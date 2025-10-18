@@ -2,11 +2,6 @@ import {doneValue, iteratorResultCreator} from "../../utils.ts";
 
 export default function objectIterator<TValue extends {}, TKey extends keyof TValue, TResult>(source: TValue, resultCreator?: (key: TKey, value: TValue[TKey]) => TResult): Iterable<{ key: string, value: TValue[TKey] } | TResult> {
     return new ObjectIterable(source, resultCreator);
-    // if (!resultCreator) {
-    //     return Object.entries(source).map(([key, value]) => ({key, value}));
-    // } else {
-    //     return Object.entries(source).map(([key, value]) => resultCreator(key as TKey, value as TValue[TKey]));
-    // }
 }
 
 class ObjectIterable<TValue extends object, TKey extends keyof TValue, TResult> implements Iterable<TResult> {

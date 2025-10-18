@@ -1,7 +1,7 @@
 import {
+    createIterable,
     defaultElementSelector,
     group,
-    IterableGenerator,
 } from "../utils.ts";
 
 export default function joinIterator<TThis, TOther, TKey, TResult>(
@@ -10,7 +10,7 @@ export default function joinIterator<TThis, TOther, TKey, TResult>(
     sourceKeySelector: (sourceItem: TThis) => TKey,
     joinIterableKeySelector: (otherItem: TOther, index: number) => TKey,
     resultCreator: (first: TThis, second: TOther) => TResult): Iterable<TResult> {
-    return new IterableGenerator(() => joinGenerator(source, joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator));
+    return createIterable(() => joinGenerator(source, joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator));
 }
 
 function* joinGenerator<TThis, TOther, TKey, TResult>(

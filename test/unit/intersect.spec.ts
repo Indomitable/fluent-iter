@@ -14,7 +14,7 @@ describe('intersect tests', () => {
             { id: 5, x: 'c' },
             { id: 2, x: 'b' },
             { id: 2, x: 'd' },
-        ]/*, (a, b) => a.id === b.id */).toArray()).toEqual([{ id: 2, x: 'b' }]);
+        ], (a) => a.id).toArray()).toEqual([{ id: 2, x: 'b' }]);
     });
 
     it('should return noting if second has no elements', () => {
@@ -23,7 +23,7 @@ describe('intersect tests', () => {
 
     it('should return noting if no matches', () => {
         expect(from(new Set([1, 2, 3])).intersect(new Set([4, 5, 6])).toArray()).toEqual([]);
-        expect(from(new Set([1, 2, 3])).intersect(new Set([4, 5, 6]) /*, (a, b) => a === b */).toArray()).toEqual([]);
+        expect(from(new Set([1, 2, 3])).intersect(new Set([4, 5, 6]), (a) => a).toArray()).toEqual([]);
     });
 });
 

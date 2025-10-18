@@ -1,4 +1,4 @@
-import {defaultElementSelector, group, IterableGenerator} from "../utils.ts";
+import {createIterable, defaultElementSelector, group} from "../utils.ts";
 
 export default function groupJoinIterator<TThis, TOther, TKey, TResult>(
     source: Iterable<TThis>,
@@ -6,7 +6,7 @@ export default function groupJoinIterator<TThis, TOther, TKey, TResult>(
     sourceKeySelector: (sourceItem: TThis) => TKey,
     joinIterableKeySelector: (otherItem: TOther, index: number) => TKey,
     resultCreator: (first: TThis, second: TOther[]) => TResult): Iterable<TResult> {
-    return new IterableGenerator(() => groupJoinGenerator(source, joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator));
+    return createIterable(() => groupJoinGenerator(source, joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator));
 }
 
 function* groupJoinGenerator<TThis, TOther, TKey, TResult>(

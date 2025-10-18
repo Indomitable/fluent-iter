@@ -22,7 +22,7 @@ import {last, lastIndex, lastOrDefault, lastOrThrow} from "./finalizers/last.ts"
 import {first, firstIndex, firstOrDefault, firstOrThrow} from "./finalizers/first.ts";
 import reverseIterator from "./iterables/reverse.ts";
 import pageIterator from "./iterables/page.ts";
-import {intersectIterator, unionIterator} from "./iterables/set-iterators.ts";
+import {diffIterator, intersectIterator, symmetricDiffIterator, unionIterator} from "./iterables/set-iterators.ts";
 import concatIterator from "./iterables/concat.ts";
 import {sortAscendingIterator, sortDescendingIterator} from "./iterables/order.ts";
 import {groupByIterator} from "./iterables/group.ts";
@@ -30,103 +30,109 @@ import joinIterator from "./iterables/join.ts";
 import groupJoinIterator from "./iterables/group-join.ts";
 
 import type {Action, Comparer, Equality, Mapper, Predicate} from "./interfaces.ts";
-import type { IGrouping, LinqIterable} from "./linq-iterable.ts";
+import type { IGrouping, FluentIterable} from "./fluent-iterable.ts";
 
-export class Linq<TValue> implements LinqIterable<TValue> {
+export default class Fluent<TValue> implements FluentIterable<TValue> {
     readonly #source: Iterable<TValue>;
 
     constructor(source: Iterable<TValue>) {
         this.#source = source;
     }
 
-    where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): LinqIterable<TSubValue>;
-    where(predicate: Predicate<TValue>): LinqIterable<TValue>;
-    where<TSubValue>(predicate: Predicate<TValue>): LinqIterable<TValue> | LinqIterable<TSubValue> {
-        return new Linq(whereIterator(this, predicate));
+    where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentIterable<TSubValue>;
+    where(predicate: Predicate<TValue>): FluentIterable<TValue>;
+    where<TSubValue>(predicate: Predicate<TValue>): FluentIterable<TValue> | FluentIterable<TSubValue> {
+        return new Fluent(whereIterator(this, predicate));
     }
-    select<TOutput>(map: Mapper<TValue, TOutput>): LinqIterable<TOutput> {
-        return new Linq(selectIterator(this, map));
+    select<TOutput>(map: Mapper<TValue, TOutput>): FluentIterable<TOutput> {
+        return new Fluent(selectIterator(this, map));
     }
-    selectMany<TInner, TResult>(innerSelector: (item: TValue) => TInner[], resultCreator?: (outer: TValue, inner: TInner) => TResult): LinqIterable<TInner | TResult> {
-        return new Linq(selectManyIterator(this, innerSelector, resultCreator));
+    selectMany<TInner, TResult>(innerSelector: (item: TValue) => TInner[], resultCreator?: (outer: TValue, inner: TInner) => TResult): FluentIterable<TInner | TResult> {
+        return new Fluent(selectManyIterator(this, innerSelector, resultCreator));
     }
-    take(count: number): LinqIterable<TValue> {
-        return new Linq(takeIterator(this, count));
+    take(count: number): FluentIterable<TValue> {
+        return new Fluent(takeIterator(this, count));
     }
-    takeWhile(condition: (item: TValue, index: number) => boolean): LinqIterable<TValue> {
-        return new Linq(takeWhileIterator(this, condition));
+    takeWhile(condition: (item: TValue, index: number) => boolean): FluentIterable<TValue> {
+        return new Fluent(takeWhileIterator(this, condition));
     }
-    takeLast(count: number): LinqIterable<TValue> {
-        return new Linq(takeLastIterator(this, count));
+    takeLast(count: number): FluentIterable<TValue> {
+        return new Fluent(takeLastIterator(this, count));
     }
-    skip(count: number): LinqIterable<TValue> {
-        return new Linq(skipIterator(this, count));
+    skip(count: number): FluentIterable<TValue> {
+        return new Fluent(skipIterator(this, count));
     }
-    skipWhile(condition: (item: TValue, index: number) => boolean): LinqIterable<TValue> {
-        return new Linq(skipWhileIterator(this, condition));
+    skipWhile(condition: (item: TValue, index: number) => boolean): FluentIterable<TValue> {
+        return new Fluent(skipWhileIterator(this, condition));
     }
-    skipLast(count: number): LinqIterable<TValue> {
-        return new Linq(skipLastIterator(this, count));
+    skipLast(count: number): FluentIterable<TValue> {
+        return new Fluent(skipLastIterator(this, count));
     }
-    distinct(comparer?: Equality<TValue>): LinqIterable<TValue> {
-        return new Linq(distinctIterator(this, comparer));
+    distinct(comparer?: Equality<TValue>): FluentIterable<TValue> {
+        return new Fluent(distinctIterator(this, comparer));
     }
-    ofType<TOutput extends TValue>(type: 'string'|'number'|'boolean'|'undefined'|'function'|'object'|'symbol'|((item: TValue) => item is TOutput)): LinqIterable<TOutput> {
+    ofType<TOutput extends TValue>(type: 'string'|'number'|'boolean'|'undefined'|'function'|'object'|'symbol'|((item: TValue) => item is TOutput)): FluentIterable<TOutput> {
         const filter = typeof type === 'function' ? type : (item: TValue) => typeof item === type;
-        return new Linq<TOutput>(whereIterator<TValue>(this, filter) as Iterable<TOutput>);
+        return new Fluent<TOutput>(whereIterator<TValue>(this, filter) as Iterable<TOutput>);
     }
-    ofClass<TOutput extends TValue>(type: { new (...args: any[]): TOutput, prototype: TOutput }): LinqIterable<TOutput> {
+    ofClass<TOutput extends TValue>(type: { new (...args: any[]): TOutput, prototype: TOutput }): FluentIterable<TOutput> {
         const filter = (item: TValue) => item instanceof type;
-        return new Linq<TOutput>(whereIterator<TValue>(this, filter) as Iterable<TOutput>);
+        return new Fluent<TOutput>(whereIterator<TValue>(this, filter) as Iterable<TOutput>);
     }
-    groupBy<TKey>(keySelector: (item: TValue, index: number) => TKey): LinqIterable<IGrouping<TKey, TValue>>;
-    groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): LinqIterable<IGrouping<TKey, TElement>>;
-    groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement, resultCreator: (key: TKey, items: Iterable<TElement>) => TResult): LinqIterable<TResult>;
+    groupBy<TKey>(keySelector: (item: TValue, index: number) => TKey): FluentIterable<IGrouping<TKey, TValue>>;
+    groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): FluentIterable<IGrouping<TKey, TElement>>;
+    groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement, resultCreator: (key: TKey, items: Iterable<TElement>) => TResult): FluentIterable<TResult>;
     groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey,
                                      elementSelector?: (item: TValue, index: number) => TElement,
-                                     resultCreator?: (key: TKey, items: Iterable<TElement>) => TResult): LinqIterable<IGrouping<TKey, TValue> | IGrouping<TKey, TElement> | TResult> {
-        return new Linq(groupByIterator(this, keySelector, elementSelector, resultCreator));
+                                     resultCreator?: (key: TKey, items: Iterable<TElement>) => TResult): FluentIterable<IGrouping<TKey, TValue> | IGrouping<TKey, TElement> | TResult> {
+        return new Fluent(groupByIterator(this, keySelector, elementSelector, resultCreator));
     }
-    orderBy<TKey>(keySelector: (item: TValue) => TKey, comparer?: Comparer<TKey>): LinqIterable<TValue> {
-        return new Linq(sortAscendingIterator(this, keySelector, comparer));
+    orderBy<TKey>(keySelector: (item: TValue) => TKey, comparer?: Comparer<TKey>): FluentIterable<TValue> {
+        return new Fluent(sortAscendingIterator(this, keySelector, comparer));
     }
-    orderByDescending<TKey>(keySelector: (item: TValue) => TKey, comparer?: Comparer<TKey>): LinqIterable<TValue> {
-        return new Linq(sortDescendingIterator(this, keySelector, comparer));
+    orderByDescending<TKey>(keySelector: (item: TValue) => TKey, comparer?: Comparer<TKey>): FluentIterable<TValue> {
+        return new Fluent(sortDescendingIterator(this, keySelector, comparer));
     }
     groupJoin<TInner, TKey, TResult>(joinIterable: Iterable<TInner>,
                                      sourceKeySelector: (item: TValue) => TKey,
                                      joinIterableKeySelector: (item: TInner, index: number) => TKey,
-                                     resultCreator: (outer: TValue, inner: TInner[]) => TResult): LinqIterable<TResult> {
-        return new Linq(groupJoinIterator(this, joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator));
+                                     resultCreator: (outer: TValue, inner: TInner[]) => TResult): FluentIterable<TResult> {
+        return new Fluent(groupJoinIterator(this, joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator));
     }
     join(separator: string): string;
     join<TInner, TKey, TResult>(joinIterable: Iterable<TInner>,
                                 sourceKeySelector: (item: TValue) => TKey,
                                 joinIterableKeySelector: (item: TInner, index: number) => TKey,
-                                resultCreator: (outer: TValue, inner: TInner) => TResult): LinqIterable<TResult>;
+                                resultCreator: (outer: TValue, inner: TInner) => TResult): FluentIterable<TResult>;
     join<TInner, TKey, TResult>(firstArgument: Iterable<TInner> | string,
                                 sourceKeySelector?: (item: TValue) => TKey,
                                 joinIterableKeySelector?: (item: TInner, index: number) => TKey,
-                                resultCreator?: (outer: TValue, inner: TInner) => TResult): LinqIterable<TResult> | string {
+                                resultCreator?: (outer: TValue, inner: TInner) => TResult): FluentIterable<TResult> | string {
         if (typeof firstArgument === 'string') {
             return this.select(item => '' + item).toArray().join(firstArgument);
         }
-        return new Linq(joinIterator(this, firstArgument, sourceKeySelector!, joinIterableKeySelector!, resultCreator!));
+        return new Fluent(joinIterator(this, firstArgument, sourceKeySelector!, joinIterableKeySelector!, resultCreator!));
     }
-    concat(secondIterable: Iterable<TValue>): LinqIterable<TValue> {
-        return new Linq(concatIterator(this, secondIterable));
+    concat(secondIterable: Iterable<TValue>): FluentIterable<TValue> {
+        return new Fluent(concatIterator(this, secondIterable));
     }
-    union(secondIterable: Iterable<TValue>): LinqIterable<TValue> {
-        return new Linq(unionIterator(this, secondIterable));
+    union<TKey=TValue>(secondIterable: Iterable<TValue>, keySelector?: (item: TValue) => TKey): FluentIterable<TValue> {
+        return new Fluent(unionIterator(this, secondIterable, keySelector));
     }
-    intersect(secondIterable: Iterable<TValue>): LinqIterable<TValue> {
-        return new Linq(intersectIterator(this, secondIterable));
+    intersect<TKey=TValue>(secondIterable: Iterable<TValue>, keySelector?: (item: TValue) => TKey): FluentIterable<TValue> {
+        return new Fluent(intersectIterator(this, secondIterable, keySelector));
     }
-    page(pageSize: number): LinqIterable<TValue[]> {
-        return new Linq(pageIterator(this, pageSize));
+    difference<TKey=TValue>(secondIterable: Iterable<TValue>, keySelector?: (item: TValue) => TKey): FluentIterable<TValue> {
+        return new Fluent(diffIterator(this, secondIterable, keySelector));
     }
-    reverse(): LinqIterable<TValue> {
-        return new Linq(reverseIterator(this));
+    symmetricDifference<TKey=TValue>(secondIterable: Iterable<TValue>, keySelector?: (item: TValue) => TKey): FluentIterable<TValue> {
+        return new Fluent(symmetricDiffIterator(this, secondIterable, keySelector));
+    }
+    page(pageSize: number): FluentIterable<TValue[]> {
+        return new Fluent(pageIterator(this, pageSize));
+    }
+    reverse(): FluentIterable<TValue> {
+        return new Fluent(reverseIterator(this));
     }
     toArray(): TValue[];
     toArray<TResult>(map: Mapper<TValue, TResult>): TResult[];
@@ -228,5 +234,3 @@ export class Linq<TValue> implements LinqIterable<TValue> {
         return this.#source[Symbol.iterator]();
     }
 }
-
-export default Linq;

@@ -1,10 +1,10 @@
-import {IterableGenerator} from "../utils.ts";
+import {createIterable} from "../utils.ts";
 
 /**
  * Return first N numbers of source
  */
 export default function takeIterator<TValue>(input: Iterable<TValue>, count: number): Iterable<TValue> {
-    return new IterableGenerator(() => takeGenerator(input, count));
+    return createIterable(() => takeGenerator(input, count));
 }
 
 function* takeGenerator<TValue>(input: Iterable<TValue>, count: number): Generator<TValue> {

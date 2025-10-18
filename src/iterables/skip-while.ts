@@ -1,10 +1,10 @@
-import {IterableGenerator} from "../utils.ts";
+import {createIterable} from "../utils.ts";
 
 /**
  * Return skip first elements until condition got falsy and return rest
  */
 export default function skipWhileIterator<TValue>(input: Iterable<TValue>, condition: (item: TValue, index: number) => boolean): Iterable<TValue> {
-    return new IterableGenerator(() => skipWhileGenerator(input, condition));
+    return createIterable(() => skipWhileGenerator(input, condition));
 }
 
 function* skipWhileGenerator<TValue>(input: Iterable<TValue>, condition: (item: TValue, index: number) => boolean): Generator<TValue> {

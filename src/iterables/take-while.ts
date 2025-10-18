@@ -1,10 +1,10 @@
-import {IterableGenerator} from "../utils.ts";
+import {createIterable} from "../utils.ts";
 
 /**
  * Return items until certain condition got falsy
  */
 export default function takeWhileIterator<TValue>(input: Iterable<TValue>, condition: (item: TValue, index: number) => boolean): Iterable<TValue> {
-    return new IterableGenerator(() => takeWhileGenerator(input, condition));
+    return createIterable(() => takeWhileGenerator(input, condition));
 }
 
 function* takeWhileGenerator<TValue>(input: Iterable<TValue>, condition: (item: TValue, index: number) => boolean): Generator<TValue> {

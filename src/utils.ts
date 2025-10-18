@@ -120,6 +120,10 @@ export class SetCheck<T> {
         return this.#set.size > prevSize;
     }
 
+    has(item: T) {
+        return this.#set.has(item);
+    }
+
     clear() {
         this.#set.clear();
     }
@@ -173,13 +177,8 @@ export function group<TValue, TKey, TElement>(
     return map;
 }
 
-export class IterableGenerator<T> implements Iterable<T> {
-    readonly #generator: () => Generator<T>;
-    constructor(generator: () => Generator<T>) {
-        this.#generator = generator;
-    }
-
-    [Symbol.iterator]() {
-        return this.#generator();
+export function createIterable<T>(generator: () => Generator<T>): Iterable<T> {
+    return {
+        [Symbol.iterator]: generator,
     }
 }

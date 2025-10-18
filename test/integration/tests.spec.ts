@@ -340,19 +340,8 @@ describe("typescript tests", () => {
     });
 
     it("intersect", () => {
-        expect(
-            from(new Set([1, 2, 3]))
-                .intersect([3, 2])
-                .toArray(),
-        ).toEqual([2, 3]);
-        expect(from([1, 2, 3, 2]).intersect([3, 2, 3]).toArray()).toEqual([
-            2, 3,
-        ]);
-        expect(
-            from([1, 2, 3, 2])
-                .intersect([3, 2, 3])
-                .toArray(),
-        ).toEqual([2, 3]);
+        expect(from(new Set([1, 2, 3])).intersect([3, 2]).toArray()).toEqual([2, 3]);
+        expect(from([1, 2, 3, 2]).intersect([3, 2, 3]).toArray()).toEqual([2, 3]);
     });
 
     it('should be able to do paging with skip and take', () => {

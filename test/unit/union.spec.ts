@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { from, range } from "../../src/index.ts";
+import {Person} from "./models.js";
 
 describe('union tests', () => {
     [
@@ -25,5 +26,25 @@ describe('union tests', () => {
     it('should work with strings', () => {
         const res = from('abcdefg').union('abcjkf').join('');
         expect(res).toEqual('abcdefgjk')
+    });
+
+    it('union on complex objects', () => {
+        const first = [
+            new Person(10, 'A'),
+            new Person(20, 'B'),
+            new Person(20, 'B'),
+            new Person(30, 'C'),
+        ];
+        const seconds = [
+            new Person(40, 'C'),
+            new Person(10, 'D'),
+        ];
+        const res = from(first).union(seconds, i => i.name).toArray();
+        expect(res).toEqual([
+            new Person(10, 'A'),
+            new Person(20, 'B'),
+            new Person(30, 'C'),
+            new Person(10, 'D'),
+        ])
     });
 });

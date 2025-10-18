@@ -1,10 +1,10 @@
-import {IterableGenerator} from "../utils.ts";
+import {createIterable} from "../utils.ts";
 
 /**
  * Skip first N numbers of source and return the rest
  */
 export default function skipIterator<TValue>(input: Iterable<TValue>, count: number): Iterable<TValue> {
-    return new IterableGenerator(() => skipGenerator(input, count));
+    return createIterable(() => skipGenerator(input, count));
 }
 
 function* skipGenerator<TValue>(input: Iterable<TValue>, count: number): Generator<TValue> {

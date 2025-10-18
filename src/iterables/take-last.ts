@@ -1,10 +1,10 @@
 /**
  * Take last N elements
  */
-import {IterableGenerator} from "../utils.ts";
+import {createIterable} from "../utils.ts";
 
 export default function takeLastIterator<TValue>(input: Iterable<TValue>, count: number): Iterable<TValue> {
-    return new IterableGenerator(() => takeLastGenerator(input, count));
+    return createIterable(() => takeLastGenerator(input, count));
 }
 
 function* takeLastGenerator<TValue>(input: Iterable<TValue>, count: number): Generator<TValue> {
