@@ -1,6 +1,21 @@
 //An Iterable that contains the elements from both input sequences, excluding duplicates.
 import {SetCheck} from "../utils.ts";
 
+export function distinctIterator<TValue, TKey=TValue>(source: Iterable<TValue>, keySelector?: (item: TValue) => TKey): Iterable<TValue> {
+    const keySelectorFunc = keySelector ?? defaultKeySelector;
+    const set = new SetCheck<TKey>();
+    return {
+        [Symbol.iterator]: function* (){
+            for (const item of source) {
+                const key = keySelectorFunc(item);
+                if (set.tryAdd(key)) {
+                    yield item;
+                }
+            }
+        }
+    };
+}
+
 export function unionIterator<TValue, TKey=TValue>(first: Iterable<TValue>, second: Iterable<TValue>, keySelector?: (item: TValue) => TKey): Iterable<TValue> {
     const keySelectorFunc = keySelector ?? defaultKeySelector;
     const set = new SetCheck<TKey>();

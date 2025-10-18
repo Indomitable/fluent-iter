@@ -1,10 +1,9 @@
 import { FluentIterable } from './fluent-iterable.ts';
 import Fluent from "./fluent.ts";
-import rangeGenerator from "./generators/range.ts";
-import repeatGenerator from "./generators/repeat.ts";
 import arrayLikeIterator from "./iterables/initial/array-like.ts";
 import objectIterator from "./iterables/initial/object.ts";
-import {createIterable} from "./utils.ts";
+import rangeIterable from "./generators/range.ts";
+import repeatIterable from "./generators/repeat.ts";
 
 export function fromIterable<TValue>(iterable: Iterable<TValue>): FluentIterable<TValue> {
     return new Fluent<TValue>(iterable);
@@ -25,11 +24,11 @@ export function fromArrayLike<TValue>(arrayLike: ArrayLike<TValue>): FluentItera
 }
 
 export function range(from: number, to: number): FluentIterable<number> {
-    return new Fluent(createIterable(() => rangeGenerator(from, to)));
+    return new Fluent(rangeIterable(from, to));
 }
 
 export function repeat<TValue>(value: TValue, times: number): FluentIterable<TValue> {
-    return new Fluent(repeatGenerator(value, times));
+    return new Fluent(repeatIterable(value, times));
 }
 
 export function from<TValue>(iterable: Iterable<TValue> | ArrayLike<TValue>): FluentIterable<TValue>;

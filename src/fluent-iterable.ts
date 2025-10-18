@@ -61,15 +61,9 @@ export interface FluentIterable<TValue> extends Iterable<TValue> {
     skipLast(count: number): FluentIterable<TValue>;
     /**
      * Return distinct items. Can specify optional item comparer
-     * @param comparer function to compare elements for equality
+     * @param keySelector function to get key for comparison.
      */
-    distinct(comparer?: (a: TValue, b: TValue) => boolean): FluentIterable<TValue>;
-    /**
-     * TODO: add distinct by identifier
-     * Return distinct items, by using equality comparer
-     * @param identifier function to select identifier for each item
-     */
-    // distinct<TIdentifier>(identifier: (a: TValue) => TIdentifier): LinqIterable<TValue>;
+    distinct<TKey>(keySelector?: (item: TValue) => TKey): FluentIterable<TValue>;
     /**
      * Selects all items of type string
      * @param type

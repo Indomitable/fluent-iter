@@ -8,7 +8,6 @@ import takeWhileIterator from "./iterables/take-while.ts";
 import skipWhileIterator from "./iterables/skip-while.ts";
 import takeLastIterator from "./iterables/take-last.ts";
 import skipLastIterator from "./iterables/skip-last.ts";
-import distinctIterator from "./iterables/distinct.ts";
 import {allAndEveryCollector, allCollector} from "./finalizers/all.ts";
 import anyCollector from "./finalizers/any.ts";
 import countCollector from "./finalizers/count.ts";
@@ -22,7 +21,13 @@ import {last, lastIndex, lastOrDefault, lastOrThrow} from "./finalizers/last.ts"
 import {first, firstIndex, firstOrDefault, firstOrThrow} from "./finalizers/first.ts";
 import reverseIterator from "./iterables/reverse.ts";
 import pageIterator from "./iterables/page.ts";
-import {diffIterator, intersectIterator, symmetricDiffIterator, unionIterator} from "./iterables/set-iterators.ts";
+import {
+    diffIterator,
+    distinctIterator,
+    intersectIterator,
+    symmetricDiffIterator,
+    unionIterator
+} from "./iterables/set-iterators.ts";
 import concatIterator from "./iterables/concat.ts";
 import {sortAscendingIterator, sortDescendingIterator} from "./iterables/order.ts";
 import {groupByIterator} from "./iterables/group.ts";
@@ -69,8 +74,8 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
     skipLast(count: number): FluentIterable<TValue> {
         return new Fluent(skipLastIterator(this, count));
     }
-    distinct(comparer?: Equality<TValue>): FluentIterable<TValue> {
-        return new Fluent(distinctIterator(this, comparer));
+    distinct<TKey>(keySelector?: (item: TValue) => TKey): FluentIterable<TValue> {
+        return new Fluent(distinctIterator(this, keySelector));
     }
     ofType<TOutput extends TValue>(type: 'string'|'number'|'boolean'|'undefined'|'function'|'object'|'symbol'|((item: TValue) => item is TOutput)): FluentIterable<TOutput> {
         const filter = typeof type === 'function' ? type : (item: TValue) => typeof item === type;

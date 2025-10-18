@@ -28,7 +28,7 @@ describe('distinct tests', () => {
     ].forEach((source, indx) => {
         it('should use comparer when provided: ' + indx, () => {
             const input = fromIterable(source);
-            expect(input.distinct((a, b) => typeof a === typeof b).toArray()).toEqual([1, 'a']);
+            expect(input.distinct((a) => typeof a).toArray()).toEqual([1, 'a']);
         });
     });
 
@@ -49,11 +49,10 @@ describe('distinct tests', () => {
             new Person(10, 'C'),
             new Person(20, 'D'),
         ];
-        const res = from(persons).distinct((a, b) => a.age === b.age).toArray();
+        const res = from(persons).distinct((a) => a.age).toArray();
         expect(res).toEqual([
             new Person(10, 'A'),
             new Person(20, 'B'),
         ]);
     });
 });
-
