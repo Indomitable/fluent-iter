@@ -441,6 +441,17 @@ declare module 'fluent-iter' {
          * @param map map function
          */
         select<TOutput>(map: (item: TValue) => TOutput): FluentIterableAsync<TOutput>;
+
+        /**
+         * Take first N items from iterable
+         */
+        take(count: number): FluentIterableAsync<TValue>;
+
+        /**
+         * Return a promise to an array.
+         */
+        toArray(): Promise<TValue[]>;
+        toArray<TResult>(map: (item: TValue) => TResult): Promise<TResult[]>;
     }
 
     export function from<TValue>(iterable: Iterable<TValue> | ArrayLike<TValue>): FluentIterable<TValue>;
