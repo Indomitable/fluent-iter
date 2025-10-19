@@ -424,6 +424,25 @@ declare module 'fluent-iter' {
         key: TKey;
     }
 
+    export interface FluentIterableAsync<TValue> extends AsyncIterable<TValue> {
+        /**
+         * Filters the iterable using predicate function typed overload
+         * @param predicate
+         */
+        where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentIterableAsync<TSubValue>;
+
+        /**
+         * Filters the iterable using predicate function
+         * @param predicate
+         */
+        where(predicate: (item: TValue) => boolean): FluentIterableAsync<TValue>;
+        /**
+         * Maps the iterable items
+         * @param map map function
+         */
+        select<TOutput>(map: (item: TValue) => TOutput): FluentIterableAsync<TOutput>;
+    }
+
     export function from<TValue>(iterable: Iterable<TValue> | ArrayLike<TValue>): FluentIterable<TValue>;
     export function from<TValue extends {}, TKey extends keyof TValue>(value: TValue): FluentIterable<{ key: string, value: TValue[TKey] }>;
 
@@ -435,4 +454,7 @@ declare module 'fluent-iter' {
 
     export function fromObject<TValue extends {}, TKey extends keyof TValue>(value: TValue): FluentIterable<{ key: string, value: TValue[TKey] }>;
     export function fromObject<TValue extends {}, TKey extends keyof TValue, TResult>(value: TValue, resultCreator: (key: TKey, value: TValue[TKey]) => TResult): FluentIterable<TResult>;
+
+    export function fromEvent<TTarget extends EventTarget, TEvent extends keyof HTMLElementEventMap>(target: TTarget, event: TEvent): FluentIterableAsync<HTMLElementEventMap[TEvent]>;
+    export function fromTimer(interval: number, delay?: number): FluentIterableAsync<number>;
 }

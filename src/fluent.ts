@@ -1,5 +1,5 @@
-import whereIterator from "./iterables/where.ts";
-import selectIterator from "./iterables/select.ts";
+import { whereIterator } from "./iterables/where.ts";
+import { selectIterator } from "./iterables/select.ts";
 import selectManyIterator from "./iterables/select-many.ts";
 import takeIterator from "./iterables/take.ts";
 import skipIterator from "./iterables/skip.ts";

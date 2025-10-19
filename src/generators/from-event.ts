@@ -1,6 +1,6 @@
 import {doneValue, iteratorResultCreator} from "../utils.ts";
 
-export function fromEvent<TTarget extends EventTarget, TEvent extends keyof HTMLElementEventMap>(target: TTarget, event: TEvent): AsyncIterable<HTMLElementEventMap[TEvent]> & AsyncDisposable {
+export default function fromEventAsync<TTarget extends EventTarget, TEvent extends keyof HTMLElementEventMap>(target: TTarget, event: TEvent): AsyncIterable<HTMLElementEventMap[TEvent]> & AsyncDisposable {
     const eventQueue: HTMLElementEventMap[TEvent][] = [];
     const resolverQueue: ((result: IteratorResult<HTMLElementEventMap[TEvent]>) => void)[] = [];
 

@@ -1,6 +1,6 @@
 import {delay as sleep} from "../utils.ts";
 
-export function fromTimer(interval: number, delay?: number): AsyncIterable<number> & AsyncDisposable {
+export default function fromTimerAsync(interval: number, delay?: number): AsyncIterable<number> & AsyncDisposable {
     let done = false;
     return {
         [Symbol.asyncIterator]: async function* () {

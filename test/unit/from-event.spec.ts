@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {fromEvent} from "../../src/generators/from-event.js";
+import fromEvent from "../../src/generators/from-event.ts";
 
 describe('fromEvent', () => {
     it('should get events', async () => {
