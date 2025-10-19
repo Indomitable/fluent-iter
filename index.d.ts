@@ -136,7 +136,7 @@ declare module 'fluent-iter' {
         groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): FluentIterable<IGrouping<TKey, TElement>>;
 
         groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement,
-                                         resultCreator: (key: TKey, items: Iterable<TElement>) => TResult): FluentIterable<TResult>;
+                                         resultCreator: (key: TKey, items: FluentIterable<TElement>) => TResult): FluentIterable<TResult>;
 
         /**
          * Order iterable ascending by a key
@@ -162,7 +162,7 @@ declare module 'fluent-iter' {
         groupJoin<TInner, TKey, TResult>(joinIterable: Iterable<TInner>,
                                          sourceKeySelector: (item: TValue) => TKey,
                                          joinIterableKeySelector: (item: TInner, index: number) => TKey,
-                                         resultCreator: (outer: TValue, inner: TInner[]) => TResult): FluentIterable<TResult>;
+                                         resultCreator: (outer: TValue, inner: FluentIterable<TInner>) => TResult): FluentIterable<TResult>;
 
         /**
          * Do an inner join between current and external sequence. For each item of current sequence get a item from external sequence.
@@ -420,7 +420,7 @@ declare module 'fluent-iter' {
         isElementsEqual<TAnotherValue>(iterable: Iterable<TAnotherValue>, comparer: (a: TValue, b: TAnotherValue) => boolean): boolean;
     }
 
-    export interface IGrouping<TKey, TValue> extends Iterable<TValue> {
+    export interface IGrouping<TKey, TValue> extends FluentIterable<TValue> {
         key: TKey;
     }
 

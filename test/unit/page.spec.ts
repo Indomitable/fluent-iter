@@ -22,7 +22,7 @@ describe('page iteration tests', () => {
 
     it('should page string', () => {
         const res = from('abcdefd').page(3)
-            .groupBy((arr, i) => i, _ => _, (key, items) => from(items).firstOrThrow().join(''))
+            .groupBy((arr, i) => i, _ => _, (key, items) => items.firstOrThrow().join(''))
             .join(',');
         expect(res).toBe('abc,def,d');
     });

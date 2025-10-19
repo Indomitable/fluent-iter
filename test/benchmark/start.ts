@@ -37,7 +37,7 @@ suit.on("complete", function (this: Benchmark[]) {
             .groupBy(
                 (_, i) => i,
                 (_) => _.reverse().join(""),
-                (_, items) => from(items).first(),
+                (_, items) => items.first(),
             )
             .reverse()
             .join(",");
@@ -72,13 +72,13 @@ suit.on("complete", function (this: Benchmark[]) {
             (_) => _.category,
             (_) => _,
             (key, items) => {
-                const fastestBench = from(items).max(
+                const fastestBench = items.max(
                     (a, b) => a.bench.hz - b.bench.hz,
                 );
                 return {
                     name: key,
                     fastest: getBenchData(fastestBench),
-                    benches: from(items)
+                    benches: items
                         .orderByDescending((_) => _.bench.hz)
                         .select(getBenchData),
                 };

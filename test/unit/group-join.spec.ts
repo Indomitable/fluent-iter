@@ -25,7 +25,8 @@ describe('groupJoin tests', () => {
         { persons: persons, pets: new Set(pets) },
     ].forEach((source, indx) => {
         it('should join arrays: ' + indx, () => {
-            const res = from(source.persons).groupJoin(source.pets, s => s.name, i => i.owner, (person, pets) => ({ person, pets })).toArray();
+            const res = from(source.persons)
+                .groupJoin(source.pets, s => s.name, i => i.owner, (person, pets) => ({ person, pets: pets.toArray() })).toArray();
             expect(res).toEqual([
                 { person: persons[0], pets: [ pets[1] ] },
                 { person: persons[1], pets: [ pets[2], pets[3] ] },

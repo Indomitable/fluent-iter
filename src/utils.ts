@@ -1,4 +1,6 @@
 import {Comparer} from "./interfaces.ts";
+import {from, fromIterable} from "./creation.js";
+import { FluentIterable } from "fluent-iter";
 
 /**
  * Helper function to be use to access Symbol.iterator of iterable
@@ -160,7 +162,7 @@ export function emptyIterator<T>(): Iterator<T> {
 export function group<TValue, TKey, TElement>(
     iterable: Iterable<TValue>,
     keySelector: (item: TValue, index: number) => TKey,
-    elementSelector: (item: TValue, index: number) => TElement): Map<TKey, TElement[]> {
+    elementSelector: (item: TValue, index: number) => TElement): Map<TKey, FluentIterable<TElement>> {
     const map = new Map<TKey, TElement[]>();
     let i = 0;
     for (const item of iterable) {
@@ -174,7 +176,7 @@ export function group<TValue, TKey, TElement>(
         map.set(key, value);
         i++;
     }
-    return map;
+    return fromIterable(map).toMap(([key, _]) => key as TKey, ([_, value]) => from(value));
 }
 
 export function createIterable<T>(generator: () => Generator<T>): Iterable<T> {
