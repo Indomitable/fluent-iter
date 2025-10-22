@@ -23,15 +23,15 @@ describe('groupBy tests', () => {
             for (const gr of res) {
                 switch (gr.key) {
                     case 10: {
-                        expect(Array.from(gr)).toEqual([ input[0], input[2], input[4] ]);
+                        expect(gr.toArray()).toEqual([ input[0], input[2], input[4] ]);
                         break;
                     }
                     case 20: {
-                        expect(Array.from(gr)).toEqual([ input[1], input[5] ]);
+                        expect(gr.toArray()).toEqual([ input[1], input[5] ]);
                         break;
                     }
                     case 30: {
-                        expect(Array.from(gr)).toEqual([ input[3] ]);
+                        expect(gr.toArray()).toEqual([ input[3] ]);
                         break;
                     }
                     default:
@@ -51,18 +51,18 @@ describe('groupBy tests', () => {
             for (const gr of res) {
                 switch (gr.key) {
                     case 10: {
-                        expect(from(gr).count()).toBe(3);
-                        expect(from(gr).toArray()).toEqual(['A', 'C', 'E']);
+                        expect(gr.count()).toBe(3);
+                        expect(gr.toArray()).toEqual(['A', 'C', 'E']);
                         break;
                     }
                     case 20: {
-                        expect(from(gr).count()).toBe(2);
-                        expect(from(gr).toArray()).toEqual(['B', 'F']);
+                        expect(gr.count()).toBe(2);
+                        expect(gr.toArray()).toEqual(['B', 'F']);
                         break;
                     }
                     case 30: {
-                        expect(from(gr).count()).toBe(1);
-                        expect(from(gr).toArray()).toEqual(['D']);
+                        expect(gr.count()).toBe(1);
+                        expect(gr.toArray()).toEqual(['D']);
                         break;
                     }
                     default:
@@ -77,14 +77,14 @@ describe('groupBy tests', () => {
         setInput
     ].forEach((source, indx) => {
         it('should group collection and convert result: ' + indx, () => {
-            const res = fromIterable(source).groupBy(_ => _.age, _ => _.name, (key, elms) => `${key}:${Array.from(elms).join(',')}`).toArray();
+            const res = fromIterable(source).groupBy(_ => _.age, _ => _.name, (key, elms) => `${key}:${elms.join(',')}`).toArray();
             expect(res.length).toBe(3);
             expect(res).toEqual(['10:A,C,E', '20:B,F', '30:D']);
         });
     });
 
     it('should be able to work with strings', () => {
-        const res = from('abcdeabcdebbacc').groupBy(_ => _).where(g => from(g).count() < 4).select(g => g.key).join('');
+        const res = from('abcdeabcdebbacc').groupBy(_ => _).where(g => g.count() < 4).select(g => g.key).join('');
         expect(res).toBe('ade');
     });
 
@@ -100,7 +100,7 @@ describe('groupBy tests', () => {
 
     it('should not throw if group by null or undefined', () => {
         const res = from('abcdeabcdebbacc')
-            .groupBy(_ => _ === 'a' ? null : (_ === 'b' ? undefined : _), _ => _, (key, group) => ({ key: key, group: Array.from(group) }))
+            .groupBy(_ => _ === 'a' ? null : (_ === 'b' ? undefined : _), _ => _, (key, group) => ({ key: key, group: group.toArray() }))
             .toArray();
         expect(res).toEqual([
             { key: null, group: ['a', 'a', 'a'] },

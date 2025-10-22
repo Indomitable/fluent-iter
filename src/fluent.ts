@@ -1,9 +1,9 @@
-import whereIterator from "./iterables/where.ts";
-import selectIterator from "./iterables/select.ts";
+import { whereIterator } from "./iterables/where.ts";
+import { selectIterator } from "./iterables/select.ts";
 import selectManyIterator from "./iterables/select-many.ts";
-import takeIterator from "./iterables/take.ts";
+import { takeIterator } from "./iterables/take.ts";
 import skipIterator from "./iterables/skip.ts";
-import toArrayCollector from "./finalizers/to-array.ts";
+import { toArrayCollector } from "./finalizers/to-array.ts";
 import takeWhileIterator from "./iterables/take-while.ts";
 import skipWhileIterator from "./iterables/skip-while.ts";
 import takeLastIterator from "./iterables/take-last.ts";
@@ -37,7 +37,6 @@ import zipIterable from "./iterables/zip.js";
 
 import type {Action, Comparer, Mapper, Predicate} from "./interfaces.ts";
 import type { FluentIterable, IGrouping } from 'fluent-iter';
-
 
 export default class Fluent<TValue> implements FluentIterable<TValue> {
     readonly #source: Iterable<TValue>;
@@ -88,10 +87,10 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
     }
     groupBy<TKey>(keySelector: (item: TValue, index: number) => TKey): FluentIterable<IGrouping<TKey, TValue>>;
     groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): FluentIterable<IGrouping<TKey, TElement>>;
-    groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement, resultCreator: (key: TKey, items: Iterable<TElement>) => TResult): FluentIterable<TResult>;
+    groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement, resultCreator: (key: TKey, items: FluentIterable<TElement>) => TResult): FluentIterable<TResult>;
     groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey,
                                      elementSelector?: (item: TValue, index: number) => TElement,
-                                     resultCreator?: (key: TKey, items: Iterable<TElement>) => TResult): FluentIterable<IGrouping<TKey, TValue> | IGrouping<TKey, TElement> | TResult> {
+                                     resultCreator?: (key: TKey, items: FluentIterable<TElement>) => TResult): FluentIterable<IGrouping<TKey, TValue> | IGrouping<TKey, TElement> | TResult> {
         return new Fluent(groupByIterator(this, keySelector, elementSelector, resultCreator));
     }
     orderBy<TKey>(keySelector: (item: TValue) => TKey, comparer?: Comparer<TKey>): FluentIterable<TValue> {
@@ -103,8 +102,8 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
     groupJoin<TInner, TKey, TResult>(joinIterable: Iterable<TInner>,
                                      sourceKeySelector: (item: TValue) => TKey,
                                      joinIterableKeySelector: (item: TInner, index: number) => TKey,
-                                     resultCreator: (outer: TValue, inner: TInner[]) => TResult): FluentIterable<TResult> {
-        return new Fluent(groupJoinIterator(this, joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator));
+                                     resultCreator: (outer: TValue, inner: FluentIterable<TInner> & TInner[]) => TResult): FluentIterable<TResult> {
+        return new Fluent(groupJoinIterator(this, joinIterable, sourceKeySelector, joinIterableKeySelector, resultCreator as any));
     }
     join(separator: string): string;
     join<TInner, TKey, TResult>(joinIterable: Iterable<TInner>,
@@ -242,5 +241,17 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
     }
     [Symbol.iterator](): Iterator<TValue, any, any> {
         return this.#source[Symbol.iterator]();
+    }
+}
+
+export class Grouping<TKey, TValue> extends Fluent<TValue> implements IGrouping<TKey, TValue> {
+    readonly #key: TKey;
+    constructor(key: TKey, items: Iterable<TValue>) {
+        super(items);
+        this.#key = key;
+    }
+
+    public get key() {
+        return this.#key;
     }
 }

@@ -50,7 +50,7 @@ describe("typescript tests", () => {
             .groupBy((_) => _.owner.age)
             .select((gr) => ({
                 age: gr.key,
-                countPets: from(gr).count(),
+                countPets: gr.count(),
             }))
             .orderBy((_) => _.age)
             .toMap(
@@ -383,7 +383,7 @@ describe("typescript tests", () => {
             .groupBy(i => i.odd)
             .select(_ => ({
                 key: _.key,
-                items: from(_).orderByDescending(_ => _.num).toArray()
+                items: _.orderByDescending(_ => _.num).toArray()
             }))
             .orderBy(_ => _.key);
 

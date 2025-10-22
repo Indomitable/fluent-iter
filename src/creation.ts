@@ -43,6 +43,8 @@ export function from<TValue>(source: Iterable<TValue> | ArrayLike<TValue> | TVal
     return fromObject(source as object);
 }
 
+
+
 function isIterable<T>(o: any): o is Iterable<T> {
     const iterator = o[Symbol.iterator];
     return typeof iterator === 'function';

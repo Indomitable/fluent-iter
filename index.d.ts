@@ -136,7 +136,7 @@ declare module 'fluent-iter' {
         groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): FluentIterable<IGrouping<TKey, TElement>>;
 
         groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement,
-                                         resultCreator: (key: TKey, items: Iterable<TElement>) => TResult): FluentIterable<TResult>;
+                                         resultCreator: (key: TKey, items: FluentIterable<TElement>) => TResult): FluentIterable<TResult>;
 
         /**
          * Order iterable ascending by a key
@@ -162,7 +162,7 @@ declare module 'fluent-iter' {
         groupJoin<TInner, TKey, TResult>(joinIterable: Iterable<TInner>,
                                          sourceKeySelector: (item: TValue) => TKey,
                                          joinIterableKeySelector: (item: TInner, index: number) => TKey,
-                                         resultCreator: (outer: TValue, inner: TInner[]) => TResult): FluentIterable<TResult>;
+                                         resultCreator: (outer: TValue, inner: FluentIterable<TInner>) => TResult): FluentIterable<TResult>;
 
         /**
          * Do an inner join between current and external sequence. For each item of current sequence get a item from external sequence.
@@ -420,8 +420,38 @@ declare module 'fluent-iter' {
         isElementsEqual<TAnotherValue>(iterable: Iterable<TAnotherValue>, comparer: (a: TValue, b: TAnotherValue) => boolean): boolean;
     }
 
-    export interface IGrouping<TKey, TValue> extends Iterable<TValue> {
+    export interface IGrouping<TKey, TValue> extends FluentIterable<TValue> {
         key: TKey;
+    }
+
+    export interface FluentIterableAsync<TValue> extends AsyncIterable<TValue> {
+        /**
+         * Filters the iterable using predicate function typed overload
+         * @param predicate
+         */
+        where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentIterableAsync<TSubValue>;
+
+        /**
+         * Filters the iterable using predicate function
+         * @param predicate
+         */
+        where(predicate: (item: TValue) => boolean): FluentIterableAsync<TValue>;
+        /**
+         * Maps the iterable items
+         * @param map map function
+         */
+        select<TOutput>(map: (item: TValue) => TOutput): FluentIterableAsync<TOutput>;
+
+        /**
+         * Take first N items from iterable
+         */
+        take(count: number): FluentIterableAsync<TValue>;
+
+        /**
+         * Return a promise to an array.
+         */
+        toArray(): Promise<TValue[]>;
+        toArray<TResult>(map: (item: TValue) => TResult): Promise<TResult[]>;
     }
 
     export function from<TValue>(iterable: Iterable<TValue> | ArrayLike<TValue>): FluentIterable<TValue>;
@@ -435,4 +465,7 @@ declare module 'fluent-iter' {
 
     export function fromObject<TValue extends {}, TKey extends keyof TValue>(value: TValue): FluentIterable<{ key: string, value: TValue[TKey] }>;
     export function fromObject<TValue extends {}, TKey extends keyof TValue, TResult>(value: TValue, resultCreator: (key: TKey, value: TValue[TKey]) => TResult): FluentIterable<TResult>;
+
+    export function fromEvent<TTarget extends EventTarget, TEvent extends keyof HTMLElementEventMap>(target: TTarget, event: TEvent): FluentIterableAsync<HTMLElementEventMap[TEvent]>;
+    export function fromTimer(interval: number, delay?: number): FluentIterableAsync<number>;
 }
