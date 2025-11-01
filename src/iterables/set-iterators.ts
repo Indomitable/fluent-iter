@@ -16,6 +16,21 @@ export function distinctIterator<TValue, TKey=TValue>(source: Iterable<TValue>, 
     };
 }
 
+export function distinctIteratorAsync<TValue, TKey=TValue>(source: AsyncIterable<TValue>, keySelector?: (item: TValue) => TKey): AsyncIterable<TValue> {
+    const keySelectorFunc = keySelector ?? defaultKeySelector;
+    return {
+        [Symbol.asyncIterator]: async function* (){
+            const set = new SetCheck<TKey>();
+            for await (const item of source) {
+                const key = keySelectorFunc(item);
+                if (set.tryAdd(key)) {
+                    yield item;
+                }
+            }
+        }
+    };
+}
+
 export function unionIterator<TValue, TKey=TValue>(first: Iterable<TValue>, second: Iterable<TValue>, keySelector?: (item: TValue) => TKey): Iterable<TValue> {
     const keySelectorFunc = keySelector ?? defaultKeySelector;
     const set = new SetCheck<TKey>();

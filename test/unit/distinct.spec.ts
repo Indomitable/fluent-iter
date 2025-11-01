@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { from, fromIterable } from "../../src/index.ts";
+import {from, fromIterable, fromPromises, isFulfilled} from "../../src/index.ts";
 import { Person } from "./models.ts";
+import {wait} from "../test-utils.ts";
 
 describe('distinct tests', () => {
     [
@@ -54,5 +55,31 @@ describe('distinct tests', () => {
             new Person(10, 'A'),
             new Person(20, 'B'),
         ]);
+    });
+});
+
+describe('distinct async tests', () => {
+    it('should take distinct values', async () => {
+        const res = await fromPromises(
+            wait(1, 1),
+            wait(2, 2),
+            wait(3, 3),
+            wait(4, 2),
+            wait(5, 1)
+        ).where(isFulfilled).select(x => x.value).distinct().toArray();
+
+        expect(res).toStrictEqual([1, 2, 3]);
+    });
+
+    it('should take distinct values by key', async () => {
+        const res = await fromPromises(
+            wait(1, 2),
+            wait(2, 2),
+            wait(3, 3),
+            wait(4, 3),
+            wait(5, 1)
+        ).where(isFulfilled).distinct(x => x.value).select(x => x.value).toArray();
+
+        expect(res).toStrictEqual([2, 3, 1]);
     });
 });

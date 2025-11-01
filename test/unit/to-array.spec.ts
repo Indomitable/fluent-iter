@@ -7,4 +7,10 @@ describe('to array', () => {
 
         expect(arr).toEqual([0, 1, 2]);
     });
+
+    it('should get a mapped array from async iterable', async () => {
+        const arr = await fromTimer(5, 0).take(3).toArray(x => x * 2);
+
+        expect(arr).toEqual([0, 2, 4]);
+    });
 });

@@ -19,3 +19,14 @@ export async function toArrayAsyncCollector<T, R>(source: AsyncIterable<T>, map?
     }
     return result;
 }
+
+export async function toMapAsyncCollector<TValue, TKey, TElement>(
+    source: AsyncIterable<TValue>,
+    keySelector: (item: TValue) => TKey,
+    elementSelector?: (item: TValue) => TElement): Promise<Map<TKey, TValue|TElement>> {
+    const map = new Map<TKey, TValue|TElement>();
+    for await (const item of source) {
+        map.set(keySelector(item), elementSelector ? elementSelector(item) : item);
+    }
+    return map;
+}

@@ -9,4 +9,7 @@ export {
     // async
     fromEvent,
     fromTimer,
+    fromPromises,
+    isFulfilled,
+    isRejected,
 } from "./src/index.ts";

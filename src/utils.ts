@@ -1,6 +1,6 @@
 import {Comparer} from "./interfaces.ts";
 import {from, fromIterable} from "./creation.js";
-import { FluentIterable } from "fluent-iter";
+import { FluentIterable, FluentIterableAsync} from "fluent-iter";
 
 /**
  * Helper function to be use to access Symbol.iterator of iterable
@@ -179,9 +179,39 @@ export function group<TValue, TKey, TElement>(
     return fromIterable(map).toMap(([key, _]) => key as TKey, ([_, value]) => from(value));
 }
 
+export async function groupAsync<TValue, TKey, TElement>(
+    iterable: AsyncIterable<TValue>,
+    keySelector: (item: TValue, index: number) => TKey,
+    elementSelector: (item: TValue, index: number) => TElement): Promise<Map<TKey, FluentIterable<TElement>>> {
+    const map = new Map<TKey, TElement[]>();
+    let i = 0;
+    for await (const item of iterable) {
+        const key = keySelector(item, i);
+        if ((key !== null && typeof key === 'object') || typeof key === "function") {
+            throw new TypeError('groupBy method does not support keys to be objects or functions');
+        }
+        const element = elementSelector(item, i);
+        const value = map.get(key) || [];
+        value.push(element);
+        map.set(key, value);
+        i++;
+    }
+    const newMap = new Map<TKey, FluentIterable<TElement>>();
+    for (const [key, value] of map) {
+        newMap.set(key, from(value));
+    }
+    return newMap;
+}
+
 export function createIterable<T>(generator: () => Generator<T>): Iterable<T> {
     return {
         [Symbol.iterator]: generator,
+    }
+}
+
+export function createAsyncIterable<T>(generator: () => AsyncGenerator<T>): AsyncIterable<T> {
+    return {
+        [Symbol.asyncIterator]: generator,
     }
 }
 

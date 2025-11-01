@@ -3,7 +3,7 @@ import {createIterable} from "../utils.ts";
 /**
  * Return items until certain condition got falsy
  */
-export default function takeWhileIterator<TValue>(input: Iterable<TValue>, condition: (item: TValue, index: number) => boolean): Iterable<TValue> {
+export function takeWhileIterator<TValue>(input: Iterable<TValue>, condition: (item: TValue, index: number) => boolean): Iterable<TValue> {
     return createIterable(() => takeWhileGenerator(input, condition));
 }
 
@@ -16,4 +16,19 @@ function* takeWhileGenerator<TValue>(input: Iterable<TValue>, condition: (item: 
             break;
         }
     }
+}
+
+export function takeWhileIteratorAsync<TValue>(input: AsyncIterable<TValue>, condition: (item: TValue, index: number) => boolean): AsyncIterable<TValue> {
+    return {
+        [Symbol.asyncIterator]: async function* (){
+            let index = 0;
+            for await (const item of input) {
+                if (condition(item, index++)) {
+                    yield item;
+                } else {
+                    break;
+                }
+            }
+        }
+    };
 }
