@@ -437,52 +437,52 @@ declare module 'fluent-iter' {
         key: TKey;
     }
 
-    export interface FluentIterableAsync<TValue> extends AsyncIterable<TValue> {
+    export interface FluentAsyncIterable<TValue> extends AsyncIterable<TValue> {
         /**
          * Filters the iterable using predicate function typed overload
          * @param predicate
          */
-        where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentIterableAsync<TSubValue>;
+        where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentAsyncIterable<TSubValue>;
 
         /**
          * Filters the iterable using predicate function
          * @param predicate
          */
-        where(predicate: (item: TValue) => boolean): FluentIterableAsync<TValue>;
+        where(predicate: (item: TValue) => boolean): FluentAsyncIterable<TValue>;
         /**
          * Maps the iterable items
          * @param map map function
          */
-        select<TOutput>(map: (item: TValue) => TOutput): FluentIterableAsync<TOutput>;
+        select<TOutput>(map: (item: TValue) => TOutput): FluentAsyncIterable<TOutput>;
 
         /**
          * Take first N items from iterable
          */
-        take(count: number): FluentIterableAsync<TValue>;
+        take(count: number): FluentAsyncIterable<TValue>;
 
         /**
          * Return items while condition return true
          * @param condition
          */
-        takeWhile(condition: (item: TValue, index: number) => boolean): FluentIterableAsync<TValue>;
+        takeWhile(condition: (item: TValue, index: number) => boolean): FluentAsyncIterable<TValue>;
 
         /**
          * Skip first N items from iterable
          * @param count
          */
-        skip(count: number): FluentIterableAsync<TValue>;
+        skip(count: number): FluentAsyncIterable<TValue>;
 
         /**
          * Skip items while condition return true, get the rest
          * @param condition
          */
-        skipWhile(condition: (item: TValue, index: number) => boolean): FluentIterableAsync<TValue>;
+        skipWhile(condition: (item: TValue, index: number) => boolean): FluentAsyncIterable<TValue>;
 
         /**
          * Return distinct items. Can specify optional item comparer
          * @param keySelector function to get key for comparison.
          */
-        distinct<TKey>(keySelector?: (item: TValue) => TKey): FluentIterableAsync<TValue>;
+        distinct<TKey>(keySelector?: (item: TValue) => TKey): FluentAsyncIterable<TValue>;
 
         /**
          * Group items
@@ -490,10 +490,10 @@ declare module 'fluent-iter' {
          */
         groupBy<TKey>(keySelector: (item: TValue, index: number) => TKey):
             [TKey, TValue] extends ['fulfilled' | 'rejected', PromiseResult<infer TPromiseValue>]
-                ? FluentIterableAsync< IGrouping<'fulfilled', FulfilledPromiseResult<TPromiseValue>> | IGrouping<'rejected', RejectedPromiseResult>>
-                : FluentIterableAsync<IGrouping<TKey, TValue>>;
-        groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): FluentIterableAsync<IGrouping<TKey, TElement>>;
-        groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement, resultCreator: (key: TKey, items: FluentIterable<TElement>) => TResult): FluentIterableAsync<TResult>;
+                ? FluentAsyncIterable< IGrouping<'fulfilled', FulfilledPromiseResult<TPromiseValue>> | IGrouping<'rejected', RejectedPromiseResult>>
+                : FluentAsyncIterable<IGrouping<TKey, TValue>>;
+        groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): FluentAsyncIterable<IGrouping<TKey, TElement>>;
+        groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement, resultCreator: (key: TKey, items: FluentIterable<TElement>) => TResult): FluentAsyncIterable<TResult>;
 
         /**
          * Return a promise to an array.
@@ -518,8 +518,8 @@ declare module 'fluent-iter' {
         toMap<TKey, TElement>(keySelector: (item: TValue) => TKey, elementSelector: (item: TValue) => TElement): Promise<Map<TKey, TElement>>;
     }
 
-    export interface FluentIterableAsyncPromise<T> extends FluentIterableAsync<PromiseResult<T>> {
-        groupByStatus(): FluentIterableAsync< IGrouping<'fulfilled', FulfilledPromiseResult<T>> | IGrouping<'rejected', RejectedPromiseResult>>;
+    export interface FluentAsyncIterablePromise<T> extends FluentAsyncIterable<PromiseResult<T>> {
+        groupByStatus(): FluentAsyncIterable< IGrouping<'fulfilled', FulfilledPromiseResult<T>> | IGrouping<'rejected', RejectedPromiseResult>>;
         toStatusMap(): Promise<PromiseMap<T>>;
     }
 
@@ -558,9 +558,9 @@ declare module 'fluent-iter' {
     export function fromObject<TValue extends {}, TKey extends keyof TValue>(value: TValue): FluentIterable<{ key: string, value: TValue[TKey] }>;
     export function fromObject<TValue extends {}, TKey extends keyof TValue, TResult>(value: TValue, resultCreator: (key: TKey, value: TValue[TKey]) => TResult): FluentIterable<TResult>;
 
-    export function fromEvent<TTarget extends EventTarget, TEvent extends keyof HTMLElementEventMap>(target: TTarget, event: TEvent): FluentIterableAsync<HTMLElementEventMap[TEvent]>;
-    export function fromTimer(interval: number, delay?: number): FluentIterableAsync<number>;
-    export function fromPromises<T>(...promises: Promise<T>[]): FluentIterableAsyncPromise<T>;
+    export function fromEvent<TTarget extends EventTarget, TEvent extends keyof HTMLElementEventMap>(target: TTarget, event: TEvent): FluentAsyncIterable<HTMLElementEventMap[TEvent]>;
+    export function fromTimer(interval: number, delay?: number): FluentAsyncIterable<number>;
+    export function fromPromises<T>(...promises: Promise<T>[]): FluentAsyncIterablePromise<T>;
     export function isFulfilled<T>(result: PromiseResult<T>): result is FulfilledPromiseResult<T>;
     export function isRejected<T>(result: PromiseResult<T>): result is RejectedPromiseResult;
 }

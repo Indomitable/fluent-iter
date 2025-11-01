@@ -16,7 +16,7 @@ export function distinctIterator<TValue, TKey=TValue>(source: Iterable<TValue>, 
     };
 }
 
-export function distinctIteratorAsync<TValue, TKey=TValue>(source: AsyncIterable<TValue>, keySelector?: (item: TValue) => TKey): AsyncIterable<TValue> {
+export function distinctAsyncIterator<TValue, TKey=TValue>(source: AsyncIterable<TValue>, keySelector?: (item: TValue) => TKey): AsyncIterable<TValue> {
     const keySelectorFunc = keySelector ?? defaultKeySelector;
     return {
         [Symbol.asyncIterator]: async function* (){

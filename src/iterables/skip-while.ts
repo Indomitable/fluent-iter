@@ -20,7 +20,7 @@ function* skipWhileGenerator<TValue>(input: Iterable<TValue>, condition: (item: 
     }
 }
 
-export function skipWhileIteratorAsync<TValue>(input: AsyncIterable<TValue>, condition: (item: TValue, index: number) => boolean): AsyncIterable<TValue> {
+export function skipWhileAsyncIterator<TValue>(input: AsyncIterable<TValue>, condition: (item: TValue, index: number) => boolean): AsyncIterable<TValue> {
     return {
         [Symbol.asyncIterator]: async function* (){
             let flag = false;

@@ -1,6 +1,6 @@
 import {Comparer} from "./interfaces.ts";
 import {from, fromIterable} from "./creation.js";
-import { FluentIterable, FluentIterableAsync} from "fluent-iter";
+import { FluentIterable, FluentAsyncIterable} from "fluent-iter";
 
 /**
  * Helper function to be use to access Symbol.iterator of iterable
