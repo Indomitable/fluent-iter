@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { from, range } from "../../src/index.ts";
+import {from, fromTimer, range} from "../../src/index.ts";
+import {emptyAsyncIterable} from "../test-utils.ts";
 
 describe('page iteration tests', () => {
     [
@@ -33,4 +34,32 @@ describe('page iteration tests', () => {
         const res1 = from('abcdef').page(3).toArray();
         expect(res1.length).toBe(2);
     });
+});
+
+describe('page async tests', () => {
+   it('should page async iterable', async () => {
+       let i = 0;
+       for await (const page of fromTimer(1).take(10).page(4)) {
+           switch (i) {
+               case 0: {
+                   expect(page).toStrictEqual([0, 1, 2, 3]);
+                   break;
+               }
+               case 1: {
+                   expect(page).toStrictEqual([4, 5, 6, 7]);
+                   break;
+               }
+               case 2: {
+                   expect(page).toStrictEqual([8, 9])
+               }
+           }
+           i++;
+       }
+       expect(i).toBe(3);
+   });
+
+   it('should return empty array when no items', async () => {
+       const res = await from(emptyAsyncIterable).page(4).toArray();
+       expect(res).toStrictEqual([]);
+   })
 });

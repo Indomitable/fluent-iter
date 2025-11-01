@@ -14,7 +14,7 @@ function* selectGenerator<TValue, TOutput>(input: Iterable<TValue>, map: Mapper<
     }
 }
 
-export function selectIteratorAsync<TValue, TOutput>(input: AsyncIterable<TValue>, map: Mapper<TValue, TOutput>): AsyncIterable<TOutput> {
+export function selectAsyncIterator<TValue, TOutput>(input: AsyncIterable<TValue>, map: Mapper<TValue, TOutput>): AsyncIterable<TOutput> {
     return {
         [Symbol.asyncIterator]: async function* () {
             for await (const item of input) {
