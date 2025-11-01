@@ -1,6 +1,6 @@
 import { whereIterator } from "./iterables/where.ts";
 import { selectIterator } from "./iterables/select.ts";
-import selectManyIterator from "./iterables/select-many.ts";
+import { selectManyIterator, flatIterator, flatMapIterator } from "./iterables/select-many.ts";
 import { takeIterator } from "./iterables/take.ts";
 import skipIterator from "./iterables/skip.ts";
 import { toArrayCollector } from "./finalizers/to-array.ts";
@@ -36,7 +36,7 @@ import groupJoinIterator from "./iterables/group-join.ts";
 import zipIterable from "./iterables/zip.js";
 
 import type {Action, Comparer, Mapper, Predicate} from "./interfaces.ts";
-import type { FluentIterable, IGrouping } from 'fluent-iter';
+import type {FlatFluentIterable, FluentIterable, IGrouping } from 'fluent-iter';
 
 export default class Fluent<TValue> implements FluentIterable<TValue> {
     readonly #source: Iterable<TValue>;
@@ -53,8 +53,17 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
     select<TOutput>(map: Mapper<TValue, TOutput>): FluentIterable<TOutput> {
         return new Fluent(selectIterator(this, map));
     }
+    flat(depth: number = 1): FlatFluentIterable<TValue> {
+        return new Fluent(flatIterator(this, depth)) as any;
+    }
+    flatMap<TResult>(mapper: (value: TValue) => TResult | ReadonlyArray<TResult>): FluentIterable<TResult> {
+        return new Fluent(flatMapIterator(this, mapper));
+    }
     selectMany<TInner, TResult>(innerSelector: (item: TValue) => TInner[], resultCreator?: (outer: TValue, inner: TInner) => TResult): FluentIterable<TInner | TResult> {
-        return new Fluent(selectManyIterator(this, innerSelector, resultCreator));
+        if (typeof resultCreator !== 'undefined') {
+            return new Fluent(selectManyIterator(this, innerSelector, resultCreator));
+        }
+        return new Fluent(selectManyIterator(this, innerSelector));
     }
     take(count: number): FluentIterable<TValue> {
         return new Fluent(takeIterator(this, count));

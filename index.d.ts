@@ -19,10 +19,23 @@ declare module 'fluent-iter' {
         select<TOutput>(map: (item: TValue) => TOutput): FluentIterable<TOutput>;
 
         /**
-         * Flat Iterable of collections
+         * Flat Iterable of collections up to N levels, default is 1 level.
+         * @param depth
+         */
+        flat(depth?: number): FlatFluentIterable<TValue>;
+
+        /**
+         * Flat Iterable of collections, alias of flat
          * @param innerSelector Function which returns an inner collection
          */
         selectMany<TInner>(innerSelector: (item: TValue) => TInner[]): FluentIterable<TInner>;
+
+        /**
+         * Flat iterable of collection one level and maps inner elements.
+         * @param innerSelector Function which returns an inner collection
+         * @param mapper Function thish converts inner element to result.
+         */
+        flatMap<TResult>(mapper: (value: TValue) => TResult | ReadonlyArray<TResult>): FluentIterable<TResult>;
 
         /**
          * Flat iterable of collection
@@ -504,6 +517,10 @@ declare module 'fluent-iter' {
         get(key: 'fulfilled'): FluentIterable<FulfilledPromiseResult<T>> | undefined;
         get(key: 'rejected'): FluentIterable<RejectedPromiseResult> | undefined;
     }
+
+    type FlatFluentIterable<Value> = Value extends ReadonlyArray<infer InnerArr>
+        ? FlatFluentIterable<InnerArr>
+        : FluentIterable<Value>;
 
     export function from<TValue>(iterable: Iterable<TValue> | ArrayLike<TValue>): FluentIterable<TValue>;
     export function from<TValue extends {}, TKey extends keyof TValue>(value: TValue): FluentIterable<{ key: string, value: TValue[TKey] }>;

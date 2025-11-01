@@ -1,5 +1,5 @@
 import {expect, describe, it} from "vitest";
-import {FluentAsyncSubject} from "../../src/fluent-async.ts";
+import {FluentAsyncSubject} from "../../src/fluent-async-subject.ts";
 
 describe('FluentAsyncSubject', () => {
    it('should emit values to array', async () => {

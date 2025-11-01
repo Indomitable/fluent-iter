@@ -89,4 +89,33 @@ describe('select many tests', () => {
             expect(resultFlat).toEqual(resultSelectMany);
         });
     });
+
+    it('should flat sequence: depth 1', () => {
+        const input = [
+            [1, 2, 3, 4, [5, 6]],
+            ['a', 'b', ['c', ['d']]],
+            'e'
+        ];
+        const output = from(input).flat().toArray();
+        expect(output).toStrictEqual([1, 2, 3, 4, [5, 6], 'a', 'b', ['c', ['d']], 'e']);
+    });
+
+    it('should flat sequence: depth 2', () => {
+        const input = [
+            [1, 2, 3, 4, [5, 6]],
+            ['a', 'b', 'c', 'd'],
+            'e'
+        ];
+        const output = from(input).flat(2).toArray();
+        expect(output).toStrictEqual([1, 2, 3, 4, 5, 6, 'a', 'b', 'c', 'd', 'e']);
+    });
+
+    it('should flatMap sequence', () => {
+        const input = [
+            [1, 2, 3, 4, [5, 6]],
+            10
+        ];
+        const output = from(input).flatMap(i => i).toArray();
+        expect(output).toStrictEqual([1, 2, 3, 4, [5, 6], 10]);
+    });
 });
