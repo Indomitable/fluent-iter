@@ -1,7 +1,13 @@
 import {doneValue, iteratorResultCreator} from "./utils.ts";
 import FluentAsync from "./fluent-async.ts";
 
-export class SubjectAsyncIterable<T> implements AsyncIterator<T> {
+export interface SubjectIterator<T> extends AsyncIterator<T> {
+    emit(value: T): void;
+    complete(): void;
+    fail(err: any): void;
+}
+
+export class ReplaySubjectAsyncIterator<T> implements SubjectIterator<T> {
     private queue: T[] = [];
     private waiters: {
         resolve: (result: IteratorResult<T>) => void;
@@ -66,18 +72,40 @@ export class SubjectAsyncIterable<T> implements AsyncIterator<T> {
     }
 }
 
-export class FluentAsyncSubject<T> extends FluentAsync<T> implements AsyncDisposable {
-    private subject: SubjectAsyncIterable<T> = new SubjectAsyncIterable<T>();
+export class SubjectAsyncIterator<T> extends ReplaySubjectAsyncIterator<T> {
+    private started = false;
 
-    constructor() {
+    public next(): Promise<IteratorResult<T>> {
+        this.started = true;
+        return super.next();
+    }
+
+    public emit(value: T) {
+        if (!this.started) {
+            return;
+        }
+        super.emit(value);
+    }
+}
+
+export class FluentAsyncSubject<T> extends FluentAsync<T> implements AsyncDisposable, Disposable {
+    private subject: SubjectIterator<T>;
+
+    constructor(iterator?: SubjectIterator<T>) {
+        const iter = iterator ?? new SubjectAsyncIterator<T>();
         super({
-            [Symbol.asyncIterator]: () => this.subject,
+            [Symbol.asyncIterator]: () => iter,
         });
+        this.subject = iter;
     }
 
     [Symbol.asyncDispose](): PromiseLike<void> {
         this.complete();
         return Promise.resolve();
+    }
+
+    [Symbol.dispose](): void {
+        this.complete();
     }
 
     emit(value: T) {
@@ -90,5 +118,11 @@ export class FluentAsyncSubject<T> extends FluentAsync<T> implements AsyncDispos
 
     fail(err: any) {
         this.subject.fail(err);
+    }
+}
+
+export class FluentAsyncReplaySubject<T> extends FluentAsyncSubject<T> {
+    constructor() {
+        super(new ReplaySubjectAsyncIterator<T>());
     }
 }
