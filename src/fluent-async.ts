@@ -18,6 +18,7 @@ import {takeWhileAsyncIterator} from "./iterables/take-while.ts";
 import {skipAsyncIterator} from "./iterables/skip.ts";
 import {skipWhileAsyncIterator} from "./iterables/skip-while.ts";
 import {distinctAsyncIterator} from "./iterables/set-iterators.ts";
+import {pageAsyncIterator} from "./iterables/page.ts";
 
 export default class FluentAsync<TValue> implements FluentAsyncIterable<TValue> {
     readonly #source: AsyncIterable<TValue>;
@@ -59,6 +60,9 @@ export default class FluentAsync<TValue> implements FluentAsyncIterable<TValue> 
                                      elementSelector?: (item: TValue, index: number) => TElement,
                                      resultCreator?: (key: TKey, items: FluentIterable<TElement>) => TResult): FluentAsyncIterable<IGrouping<TKey, TValue> | IGrouping<TKey, TElement> | TResult> {
         return new FluentAsync(groupByAsyncIterator(this, keySelector, elementSelector, resultCreator));
+    }
+    page(pageSize: number): FluentAsyncIterable<TValue[]> {
+        return new FluentAsync(pageAsyncIterator(this, pageSize));
     }
     toArray(): Promise<TValue[]>;
     toArray<TResult>(map: Mapper<TValue, TResult>): Promise<TResult[]>;

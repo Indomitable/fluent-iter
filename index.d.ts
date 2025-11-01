@@ -496,6 +496,12 @@ declare module 'fluent-iter' {
         groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement, resultCreator: (key: TKey, items: FluentIterable<TElement>) => TResult): FluentAsyncIterable<TResult>;
 
         /**
+         * Create a paging
+         * @param pageSize
+         */
+        page(pageSize: number): FluentAsyncIterable<TValue[]>;
+
+        /**
          * Return a promise to an array.
          */
         toArray(): Promise<TValue[]>;
