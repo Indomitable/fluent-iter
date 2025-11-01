@@ -18,10 +18,10 @@ function* takeWhileGenerator<TValue>(input: Iterable<TValue>, condition: (item: 
     }
 }
 
-export function takeWhileAsyncIterator<TValue>(input: Iterable<TValue>, condition: (item: TValue, index: number) => boolean): AsyncIterable<TValue> {
-    let index = 0;
+export function takeWhileIteratorAsync<TValue>(input: AsyncIterable<TValue>, condition: (item: TValue, index: number) => boolean): AsyncIterable<TValue> {
     return {
         [Symbol.asyncIterator]: async function* (){
+            let index = 0;
             for await (const item of input) {
                 if (condition(item, index++)) {
                     yield item;

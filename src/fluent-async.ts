@@ -14,6 +14,10 @@ import {selectIteratorAsync} from "./iterables/select.js";
 import takeIteratorAsync from "./iterables/take.js";
 import {toArrayAsyncCollector, toMapAsyncCollector} from "./finalizers/to-array.js";
 import {groupByAsyncIterator} from "./iterables/group.ts";
+import {takeWhileIteratorAsync} from "./iterables/take-while.ts";
+import {skipIteratorAsync} from "./iterables/skip.ts";
+import {skipWhileIteratorAsync} from "./iterables/skip-while.ts";
+import {distinctIteratorAsync} from "./iterables/set-iterators.ts";
 
 export default class FluentAsync<TValue> implements FluentIterableAsync<TValue> {
     readonly #source: AsyncIterable<TValue>;
@@ -32,6 +36,18 @@ export default class FluentAsync<TValue> implements FluentIterableAsync<TValue> 
     }
     take(count: number): FluentIterableAsync<TValue> {
         return new FluentAsync(takeIteratorAsync(this, count));
+    }
+    takeWhile(condition: (item: TValue, index: number) => boolean): FluentIterableAsync<TValue> {
+        return new FluentAsync(takeWhileIteratorAsync(this, condition));
+    }
+    skip(count: number): FluentIterableAsync<TValue> {
+        return new FluentAsync(skipIteratorAsync(this, count));
+    }
+    skipWhile(condition: (item: TValue, index: number) => boolean): FluentIterableAsync<TValue> {
+        return new FluentAsync(skipWhileIteratorAsync(this, condition));
+    }
+    distinct<TKey>(keySelector?: (item: TValue) => TKey): FluentIterableAsync<TValue> {
+        return new FluentAsync(distinctIteratorAsync(this, keySelector));
     }
     groupBy<TKey>(keySelector: (item: TValue, index: number) => TKey):
         [TKey, TValue] extends ['fulfilled' | 'rejected', PromiseResult<infer TPromiseValue>] ?

@@ -461,6 +461,30 @@ declare module 'fluent-iter' {
         take(count: number): FluentIterableAsync<TValue>;
 
         /**
+         * Return items while condition return true
+         * @param condition
+         */
+        takeWhile(condition: (item: TValue, index: number) => boolean): FluentIterableAsync<TValue>;
+
+        /**
+         * Skip first N items from iterable
+         * @param count
+         */
+        skip(count: number): FluentIterableAsync<TValue>;
+
+        /**
+         * Skip items while condition return true, get the rest
+         * @param condition
+         */
+        skipWhile(condition: (item: TValue, index: number) => boolean): FluentIterableAsync<TValue>;
+
+        /**
+         * Return distinct items. Can specify optional item comparer
+         * @param keySelector function to get key for comparison.
+         */
+        distinct<TKey>(keySelector?: (item: TValue) => TKey): FluentIterableAsync<TValue>;
+
+        /**
          * Group items
          * @param keySelector group key selector
          */

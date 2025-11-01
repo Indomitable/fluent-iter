@@ -1,6 +1,5 @@
 //An Iterable that contains the elements from both input sequences, excluding duplicates.
 import {SetCheck} from "../utils.ts";
-import * as async_hooks from "node:async_hooks";
 
 export function distinctIterator<TValue, TKey=TValue>(source: Iterable<TValue>, keySelector?: (item: TValue) => TKey): Iterable<TValue> {
     const keySelectorFunc = keySelector ?? defaultKeySelector;
@@ -17,11 +16,11 @@ export function distinctIterator<TValue, TKey=TValue>(source: Iterable<TValue>, 
     };
 }
 
-export function distinctAsyncIterator<TValue, TKey=TValue>(source: Iterable<TValue>, keySelector?: (item: TValue) => TKey): AsyncIterable<TValue> {
+export function distinctIteratorAsync<TValue, TKey=TValue>(source: AsyncIterable<TValue>, keySelector?: (item: TValue) => TKey): AsyncIterable<TValue> {
     const keySelectorFunc = keySelector ?? defaultKeySelector;
-    const set = new SetCheck<TKey>();
     return {
         [Symbol.asyncIterator]: async function* (){
+            const set = new SetCheck<TKey>();
             for await (const item of source) {
                 const key = keySelectorFunc(item);
                 if (set.tryAdd(key)) {
