@@ -448,10 +448,61 @@ declare module 'fluent-iter' {
         take(count: number): FluentIterableAsync<TValue>;
 
         /**
+         * Group items
+         * @param keySelector group key selector
+         */
+        groupBy<TKey>(keySelector: (item: TValue, index: number) => TKey):
+            [TKey, TValue] extends ['fulfilled' | 'rejected', PromiseResult<infer TPromiseValue>]
+                ? FluentIterableAsync< IGrouping<'fulfilled', FulfilledPromiseResult<TPromiseValue>> | IGrouping<'rejected', RejectedPromiseResult>>
+                : FluentIterableAsync<IGrouping<TKey, TValue>>;
+        groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): FluentIterableAsync<IGrouping<TKey, TElement>>;
+        groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement, resultCreator: (key: TKey, items: FluentIterable<TElement>) => TResult): FluentIterableAsync<TResult>;
+
+        /**
          * Return a promise to an array.
          */
         toArray(): Promise<TValue[]>;
         toArray<TResult>(map: (item: TValue) => TResult): Promise<TResult[]>;
+
+        /**
+         * Create a map object from sequence
+         * @param keySelector - key selector - keys should be unique, otherwise last keys will override first.
+         */
+        toMap<TKey>(keySelector: (item: TValue) => TKey):
+            [TKey, TValue] extends ['fulfilled' | 'rejected', IGrouping<'fulfilled', FulfilledPromiseResult<infer TPromiseValue>> | IGrouping<'rejected', RejectedPromiseResult>]
+                ? Promise<PromiseMap<TPromiseValue>>
+                : Promise<Map<TKey, TValue>>;
+
+        /**
+         * Create a map object from sequence
+         * @param keySelector key selector - keys should be unique, otherwise last keys will override first.
+         * @param elementSelector element selector
+         */
+        toMap<TKey, TElement>(keySelector: (item: TValue) => TKey, elementSelector: (item: TValue) => TElement): Promise<Map<TKey, TElement>>;
+    }
+
+    export interface FluentIterableAsyncPromise<T> extends FluentIterableAsync<PromiseResult<T>> {
+        groupByStatus(): FluentIterableAsync< IGrouping<'fulfilled', FulfilledPromiseResult<T>> | IGrouping<'rejected', RejectedPromiseResult>>;
+        toStatusMap(): Promise<PromiseMap<T>>;
+    }
+
+    type PromiseResult<T> = FulfilledPromiseResult<T> | RejectedPromiseResult;
+
+    interface FulfilledPromiseResult<T> {
+        index: number;
+        status: 'fulfilled';
+        value: T;
+    }
+
+    interface RejectedPromiseResult {
+        index: number;
+        status: 'rejected';
+        reason: any;
+    }
+
+    interface PromiseMap<T> extends Map<'fulfilled'|'rejected', FluentIterable<PromiseResult<T>>> {
+        get(key: 'fulfilled'): FluentIterable<FulfilledPromiseResult<T>> | undefined;
+        get(key: 'rejected'): FluentIterable<RejectedPromiseResult> | undefined;
     }
 
     export function from<TValue>(iterable: Iterable<TValue> | ArrayLike<TValue>): FluentIterable<TValue>;
@@ -468,4 +519,7 @@ declare module 'fluent-iter' {
 
     export function fromEvent<TTarget extends EventTarget, TEvent extends keyof HTMLElementEventMap>(target: TTarget, event: TEvent): FluentIterableAsync<HTMLElementEventMap[TEvent]>;
     export function fromTimer(interval: number, delay?: number): FluentIterableAsync<number>;
+    export function fromPromises<T>(...promises: Promise<T>[]): FluentIterableAsyncPromise<T>;
+    export function isFulfilled<T>(result: PromiseResult<T>): result is FulfilledPromiseResult<T>;
+    export function isRejected<T>(result: PromiseResult<T>): result is RejectedPromiseResult;
 }

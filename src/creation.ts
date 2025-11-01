@@ -1,7 +1,7 @@
 import type { FluentIterable } from 'fluent-iter';
 import Fluent from "./fluent.ts";
-import arrayLikeIterator from "./iterables/initial/array-like.ts";
-import objectIterator from "./iterables/initial/object.ts";
+import arrayLikeIterator from "./generators/array-like.ts";
+import objectIterator from "./generators/object.ts";
 import rangeIterable from "./generators/range.ts";
 import repeatIterable from "./generators/repeat.ts";
 
