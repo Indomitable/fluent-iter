@@ -10,7 +10,6 @@
   "type": "module",
   "types": "index.d.ts",
   "scripts": {
-    "build": "vite build",
     "check": "tsc --noEmit",
     "test": "vitest --run",
     "test:watch": "vitest",
