@@ -1,3 +1,5 @@
+import {doneValue} from "../src/utils.ts";
+
 export function wait<T>(ms: number, result: T): Promise<T> {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -13,3 +15,9 @@ export function waitAndReject(ms: number, reason: any): Promise<any> {
         }, ms);
     });
 }
+
+export const emptyAsyncIterable: AsyncIterable<void> = ({
+    [Symbol.asyncIterator]: () => ({
+        next: () => Promise.resolve(doneValue())
+    }),
+});

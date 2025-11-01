@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { from, fromIterable, range } from "../../src/index.ts";
+import {from, fromIterable, fromTimer, range} from "../../src/index.ts";
+import {emptyAsyncIterable} from "../test-utils.ts";
 
 describe('take tests', () => {
     [
@@ -70,5 +71,37 @@ describe('take tests', () => {
             expect(from(source).take(0).toArray()).toEqual([]);
             expect(from(source).take(-1).toArray()).toEqual([]);
         });
+    });
+});
+
+describe('takeAsync', () => {
+    it('should take first n elements', async () => {
+        const arr = await fromTimer(1).take(3).toArray();
+        expect(arr).toStrictEqual([0, 1, 2]);
+    });
+
+    it('should take zero elements', async () => {
+        const arr = await fromTimer(1).take(0).toArray();
+        expect(arr).toStrictEqual([]);
+    });
+
+    it('should take empty sequence', async () => {
+        const arr = await from(emptyAsyncIterable).take(3).toArray();
+        expect(arr).toStrictEqual([]);
+    });
+
+    it('should take while while predicate is true', async () => {
+        const arr = await fromTimer(1).takeWhile(x => x < 5).toArray();
+        expect(arr).toStrictEqual([0, 1, 2, 3, 4]);
+    });
+
+    it('should take while nothing from empty', async () => {
+        const arr = await from(emptyAsyncIterable as AsyncIterable<number>).takeWhile(x => x < 5).toArray();
+        expect(arr).toStrictEqual([]);
+    });
+
+    it('should take while nothing when false', async () => {
+        const arr = await fromTimer(1).take(3).takeWhile(x => x > 5).toArray();
+        expect(arr).toStrictEqual([]);
     });
 });
