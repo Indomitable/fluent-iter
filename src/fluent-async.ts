@@ -5,11 +5,11 @@ import type {
     IGrouping,
     PromiseMap
 } from 'fluent-iter';
-import type {Mapper, Predicate} from "./interfaces.js";
-import {whereAsyncIterator} from "./iterables/where.js";
-import {selectAsyncIterator} from "./iterables/select.js";
-import takeAsyncIterator from "./iterables/take.js";
-import {toArrayAsyncCollector, toMapAsyncCollector} from "./finalizers/to-array.js";
+import type {Mapper, Predicate} from "./interfaces.ts";
+import {whereAsyncIterator} from "./iterables/where.ts";
+import {selectAsyncIterator} from "./iterables/select.ts";
+import takeAsyncIterator from "./iterables/take.ts";
+import {toArrayAsyncCollector, toMapAsyncCollector} from "./finalizers/to-array.ts";
 import {groupByAsyncIterator} from "./iterables/group.ts";
 import {takeWhileAsyncIterator} from "./iterables/take-while.ts";
 import {skipAsyncIterator} from "./iterables/skip.ts";

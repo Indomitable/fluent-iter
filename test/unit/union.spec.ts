@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { from, range } from "../../src/index.ts";
-import {Person} from "./models.js";
+import {Person} from "./models.ts";
 
 describe('union tests', () => {
     [

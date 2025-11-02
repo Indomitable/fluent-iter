@@ -1,5 +1,5 @@
 import {Comparer} from "./interfaces.ts";
-import {from, fromIterable} from "./creation.js";
+import {from, fromIterable} from "./creation.ts";
 import { FluentIterable, FluentAsyncIterable} from "fluent-iter";
 
 /**
@@ -157,6 +157,19 @@ export function emptyIterator<T>(): Iterator<T> {
             return doneValue();
         },
     };
+}
+
+
+function extracted<TKey, TValue, TElement>(keySelector: (item: TValue, index: number) => TKey, item: TValue, i: number, elementSelector: (item: TValue, index: number) => TElement, map: Map<TKey, TElement[]>) {
+    const key = keySelector(item, i);
+    if ((key !== null && typeof key === 'object') || typeof key === "function") {
+        throw new TypeError('groupBy method does not support keys to be objects or functions');
+    }
+    const element = elementSelector(item, i);
+    const value = map.get(key) || [];
+    value.push(element);
+    map.set(key, value);
+    i++;
 }
 
 export function group<TValue, TKey, TElement>(

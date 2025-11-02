@@ -6,8 +6,8 @@ import {skipIterator} from "./iterables/skip.ts";
 import {toArrayCollector} from "./finalizers/to-array.ts";
 import {takeWhileIterator} from "./iterables/take-while.ts";
 import {skipWhileIterator} from "./iterables/skip-while.ts";
-import takeLastIterator from "./iterables/take-last.ts";
-import skipLastIterator from "./iterables/skip-last.ts";
+import {takeLastIterator} from "./iterables/take-last.ts";
+import {skipLastIterator} from "./iterables/skip-last.ts";
 import {allAndEveryCollector, allCollector} from "./finalizers/all.ts";
 import anyCollector from "./finalizers/any.ts";
 import countCollector from "./finalizers/count.ts";
@@ -33,7 +33,7 @@ import {sortAscendingIterator, sortDescendingIterator} from "./iterables/order.t
 import {groupByIterator} from "./iterables/group.ts";
 import joinIterator from "./iterables/join.ts";
 import groupJoinIterator from "./iterables/group-join.ts";
-import zipIterable from "./iterables/zip.js";
+import {zipIterable} from "./iterables/zip.ts";
 
 import type {Action, Comparer, Mapper, Predicate} from "./interfaces.ts";
 import type {FlatFluentIterable, FluentIterable, IGrouping} from 'fluent-iter';

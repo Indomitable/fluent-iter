@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {fromTimer} from "../../src/index.js";
+import {fromTimer} from "../../src/index.ts";
 
 describe('to array', () => {
     it('should get an array from async iterable', async () => {
