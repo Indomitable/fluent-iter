@@ -47,10 +47,15 @@ Operators:
 
 Transformers
 - where : filter iterable by predicate
+- filter : alias for where
 - select : transform iterable using mapping function
+- map : alias for select
 - selectMany : flatten an iterable and can transform it to another iterable
+- flat: flatten an iterable up to N levels, default is 1 level
+- flatMap: flatten an iterable one level and maps inner elements
 - ofType : produces typed iterable, used to filter by type
 - ofClass: filters iterable for elements of a given class
+- groupBy: group items by a key
 - orderBy : Order iterable ascending by a key
 - orderByDescending : Order iterable descending by a key
 - groupJoin: Do a group join (left join) between current and external iterable. For each item of current sequence get array of items from external sequence.
@@ -73,7 +78,6 @@ Combinations:
 - union: Produce a union of two iterables where the result is distinct values from both.
 - intersect: Return an intersection of two iterables where the result is distinct values.
 - difference: Return elements from the first iterable that are not in the second. Only distinct values are returned.
-- except: Return elements from the first iterable that are not in the second. (TODO)
 - symmetricDifference: Return a symmetric difference ( distinct values except intersection ) of two iterables where the result is distinct values.
 
 Aggregators:
@@ -81,26 +85,34 @@ Aggregators:
 - toMap(): Create a map object from sequence
 - toSet(): Creates a set from current sequence
 - first : first element in iterable or first element that satisfies predicate
+- find: alias for first
 - firstOrDefault: like first but with default value
-- firstOrThrows: like first but throws if no element is found
+- firstOrThrow: like first but throws if no element is found
 - firstIndex: like first but returns index of element
+- findIndex: alias for firstIndex
 - last: last element in iterable or last element that satisfies predicate
+- findLast: alias for last
 - lastOrDefault: like last but with default value
-- lastOrThrows: like last but throws if no element is found
+- lastOrThrow: like last but throws if no element is found
 - lastIndex: like last but returns index of element
+- findLastIndex: alias for lastIndex
 - single: single element in iterable or single element that satisfies predicate. Throws if more than one element is found.
 - singleOrDefault: like single but with default value when nothing found. Throws if more than one element is found.
 - all: check if all elements in iterable satisfy predicate
+- every: alias for all
 - allAndEvery: like all but requires to have at least one element
 - any: check if at least one element in iterable satisfies predicate
+- some: alias for any
 - count: count elements in iterable or count of elements that satisfy predicate
 - aggregate: Produce single value form sequence values. The initial value is the second argument.
+- reduce: alias for aggregate
 - sum: Sum all elements in iterable
 - product: Multiply all elements in iterable
 - min: Get minimum value in iterable
 - max: Get maximum value in iterable
 - join: join all items from iterable with string concatenation
 - elementAt: get element at index
+- at: alias for elementAt
 
 Misc:
 - forEach: iterate over iterable and execute a function for each element
