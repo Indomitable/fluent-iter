@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { fromIterable } from "../../src/index.ts";
+import {from, fromIterable} from "../../src/index.ts";
 
 describe("all tests", () => {
     [["a", "b", "c"], new Set(["a", "b", "c"])].forEach((source, indx) => {
@@ -36,7 +36,7 @@ describe("all tests", () => {
                 indx,
             () => {
                 const input0 = fromIterable(source);
-                expect(input0.all((_) => typeof _ === "string")).toBe(false);
+                expect(input0.allAndEvery((_) => typeof _ === "string")).toBe(false);
             },
         );
     });
@@ -46,5 +46,11 @@ describe("all tests", () => {
             const input = fromIterable(source);
             expect(input.allAndEvery((_) => typeof _ === "string")).toBe(false);
         });
+    });
+
+    it('should work alias', () => {
+        expect(from([1, 2, 3]).every(x => x > 0)).toBe(true);
+        expect(from([1, 2, 3]).every(x => x > 2)).toBe(false);
+        expect(from([]).every(x => x > 2)).toBe(true);
     });
 });

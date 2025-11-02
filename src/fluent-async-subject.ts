@@ -22,8 +22,9 @@ export class ReplaySubjectAsyncIterator<T> implements SubjectIterator<T> {
             return Promise.reject(this.error);
         }
 
-        if (this.queue.length > 0) {
-            return Promise.resolve(iteratorResultCreator(this.queue.shift()!));
+        const nextValue = this.queue.shift();
+        if (nextValue) {
+            return Promise.resolve(iteratorResultCreator(nextValue));
         }
 
         if (this.closed) {

@@ -29,4 +29,11 @@ describe("any tests", () => {
         expect(from(new Set([1])).any()).toBe(true);
         expect(from(new Set()).any()).toBe(false);
     });
+
+    it('should work alias', () => {
+        expect(from([1, 2, 3]).some()).toBe(true);
+        expect(from([]).some()).toBe(false);
+        expect(from([1, 2, 3]).some(x => x > 2)).toBe(true);
+        expect(from([1, 2, 3]).some(x => x > 3)).toBe(false);
+    });
 });

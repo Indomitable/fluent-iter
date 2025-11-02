@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { fromIterable, range } from "../../src/index.ts";
+import {from, fromIterable, range} from "../../src/index.ts";
 
 describe('aggregate tests', () => {
     [
@@ -127,5 +127,16 @@ describe('aggregate tests', () => {
     it('should max equal items', () => {
         const res = fromIterable([1, 2, 1, 3, 3]).max();
         expect(res).toBe(3);
+    });
+
+    it('should work alias', () => {
+        const res = from([1, 2, 3, 4]).reduce((a, b) => a + b);
+        expect(res).toBe(10);
+        const res1 = from([1, 2, 3, 4]).reduce((a, b) => a + b, 2);
+        expect(res1).toBe(12);
+        const res2 = from([]).reduce((a, b) => a + b, 2);
+        expect(res2).toBe(2);
+        const res3 = () => from([] as number[]).reduce((a, b) => a + b);
+        expect(res3).toThrowError(TypeError);
     });
 });

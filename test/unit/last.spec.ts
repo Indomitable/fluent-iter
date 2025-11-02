@@ -44,6 +44,11 @@ describe('last finalizer', () => {
         });
     });
 
+    it('should work alias: findLast', () => {
+        const res = range(1, 5).findLast(x => x === 2);
+        expect(res).toBe(2);
+    });
+
     // lastOrDefault
 
     [
@@ -165,5 +170,10 @@ describe('last finalizer', () => {
 
     it('should return last index when multiple times', () => {
         expect(from([1, 2, 3, 1, 2, 3]).lastIndex(_ => _ === 2)).toBe(4);
+    });
+
+    it('should work alias: findLastIndex', () => {
+        const res =  range(1,5).findLastIndex(x => x === 3);
+        expect(res).toBe(2);
     });
 });
