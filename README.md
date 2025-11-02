@@ -127,7 +127,9 @@ Operators:
 
 Transformers
 - where : filter iterable by predicate
+- filter : alias for where
 - select : transform iterable using mapping function
+- map : alias for select
 - take : take first n elements
 - takeWhile : take elements while predicate is true
 - skip : skip first n elements

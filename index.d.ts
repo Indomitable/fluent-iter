@@ -538,11 +538,33 @@ declare module 'fluent-iter' {
          * @param predicate
          */
         where(predicate: (item: TValue) => boolean): FluentAsyncIterable<TValue>;
+
+        /**
+         * Filters the iterable using predicate function typed overload. Alias to where.
+         * @see where
+         * @param predicate
+         */
+        filter<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentAsyncIterable<TSubValue>;
+
+        /**
+         * Filters the iterable using predicate function. Alias to where.
+         * @see where
+         * @param predicate
+         */
+        filter(predicate: (item: TValue) => boolean): FluentAsyncIterable<TValue>;
+
         /**
          * Maps the iterable items
          * @param map map function
          */
         select<TOutput>(map: (item: TValue) => TOutput): FluentAsyncIterable<TOutput>;
+
+        /**
+         * Maps the iterable items. Alias to select.
+         * @see select
+         * @param map map function
+         */
+        map<TOutput>(map: (item: TValue) => TOutput): FluentAsyncIterable<TOutput>;
 
         /**
          * Take first N items from iterable

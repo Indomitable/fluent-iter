@@ -29,8 +29,17 @@ export default class FluentAsync<TValue> implements FluentAsyncIterable<TValue> 
     where<TSubValue>(predicate: Predicate<TValue>): FluentAsyncIterable<TValue> | FluentAsyncIterable<TSubValue> {
         return new FluentAsync(whereAsyncIterator(this, predicate));
     }
+
+    get filter() {
+        return this.where;
+    }
+
     select<TOutput>(map: Mapper<TValue, TOutput>): FluentAsyncIterable<TOutput> {
         return new FluentAsync(selectAsyncIterator(this, map));
+    }
+
+    get map() {
+        return this.select;
     }
     take(count: number): FluentAsyncIterable<TValue> {
         return new FluentAsync(takeAsyncIterator(this, count));
