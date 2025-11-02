@@ -1,6 +1,6 @@
 import {Comparer} from "./interfaces.ts";
 import {from, fromIterable} from "./creation.ts";
-import { FluentIterable, FluentAsyncIterable} from "fluent-iter";
+import { FluentIterable } from "fluent-iter";
 
 /**
  * Helper function to be use to access Symbol.iterator of iterable
@@ -159,19 +159,6 @@ export function emptyIterator<T>(): Iterator<T> {
     };
 }
 
-
-function extracted<TKey, TValue, TElement>(keySelector: (item: TValue, index: number) => TKey, item: TValue, i: number, elementSelector: (item: TValue, index: number) => TElement, map: Map<TKey, TElement[]>) {
-    const key = keySelector(item, i);
-    if ((key !== null && typeof key === 'object') || typeof key === "function") {
-        throw new TypeError('groupBy method does not support keys to be objects or functions');
-    }
-    const element = elementSelector(item, i);
-    const value = map.get(key) || [];
-    value.push(element);
-    map.set(key, value);
-    i++;
-}
-
 export function group<TValue, TKey, TElement>(
     iterable: Iterable<TValue>,
     keySelector: (item: TValue, index: number) => TKey,
@@ -228,8 +215,32 @@ export function createAsyncIterable<T>(generator: () => AsyncGenerator<T>): Asyn
     }
 }
 
-export function delay(ms: number): Promise<void> {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
+function abortableTimeout(callback: () => void, delay: number, signal: AbortSignal) {
+    const timeoutId = setTimeout(() => {
+        if (!signal.aborted) {
+            callback();
+        }
+    }, delay);
+
+    signal.addEventListener('abort', () => {
+        clearTimeout(timeoutId);
+    });
+
+    return timeoutId;
+}
+
+export function delay(ms: number, abortSignal?: AbortSignal): Promise<void> {
+    return new Promise((resolve, reject) => {
+        if (abortSignal) {
+            if (abortSignal.aborted) {
+                reject(new Error('Aborted'));
+            }
+            abortSignal.addEventListener('abort', () => {
+                reject(new Error('Aborted'));
+            });
+            abortableTimeout(resolve, ms, abortSignal);
+        } else {
+            setTimeout(resolve, ms);
+        }
     });
 }
