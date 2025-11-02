@@ -118,3 +118,32 @@ Misc:
 - forEach: iterate over iterable and execute a function for each element
 - isEqual: check if two iterables are equal. Same elements and order.
 - isElementsEqual: check if two iterables are equal. Same elements but order can be different.
+
+FluentAsyncIterable
+-------
+FluentAsyncIterable is a library that allows you to work with async iterables in a fluent way.
+
+Operators:
+
+Transformers
+- where : filter iterable by predicate
+- select : transform iterable using mapping function
+- take : take first n elements
+- takeWhile : take elements while predicate is true
+- skip : skip first n elements
+- skipWhile : skip elements while predicate is true
+- distinct: removes duplicate elements
+- groupBy: group items by a key
+- page: Split iterable into chunks of a given size.
+
+Aggregators:
+- toArray(): convert iterable to array
+- toMap(): Create a map object from sequence
+
+FluentAsyncPromise
+-------
+FluentAsyncPromise is a special type of FluentAsyncIterable that is returned when working with promises.
+
+Operators:
+- groupByStatus: Groups promises by their status (`fulfilled` or `rejected`).
+- toStatusMap: Creates a map with promise statuses as keys.
