@@ -29,7 +29,7 @@ export function flatMapIterator<TValue, TResult>(input: Iterable<TValue>, mapper
 export function* flatGenerator<TValue>(input: Iterable<TValue>, depth: number, level: number): Generator<TValue> {
     for (const item of input) {
         if (Array.isArray(item)) {
-            if (level >= depth) {
+            if (depth > 0 && level >= depth) {
                 yield item;
             } else {
                 level++;

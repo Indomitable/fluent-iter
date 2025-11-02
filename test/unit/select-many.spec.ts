@@ -110,6 +110,15 @@ describe('select many tests', () => {
         expect(output).toStrictEqual([1, 2, 3, 4, 5, 6, 'a', 'b', 'c', 'd', 'e']);
     });
 
+    it('should flat sequence recursive: depth -1', () => {
+        const input = [
+            [1, 2, 3, 4, [5, 6, [7, [8, [9, [10, 11, [12]]]]]]],
+            'e'
+        ];
+        const output = from(input).flat(-1).toArray();
+        expect(output).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 'e']);
+    });
+
     it('should flatMap sequence', () => {
         const input = [
             [1, 2, 3, 4, [5, 6]],
