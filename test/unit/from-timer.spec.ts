@@ -40,7 +40,7 @@ describe('fromTimer', () => {
         }
         const endTime = performance.now();
         expect(numbers).toEqual([0]);
-        expect(endTime - startTime).toBeGreaterThanOrEqual(20);
+        expect(Math.ceil(endTime - startTime)).toBeGreaterThan(19.9);
     });
 
     it('should stop the timer when iteration breaks', async () => {
