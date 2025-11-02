@@ -1,6 +1,6 @@
 import type {FluentIterable, IGrouping} from "fluent-iter";
 import {createAsyncIterable, createIterable, group, groupAsync} from "../utils.ts";
-import {Grouping} from "../fluent.js";
+import {Grouping} from "../fluent.ts";
 
 export function groupByIterator<TValue, TKey, TElement, TResult>(
     source: Iterable<TValue>,

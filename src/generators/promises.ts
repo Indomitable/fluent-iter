@@ -1,16 +1,16 @@
-import {FulfilledPromiseResult, PromiseResult, RejectedPromiseResult } from "fluent-iter";
 import {createAsyncIterable} from "../utils.ts";
 
 export function fromPromisesIterable<T = any>(
     ...promises: Promise<T>[]
-): AsyncIterable<PromiseResult<T>> {
+): AsyncIterable<PromiseSettledResult<T>> {
     return createAsyncIterable(() => fromPromisesGenerator(...promises));
 }
 
+type IndexedPromiseSettledResult<T> = PromiseSettledResult<T> & { index: number };
 async function* fromPromisesGenerator<T = any>(
     ...promises: Promise<T>[]
-): AsyncGenerator<PromiseResult<T>> {
-    const pending = new Map<number, Promise<PromiseResult<T>>>(
+): AsyncGenerator<PromiseSettledResult<T>> {
+    const pending = new Map<number, Promise<IndexedPromiseSettledResult<T>>>(
         promises.map((p, index) => [
             index,
             p.then(
@@ -27,10 +27,10 @@ async function* fromPromisesGenerator<T = any>(
     }
 }
 
-export function isFulfilled<T>(result: PromiseResult<T>): result is FulfilledPromiseResult<T> {
+export function isFulfilled<T>(result: PromiseSettledResult<T>): result is PromiseFulfilledResult<T> {
     return result.status === 'fulfilled';
 }
 
-export function isRejected<T>(result: PromiseResult<T>): result is RejectedPromiseResult {
+export function isRejected<T>(result: PromiseSettledResult<T>): result is PromiseRejectedResult {
     return result.status === 'rejected';
 }

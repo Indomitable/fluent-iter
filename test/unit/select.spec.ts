@@ -44,4 +44,9 @@ describe('select tests', () => {
             expect(Array.from(numbers)).toEqual([2, 4, 6, 8, 10, 12, 14]);
         });
     });
+
+    it('should work alias: map', () => {
+        const res = range(1, 5).map(x => '' + x).toArray();
+        expect(res).toEqual(['1', '2', '3', '4']);
+    });
 });

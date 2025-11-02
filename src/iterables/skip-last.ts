@@ -1,43 +1,30 @@
 /**
  * Return skip last N elements from sequence
  */
-import {doneValue, getIterator, iteratorResultCreator} from "../utils.ts";
-
-export default function skipLastIterator<TValue>(input: Iterable<TValue>, count: number): Iterable<TValue> {
-    return new SkipLastIterable(input, count);
+export function skipLastIterator<TValue>(input: Iterable<TValue>, count: number): Iterable<TValue> {
+    return {
+        [Symbol.iterator]: function* () {
+            const keep: TValue[] = [];
+            for (const item of input) {
+                keep.push(item);
+                if (keep.length > count) {
+                    yield keep.shift() as TValue;
+                }
+            }
+        }
+    }
 }
 
-export class SkipLastIterable<TValue> implements Iterable<TValue> {
-    readonly #source: Iterable<TValue>;
-    readonly #count: number;
-    /**
-     *
-     * @param {Iterable} source
-     * @param {number} count
-     */
-    constructor(source: Iterable<TValue>, count: number) {
-        this.#source = source;
-        this.#count = count <= 0 ? 0 : count;
-    }
-
-    [Symbol.iterator]() {
-        const iterator = getIterator(this.#source);
-        const count = this.#count;
-        const keep: TValue[] = [];
-        let next: IteratorResult<TValue, undefined> = iteratorResultCreator(void 0 as TValue);
-        return {
-            next() {
-                while (!next.done && keep.length <= count) {
-                    next = iterator.next();
-                    if (!next.done) {
-                        keep.push(next.value);
-                    }
+export function skipLastAsyncIterator<TValue>(input: AsyncIterable<TValue>, count: number): AsyncIterable<TValue> {
+    return {
+        [Symbol.asyncIterator]: async function* () {
+            const keep: TValue[] = [];
+            for await (const item of input) {
+                keep.push(item);
+                if (keep.length > count) {
+                    yield keep.shift() as TValue;
                 }
-                if (next.done) {
-                    return doneValue();
-                }
-                return iteratorResultCreator(keep.shift() as TValue);
             }
-        };
+        }
     }
 }

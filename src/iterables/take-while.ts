@@ -18,7 +18,7 @@ function* takeWhileGenerator<TValue>(input: Iterable<TValue>, condition: (item: 
     }
 }
 
-export function takeWhileIteratorAsync<TValue>(input: AsyncIterable<TValue>, condition: (item: TValue, index: number) => boolean): AsyncIterable<TValue> {
+export function takeWhileAsyncIterator<TValue>(input: AsyncIterable<TValue>, condition: (item: TValue, index: number) => boolean): AsyncIterable<TValue> {
     return {
         [Symbol.asyncIterator]: async function* (){
             let index = 0;

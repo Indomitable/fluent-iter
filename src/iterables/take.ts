@@ -17,7 +17,7 @@ export function takeIterator<TValue>(input: Iterable<TValue>, count: number): It
     }
 }
 
-export default function takeIteratorAsync<TValue>(input: AsyncIterable<TValue>, count: number): AsyncIterable<TValue> {
+export default function takeAsyncIterator<TValue>(input: AsyncIterable<TValue>, count: number): AsyncIterable<TValue> {
     return {
         [Symbol.asyncIterator]: async function* () {
             let fetched = 0;

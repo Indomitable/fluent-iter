@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { from, range } from "../../src/index.ts";
+import {from, fromAsyncIterable, range} from "../../src/index.ts";
+import {testAsyncIterable} from "../test-utils.ts";
 
 describe('skip last tests', () => {
     [
@@ -69,5 +70,45 @@ describe('skip last tests', () => {
             expect(from(source).skipLast(0).toArray()).toEqual([1, 2, 3, 4, 5]);
             expect(from(source).skipLast(-1).toArray()).toEqual([1, 2, 3, 4, 5]);
         });
+    });
+});
+
+describe('skip last async tests', () => {
+    it('should skip last n numbers', async () => {
+        const output = await testAsyncIterable(5).skipLast(2).toArray();
+        expect(output).toEqual([0, 1, 2]);
+    });
+
+    it('should skip last n numbers after another operation', async () => {
+        const output = await testAsyncIterable(6).where(_ => _ > 2).skipLast(2).toArray();
+        expect(output).toEqual([3]);
+    });
+
+    it('should be able to continue with another operator', async () => {
+        const output = await testAsyncIterable(6)
+            .where(_ => _ > 2)
+            .skipLast(1)
+            .select(x => `item_${x}`)
+            .toArray();
+        expect(output).toEqual(['item_3', 'item_4']);
+    });
+
+    it('should return nothing if count is less', async () => {
+        const res = await testAsyncIterable(2)
+            .skipLast(3)
+            .toArray();
+        expect(res).toEqual([]);
+    });
+
+    it('should return empty from empty collection', async () => {
+        const output = await testAsyncIterable(0)
+            .skipLast(2)
+            .toArray();
+        expect(output).toEqual([]);
+    });
+
+    it('should return all when none to be skipped', async () => {
+        expect(await testAsyncIterable(5).skipLast(0).toArray()).toEqual([0, 1, 2, 3, 4]);
+        expect(await testAsyncIterable(5).skipLast(-1).toArray()).toEqual([0, 1, 2, 3, 4]);
     });
 });

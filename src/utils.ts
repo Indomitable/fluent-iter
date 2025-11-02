@@ -1,6 +1,6 @@
 import {Comparer} from "./interfaces.ts";
-import {from, fromIterable} from "./creation.js";
-import { FluentIterable, FluentIterableAsync} from "fluent-iter";
+import {from, fromIterable} from "./creation.ts";
+import { FluentIterable } from "fluent-iter";
 
 /**
  * Helper function to be use to access Symbol.iterator of iterable
@@ -215,8 +215,32 @@ export function createAsyncIterable<T>(generator: () => AsyncGenerator<T>): Asyn
     }
 }
 
-export function delay(ms: number): Promise<void> {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
+function abortableTimeout(callback: () => void, delay: number, signal: AbortSignal) {
+    const timeoutId = setTimeout(() => {
+        if (!signal.aborted) {
+            callback();
+        }
+    }, delay);
+
+    signal.addEventListener('abort', () => {
+        clearTimeout(timeoutId);
+    });
+
+    return timeoutId;
+}
+
+export function delay(ms: number, abortSignal?: AbortSignal): Promise<void> {
+    return new Promise((resolve, reject) => {
+        if (abortSignal) {
+            if (abortSignal.aborted) {
+                reject(new Error('Aborted'));
+            }
+            abortSignal.addEventListener('abort', () => {
+                reject(new Error('Aborted'));
+            });
+            abortableTimeout(resolve, ms, abortSignal);
+        } else {
+            setTimeout(resolve, ms);
+        }
     });
 }

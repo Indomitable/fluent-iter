@@ -7,16 +7,37 @@ declare module 'fluent-iter' {
         where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentIterable<TSubValue>;
 
         /**
+         * Filters the iterable using predicate function typed overload. Alias to where.
+         * @see where
+         * @param predicate
+         */
+        filter<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentIterable<TSubValue>;
+
+        /**
          * Filters the iterable using predicate function
          * @param predicate
          */
         where(predicate: (item: TValue) => boolean): FluentIterable<TValue>;
 
         /**
+         * Filters the iterable using predicate function. Alias to where.
+         * @see where
+         * @param predicate
+         */
+        filter(predicate: (item: TValue) => boolean): FluentIterable<TValue>;
+
+        /**
          * Maps the iterable items
          * @param map map function
          */
         select<TOutput>(map: (item: TValue) => TOutput): FluentIterable<TOutput>;
+
+        /**
+         * Maps the iterable items. Alias to select.
+         * @see select
+         * @param map map function
+         */
+        map<TOutput>(map: (item: TValue) => TOutput): FluentIterable<TOutput>;
 
         /**
          * Flat Iterable of collections up to N levels, default is 1 level.
@@ -275,6 +296,13 @@ declare module 'fluent-iter' {
         first(predicate?: (item: TValue) => boolean): TValue | undefined;
 
         /**
+         * Get first item of iterable satisfiying the predicate. Alias for first.
+         * @see first
+         * @param predicate predicate for the item
+         */
+        find(predicate: (item: TValue) => boolean): TValue | undefined;
+
+        /**
          * Get first item of iterable, if does not contain any return default
          * @param def
          * @param predicate
@@ -294,10 +322,25 @@ declare module 'fluent-iter' {
         firstIndex(predicate: (item: TValue) => boolean): number;
 
         /**
+         * Get index of first found item in sequence. Alias for firstIndex.
+         * @see firstIndex
+         * @param predicate predicate for the item
+         * @return index of item, when not found -1
+         */
+        findIndex(predicate: (item: TValue) => boolean): number;
+
+        /**
          * Get last item of iterable
          * @param predicate optional predicate for the item
          */
         last(predicate?: (item: TValue) => boolean): TValue | undefined;
+
+        /**
+         * Get last item of iterable satisfiying the predicate. Alias for last
+         * @see last
+         * @param predicate optional predicate for the item
+         */
+        findLast(predicate: (item: TValue) => boolean): TValue | undefined;
 
         /**
          * Get last item of iterable, if does not contain any return default
@@ -320,6 +363,14 @@ declare module 'fluent-iter' {
         lastIndex(predicate: (item: TValue) => boolean): number;
 
         /**
+         * Get index of last found item in sequence satisfiying the predicate. Alias for lastIndex.
+         * @see lastIndex
+         * @param predicate predicate for the item
+         * @return index of item, when not found -1
+         */
+        findLastIndex(predicate: (item: TValue) => boolean): number;
+
+        /**
          * Checks if iterable has only one item and returns it.
          * @throws TypeError when no or multiple elements
          */
@@ -339,6 +390,13 @@ declare module 'fluent-iter' {
         all(predicate: (item: TValue) => boolean): boolean;
 
         /**
+         * Returns if all items satisfy the predicate. It returns true if no items. Alias for all.
+         * @see all
+         * @param predicate
+         */
+        every(predicate: (item: TValue) => boolean): boolean;
+
+        /**
          * Returns if all items satisfy the predicate. It returns false if no items.
          * @param predicate
          */
@@ -349,6 +407,13 @@ declare module 'fluent-iter' {
          * @param predicate
          */
         any(predicate?: (item: TValue) => boolean): boolean;
+
+        /**
+         * Returns if any items satisfy the predicate. Alias for any.
+         * @see any
+         * @param predicate
+         */
+        some(predicate?: (item: TValue) => boolean): boolean;
 
         /**
          * Return count of items.
@@ -364,11 +429,27 @@ declare module 'fluent-iter' {
         aggregate(accumulator: (result: TValue, item: TValue, index: number) => TValue): TValue | never;
 
         /**
+         * Produce single value form sequence values. The initial value is first element. Alias for aggregate.
+         * @see aggregate
+         * @param accumulator function which produces the result.
+         * @throws TypeError when no elements
+         */
+        reduce(accumulator: (result: TValue, item: TValue, index: number) => TValue): TValue | never;
+
+        /**
          * Produce single value form sequence values. The initial value is the second argument.
          * @param accumulator function which produces the result.
          * @param initial initial value
          */
         aggregate<TResult>(accumulator: (result: TResult, item: TValue, index: number) => TResult, initial: TResult): TResult;
+
+        /**
+         * Produce single value form sequence values. The initial value is the second argument. Alias for aggregate.
+         * @see aggregate
+         * @param accumulator function which produces the result.
+         * @param initial initial value
+         */
+        reduce<TResult>(accumulator: (result: TResult, item: TValue, index: number) => TResult, initial: TResult): TResult;
 
         /**
          * Produce a sum of sequence values
@@ -410,6 +491,14 @@ declare module 'fluent-iter' {
         elementAt(index: number): TValue | undefined;
 
         /**
+         * Return element at specific index. Alias for elementAt.
+         * @see elementAt
+         * @param index index of requested element.
+         * @return undefined when no index out of range.
+         */
+        at(index: number): TValue | undefined;
+
+        /**
          * do action over every item in the sequence
          * @param action
          */
@@ -437,63 +526,108 @@ declare module 'fluent-iter' {
         key: TKey;
     }
 
-    export interface FluentIterableAsync<TValue> extends AsyncIterable<TValue> {
+    export interface FluentAsyncIterable<TValue> extends AsyncIterable<TValue> {
         /**
          * Filters the iterable using predicate function typed overload
          * @param predicate
          */
-        where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentIterableAsync<TSubValue>;
+        where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentAsyncIterable<TSubValue>;
 
         /**
          * Filters the iterable using predicate function
          * @param predicate
          */
-        where(predicate: (item: TValue) => boolean): FluentIterableAsync<TValue>;
+        where(predicate: (item: TValue) => boolean): FluentAsyncIterable<TValue>;
+
+        /**
+         * Filters the iterable using predicate function typed overload. Alias to where.
+         * @see where
+         * @param predicate
+         */
+        filter<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentAsyncIterable<TSubValue>;
+
+        /**
+         * Filters the iterable using predicate function. Alias to where.
+         * @see where
+         * @param predicate
+         */
+        filter(predicate: (item: TValue) => boolean): FluentAsyncIterable<TValue>;
+
         /**
          * Maps the iterable items
          * @param map map function
          */
-        select<TOutput>(map: (item: TValue) => TOutput): FluentIterableAsync<TOutput>;
+        select<TOutput>(map: (item: TValue) => TOutput): FluentAsyncIterable<TOutput>;
+
+        /**
+         * Maps the iterable items. Alias to select.
+         * @see select
+         * @param map map function
+         */
+        map<TOutput>(map: (item: TValue) => TOutput): FluentAsyncIterable<TOutput>;
 
         /**
          * Take first N items from iterable
          */
-        take(count: number): FluentIterableAsync<TValue>;
+        take(count: number): FluentAsyncIterable<TValue>;
 
         /**
          * Return items while condition return true
          * @param condition
          */
-        takeWhile(condition: (item: TValue, index: number) => boolean): FluentIterableAsync<TValue>;
+        takeWhile(condition: (item: TValue, index: number) => boolean): FluentAsyncIterable<TValue>;
 
         /**
          * Skip first N items from iterable
          * @param count
          */
-        skip(count: number): FluentIterableAsync<TValue>;
+        skip(count: number): FluentAsyncIterable<TValue>;
 
         /**
          * Skip items while condition return true, get the rest
          * @param condition
          */
-        skipWhile(condition: (item: TValue, index: number) => boolean): FluentIterableAsync<TValue>;
+        skipWhile(condition: (item: TValue, index: number) => boolean): FluentAsyncIterable<TValue>;
 
         /**
          * Return distinct items. Can specify optional item comparer
          * @param keySelector function to get key for comparison.
          */
-        distinct<TKey>(keySelector?: (item: TValue) => TKey): FluentIterableAsync<TValue>;
+        distinct<TKey>(keySelector?: (item: TValue) => TKey): FluentAsyncIterable<TValue>;
 
         /**
          * Group items
          * @param keySelector group key selector
          */
         groupBy<TKey>(keySelector: (item: TValue, index: number) => TKey):
-            [TKey, TValue] extends ['fulfilled' | 'rejected', PromiseResult<infer TPromiseValue>]
-                ? FluentIterableAsync< IGrouping<'fulfilled', FulfilledPromiseResult<TPromiseValue>> | IGrouping<'rejected', RejectedPromiseResult>>
-                : FluentIterableAsync<IGrouping<TKey, TValue>>;
-        groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): FluentIterableAsync<IGrouping<TKey, TElement>>;
-        groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement, resultCreator: (key: TKey, items: FluentIterable<TElement>) => TResult): FluentIterableAsync<TResult>;
+            [TKey, TValue] extends ['fulfilled' | 'rejected', PromiseSettledResult<infer TPromiseValue>]
+                ? FluentAsyncIterable< IGrouping<'fulfilled', PromiseFulfilledResult<TPromiseValue>> | IGrouping<'rejected', PromiseRejectedResult>>
+                : FluentAsyncIterable<IGrouping<TKey, TValue>>;
+        groupBy<TKey, TElement>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement): FluentAsyncIterable<IGrouping<TKey, TElement>>;
+        groupBy<TKey, TElement, TResult>(keySelector: (item: TValue, index: number) => TKey, elementSelector: (item: TValue, index: number) => TElement, resultCreator: (key: TKey, items: FluentIterable<TElement>) => TResult): FluentAsyncIterable<TResult>;
+
+        /**
+         * Create a paging
+         * @param pageSize
+         */
+        page(pageSize: number): FluentAsyncIterable<TValue[]>;
+
+        /**
+         * zip two iterables together, where the result is an iterable of tuples, finishes when one of the iterables is finished.
+         */
+        zip<TOuter>(second: AsyncIterable<TOuter>): FluentAsyncIterable<[TValue, TOuter]>;
+
+        /**
+         * Take last N items from iterable
+         * @param count
+         */
+        takeLast(count: number): FluentAsyncIterable<TValue>;
+
+        /**
+         * Skip last N items from iterable
+         * @param count
+         */
+        skipLast(count: number): FluentAsyncIterable<TValue>;
 
         /**
          * Return a promise to an array.
@@ -506,7 +640,7 @@ declare module 'fluent-iter' {
          * @param keySelector - key selector - keys should be unique, otherwise last keys will override first.
          */
         toMap<TKey>(keySelector: (item: TValue) => TKey):
-            [TKey, TValue] extends ['fulfilled' | 'rejected', IGrouping<'fulfilled', FulfilledPromiseResult<infer TPromiseValue>> | IGrouping<'rejected', RejectedPromiseResult>]
+            [TKey, TValue] extends ['fulfilled' | 'rejected', IGrouping<'fulfilled', PromiseFulfilledResult<infer TPromiseValue>> | IGrouping<'rejected', PromiseRejectedResult>]
                 ? Promise<PromiseMap<TPromiseValue>>
                 : Promise<Map<TKey, TValue>>;
 
@@ -518,28 +652,14 @@ declare module 'fluent-iter' {
         toMap<TKey, TElement>(keySelector: (item: TValue) => TKey, elementSelector: (item: TValue) => TElement): Promise<Map<TKey, TElement>>;
     }
 
-    export interface FluentIterableAsyncPromise<T> extends FluentIterableAsync<PromiseResult<T>> {
-        groupByStatus(): FluentIterableAsync< IGrouping<'fulfilled', FulfilledPromiseResult<T>> | IGrouping<'rejected', RejectedPromiseResult>>;
+    export interface FluentAsyncIterablePromise<T> extends FluentAsyncIterable<PromiseSettledResult<T>> {
+        groupByStatus(): FluentAsyncIterable< IGrouping<'fulfilled', PromiseFulfilledResult<T>> | IGrouping<'rejected', PromiseRejectedResult>>;
         toStatusMap(): Promise<PromiseMap<T>>;
     }
 
-    type PromiseResult<T> = FulfilledPromiseResult<T> | RejectedPromiseResult;
-
-    interface FulfilledPromiseResult<T> {
-        index: number;
-        status: 'fulfilled';
-        value: T;
-    }
-
-    interface RejectedPromiseResult {
-        index: number;
-        status: 'rejected';
-        reason: any;
-    }
-
-    interface PromiseMap<T> extends Map<'fulfilled'|'rejected', FluentIterable<PromiseResult<T>>> {
-        get(key: 'fulfilled'): FluentIterable<FulfilledPromiseResult<T>> | undefined;
-        get(key: 'rejected'): FluentIterable<RejectedPromiseResult> | undefined;
+    interface PromiseMap<T> extends Map<'fulfilled'|'rejected', FluentIterable<PromiseSettledResult<T>>> {
+        get(key: 'fulfilled'): FluentIterable<PromiseFulfilledResult<T>> | undefined;
+        get(key: 'rejected'): FluentIterable<PromiseRejectedResult> | undefined;
     }
 
     type FlatFluentIterable<Value> = Value extends ReadonlyArray<infer InnerArr>
@@ -558,9 +678,9 @@ declare module 'fluent-iter' {
     export function fromObject<TValue extends {}, TKey extends keyof TValue>(value: TValue): FluentIterable<{ key: string, value: TValue[TKey] }>;
     export function fromObject<TValue extends {}, TKey extends keyof TValue, TResult>(value: TValue, resultCreator: (key: TKey, value: TValue[TKey]) => TResult): FluentIterable<TResult>;
 
-    export function fromEvent<TTarget extends EventTarget, TEvent extends keyof HTMLElementEventMap>(target: TTarget, event: TEvent): FluentIterableAsync<HTMLElementEventMap[TEvent]>;
-    export function fromTimer(interval: number, delay?: number): FluentIterableAsync<number>;
-    export function fromPromises<T>(...promises: Promise<T>[]): FluentIterableAsyncPromise<T>;
-    export function isFulfilled<T>(result: PromiseResult<T>): result is FulfilledPromiseResult<T>;
-    export function isRejected<T>(result: PromiseResult<T>): result is RejectedPromiseResult;
+    export function fromEvent<TTarget extends EventTarget, TEvent extends keyof HTMLElementEventMap>(target: TTarget, event: TEvent): FluentAsyncIterable<HTMLElementEventMap[TEvent]>;
+    export function fromTimer(interval: number, delay?: number): FluentAsyncIterable<number>;
+    export function fromPromises<T>(...promises: Promise<T>[]): FluentAsyncIterablePromise<T>;
+    export function isFulfilled<T>(result: PromiseSettledResult<T>): result is PromiseFulfilledResult<T>;
+    export function isRejected<T>(result: PromiseSettledResult<T>): result is PromiseRejectedResult;
 }

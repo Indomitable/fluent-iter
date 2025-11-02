@@ -1,5 +1,7 @@
 // combines two iterables
-export default function zipIterable<TThis, TOuter>(first: Iterable<TThis>, second: Iterable<TOuter>): Iterable<[TThis, TOuter]> {
+import {isFulfilled} from "../generators/promises.ts";
+
+export function zipIterable<TThis, TOuter>(first: Iterable<TThis>, second: Iterable<TOuter>): Iterable<[TThis, TOuter]> {
     return {
         [Symbol.iterator]: function* () {
             const firstIterator = first[Symbol.iterator]();
@@ -11,6 +13,23 @@ export default function zipIterable<TThis, TOuter>(first: Iterable<TThis>, secon
                     break;
                 }
                 yield [firstResult.value, secondResult.value];
+            }
+        }
+    }
+}
+
+export function zipAsyncIterable<TThis, TOuter>(first: AsyncIterable<TThis>, second: AsyncIterable<TOuter>): AsyncIterable<[TThis, TOuter]> {
+    return {
+        [Symbol.asyncIterator]: async function* () {
+            const firstIterator = first[Symbol.asyncIterator]();
+            const secondIterator = second[Symbol.asyncIterator]();
+            while (true) {
+                const [first, second] = await Promise.allSettled([firstIterator.next(), secondIterator.next()]);
+                if (isFulfilled(first) && isFulfilled(second) && !first.value.done && !second.value.done) {
+                    yield [first.value.value, second.value.value];
+                } else {
+                    break;
+                }
             }
         }
     }

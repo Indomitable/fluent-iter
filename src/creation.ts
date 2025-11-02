@@ -1,4 +1,4 @@
-import type { FluentIterable, FluentIterableAsync } from 'fluent-iter';
+import type { FluentIterable, FluentAsyncIterable } from 'fluent-iter';
 import Fluent from "./fluent.ts";
 import arrayLikeIterator from "./generators/array-like.ts";
 import objectIterator from "./generators/object.ts";
@@ -10,7 +10,7 @@ export function fromIterable<TValue>(iterable: Iterable<TValue>): FluentIterable
     return new Fluent<TValue>(iterable);
 }
 
-export function fromAsyncIterable<TValue>(iterable: AsyncIterable<TValue>): FluentIterableAsync<TValue> {
+export function fromAsyncIterable<TValue>(iterable: AsyncIterable<TValue>): FluentAsyncIterable<TValue> {
     return new FluentAsync<TValue>(iterable);
 }
 
@@ -36,7 +36,7 @@ export function repeat<TValue>(value: TValue, times: number): FluentIterable<TVa
     return new Fluent(repeatIterable(value, times));
 }
 
-export function from<TValue>(iterable: AsyncIterable<TValue>): FluentIterableAsync<TValue>;
+export function from<TValue>(iterable: AsyncIterable<TValue>): FluentAsyncIterable<TValue>;
 export function from<TValue>(iterable: Iterable<TValue> | ArrayLike<TValue>): FluentIterable<TValue>;
 export function from<TValue extends {}, TKey extends keyof TValue>(value: TValue): FluentIterable<{ key: string, value: TValue[TKey] }>;
 export function from<TValue>(source: Iterable<TValue> | ArrayLike<TValue> | TValue | AsyncIterable<TValue>) {

@@ -18,7 +18,7 @@ function* skipGenerator<TValue>(input: Iterable<TValue>, count: number): Generat
     }
 }
 
-export function skipIteratorAsync<TValue>(input: AsyncIterable<TValue>, count: number): AsyncIterable<TValue> {
+export function skipAsyncIterator<TValue>(input: AsyncIterable<TValue>, count: number): AsyncIterable<TValue> {
     return {
         [Symbol.asyncIterator]: async function* (){
             let skipped = 0;

@@ -44,6 +44,11 @@ describe('first finalizer', () => {
         });
     });
 
+    it('should work alias: find', () => {
+        const res = range(1, 5).find(x => x === 2);
+        expect(res).toBe(2);
+    });
+
     // firstOrDefault
 
     [
@@ -159,5 +164,11 @@ describe('first finalizer', () => {
         it('should return first found index if multiple values' + indx, () => {
             expect(from(source).firstIndex(_ => _ === 2)).toBe(0);
         });
+    });
+
+    it('should work alias: findIndex', () => {
+        const res = range(1, 5).findIndex(x => x === 3);
+        // [1 (0), 2 (1), 3 (2), 4] 3 is at index 2
+        expect(res).toBe(2);
     });
 });
