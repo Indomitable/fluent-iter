@@ -9,12 +9,13 @@ export function toArrayCollector<T, R>(source: Iterable<T>, map?: Mapper<T, R>):
 }
 
 export async function toArrayAsyncCollector<T, R>(source: AsyncIterable<T>, map?: Mapper<T, R>): Promise<(T|R)[]> {
-    const result: (T|R)[] = [];
+    if (!map) {
+        return Array.fromAsync(source);
+    }
+    const result: R[] = [];
     for await (const item of source) {
         if (map) {
             result.push(map(item));
-        } else {
-            result.push(item);
         }
     }
     return result;

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { from, fromIterable } from "../../src/index.ts";
+import {from, fromIterable, range} from "../../src/index.ts";
 
 describe("where tests", () => {
     [[1, 2, 3, 4, 5, 6, 7], new Set([1, 2, 3, 4, 5, 6, 7])].forEach(
@@ -46,5 +46,15 @@ describe("where tests", () => {
             .where((_) => _ % 2 === 0)
             .toArray();
         expect(res.length).toBe(2);
+    });
+
+    it('should filter sequence', () => {
+       const res = from(range(0, 10)).filter(x => !(x & 1)).toArray();
+       expect(res).toStrictEqual([0, 2, 4, 6, 8]);
+    });
+
+    it('should filter: typecheck sequence', () => {
+        const res = from([1, 2, '3', '4']).filter(x => typeof x === 'string').toArray();
+        expect(res).toStrictEqual(['3', '4']);
     });
 });

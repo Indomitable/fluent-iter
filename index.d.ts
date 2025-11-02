@@ -7,16 +7,37 @@ declare module 'fluent-iter' {
         where<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentIterable<TSubValue>;
 
         /**
+         * Filters the iterable using predicate function typed overload. Alias to where.
+         * @see where
+         * @param predicate
+         */
+        filter<TSubValue extends TValue>(predicate: (item: TValue) => item is TSubValue): FluentIterable<TSubValue>;
+
+        /**
          * Filters the iterable using predicate function
          * @param predicate
          */
         where(predicate: (item: TValue) => boolean): FluentIterable<TValue>;
 
         /**
+         * Filters the iterable using predicate function. Alias to where.
+         * @see where
+         * @param predicate
+         */
+        filter(predicate: (item: TValue) => boolean): FluentIterable<TValue>;
+
+        /**
          * Maps the iterable items
          * @param map map function
          */
         select<TOutput>(map: (item: TValue) => TOutput): FluentIterable<TOutput>;
+
+        /**
+         * Maps the iterable items. Alias to select.
+         * @see select
+         * @param map map function
+         */
+        map<TOutput>(map: (item: TValue) => TOutput): FluentIterable<TOutput>;
 
         /**
          * Flat Iterable of collections up to N levels, default is 1 level.
@@ -275,6 +296,13 @@ declare module 'fluent-iter' {
         first(predicate?: (item: TValue) => boolean): TValue | undefined;
 
         /**
+         * Get first item of iterable satisfiying the predicate. Alias for first.
+         * @see first
+         * @param predicate predicate for the item
+         */
+        find(predicate: (item: TValue) => boolean): TValue | undefined;
+
+        /**
          * Get first item of iterable, if does not contain any return default
          * @param def
          * @param predicate
@@ -294,10 +322,25 @@ declare module 'fluent-iter' {
         firstIndex(predicate: (item: TValue) => boolean): number;
 
         /**
+         * Get index of first found item in sequence. Alias for firstIndex.
+         * @see firstIndex
+         * @param predicate predicate for the item
+         * @return index of item, when not found -1
+         */
+        findIndex(predicate: (item: TValue) => boolean): number;
+
+        /**
          * Get last item of iterable
          * @param predicate optional predicate for the item
          */
         last(predicate?: (item: TValue) => boolean): TValue | undefined;
+
+        /**
+         * Get last item of iterable satisfiying the predicate. Alias for last
+         * @see last
+         * @param predicate optional predicate for the item
+         */
+        findLast(predicate: (item: TValue) => boolean): TValue | undefined;
 
         /**
          * Get last item of iterable, if does not contain any return default
@@ -320,6 +363,14 @@ declare module 'fluent-iter' {
         lastIndex(predicate: (item: TValue) => boolean): number;
 
         /**
+         * Get index of last found item in sequence satisfiying the predicate. Alias for lastIndex.
+         * @see lastIndex
+         * @param predicate predicate for the item
+         * @return index of item, when not found -1
+         */
+        findLastIndex(predicate: (item: TValue) => boolean): number;
+
+        /**
          * Checks if iterable has only one item and returns it.
          * @throws TypeError when no or multiple elements
          */
@@ -339,6 +390,13 @@ declare module 'fluent-iter' {
         all(predicate: (item: TValue) => boolean): boolean;
 
         /**
+         * Returns if all items satisfy the predicate. It returns true if no items. Alias for all.
+         * @see all
+         * @param predicate
+         */
+        every(predicate: (item: TValue) => boolean): boolean;
+
+        /**
          * Returns if all items satisfy the predicate. It returns false if no items.
          * @param predicate
          */
@@ -349,6 +407,13 @@ declare module 'fluent-iter' {
          * @param predicate
          */
         any(predicate?: (item: TValue) => boolean): boolean;
+
+        /**
+         * Returns if any items satisfy the predicate. Alias for any.
+         * @see any
+         * @param predicate
+         */
+        some(predicate?: (item: TValue) => boolean): boolean;
 
         /**
          * Return count of items.
@@ -364,11 +429,27 @@ declare module 'fluent-iter' {
         aggregate(accumulator: (result: TValue, item: TValue, index: number) => TValue): TValue | never;
 
         /**
+         * Produce single value form sequence values. The initial value is first element. Alias for aggregate.
+         * @see aggregate
+         * @param accumulator function which produces the result.
+         * @throws TypeError when no elements
+         */
+        reduce(accumulator: (result: TValue, item: TValue, index: number) => TValue): TValue | never;
+
+        /**
          * Produce single value form sequence values. The initial value is the second argument.
          * @param accumulator function which produces the result.
          * @param initial initial value
          */
         aggregate<TResult>(accumulator: (result: TResult, item: TValue, index: number) => TResult, initial: TResult): TResult;
+
+        /**
+         * Produce single value form sequence values. The initial value is the second argument. Alias for aggregate.
+         * @see aggregate
+         * @param accumulator function which produces the result.
+         * @param initial initial value
+         */
+        reduce<TResult>(accumulator: (result: TResult, item: TValue, index: number) => TResult, initial: TResult): TResult;
 
         /**
          * Produce a sum of sequence values
@@ -408,6 +489,14 @@ declare module 'fluent-iter' {
          * @return undefined when no index out of range.
          */
         elementAt(index: number): TValue | undefined;
+
+        /**
+         * Return element at specific index. Alias for elementAt.
+         * @see elementAt
+         * @param index index of requested element.
+         * @return undefined when no index out of range.
+         */
+        at(index: number): TValue | undefined;
 
         /**
          * do action over every item in the sequence

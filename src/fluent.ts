@@ -50,10 +50,13 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
     where<TSubValue>(predicate: Predicate<TValue>): FluentIterable<TValue> | FluentIterable<TSubValue> {
         return new Fluent(whereIterator(this, predicate));
     }
+    filter = this.where;
 
     select<TOutput>(map: Mapper<TValue, TOutput>): FluentIterable<TOutput> {
         return new Fluent(selectIterator(this, map));
     }
+
+    map = this.select;
 
     flat(depth: number = 1): FlatFluentIterable<TValue> {
         return new Fluent(flatIterator(this, depth)) as any;
@@ -202,6 +205,8 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
         return first(this, predicate);
     }
 
+    find = this.first;
+
     firstOrDefault(def: TValue, predicate?: Predicate<TValue>): TValue {
         return firstOrDefault(this, def, predicate);
     }
@@ -214,9 +219,13 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
         return firstIndex(this, predicate);
     }
 
+    findIndex = this.firstIndex;
+
     last(predicate?: Predicate<TValue>): TValue | undefined {
         return last(this, predicate);
     }
+
+    findLast = this.last;
 
     lastOrDefault(def: TValue, predicate?: Predicate<TValue>): TValue {
         return lastOrDefault(this, def, predicate);
@@ -230,6 +239,8 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
         return lastIndex(this, predicate);
     }
 
+    findLastIndex = this.lastIndex;
+
     single(predicate?: Predicate<TValue>): TValue | never {
         return single(this, predicate);
     }
@@ -242,6 +253,8 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
         return allCollector(this, predicate);
     }
 
+    every = this.all;
+
     allAndEvery(predicate: (item: TValue) => boolean): boolean {
         return allAndEveryCollector(this, predicate);
     }
@@ -249,6 +262,8 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
     any(predicate?: ((item: TValue) => boolean) | undefined): boolean {
         return anyCollector(this, predicate);
     }
+
+    some = this.any;
 
     count(predicate?: ((item: TValue) => boolean) | undefined): number {
         return countCollector(this, predicate);
@@ -259,6 +274,8 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
     aggregate<TResult = TValue>(accumulator: (result: TResult, item: TValue, index: number) => TResult, initial?: TResult): TResult | TValue | never {
         return aggregateCollector(this, accumulator, initial);
     }
+
+    reduce = this.aggregate;
 
     sum(): TValue {
         return aggregateCollector(this, (a, i) => (a as any) + (i as any) as any);
@@ -287,6 +304,8 @@ export default class Fluent<TValue> implements FluentIterable<TValue> {
     elementAt(index: number): TValue | undefined {
         return elementAtCollector(this, index);
     }
+
+    at = this.elementAt;
 
     forEach(action: Action<TValue>): void {
         return forEachCollector(this, action);
