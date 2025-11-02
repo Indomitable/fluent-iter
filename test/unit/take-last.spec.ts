@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {from, range, repeat} from "../../src/index.ts";
+import {from, fromAsyncIterable, range, repeat} from "../../src/index.ts";
+import {testAsyncIterable} from "../test-utils.ts";
 
 describe('take last tests', () => {
     [
@@ -43,5 +44,27 @@ describe('take last tests', () => {
         const output = range(0, 10).takeLast(3).select(_  => _ * 2);
         expect(Array.from(output)).toEqual([14, 16, 18]);
         expect(Array.from(output)).toEqual([14, 16, 18]);
+    });
+});
+
+describe('take last async tests', () => {
+    it('should take last 2 elements', async () => {
+        const output = await testAsyncIterable(5).takeLast(2).toArray();
+        expect(output).toEqual([3, 4]);
+    });
+
+    it('should return empty when source is empty', async () => {
+        const output = await testAsyncIterable(0).takeLast(3).toArray();
+        expect(output).toEqual([]);
+    });
+
+    it('should return empty when none to be taken', async () => {
+        expect(await testAsyncIterable(5).takeLast(0).toArray()).toEqual([]);
+        expect(await testAsyncIterable(5).takeLast(-1).toArray()).toEqual([]);
+    });
+
+    it('should able to continue the query', async () => {
+        const output = await testAsyncIterable(10).takeLast(3).select(_  => _ * 2).toArray();
+        expect(output).toEqual([14, 16, 18])
     });
 });

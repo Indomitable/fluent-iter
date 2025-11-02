@@ -613,6 +613,23 @@ declare module 'fluent-iter' {
         page(pageSize: number): FluentAsyncIterable<TValue[]>;
 
         /**
+         * zip two iterables together, where the result is an iterable of tuples, finishes when one of the iterables is finished.
+         */
+        zip<TOuter>(second: AsyncIterable<TOuter>): FluentAsyncIterable<[TValue, TOuter]>;
+
+        /**
+         * Take last N items from iterable
+         * @param count
+         */
+        takeLast(count: number): FluentAsyncIterable<TValue>;
+
+        /**
+         * Skip last N items from iterable
+         * @param count
+         */
+        skipLast(count: number): FluentAsyncIterable<TValue>;
+
+        /**
          * Return a promise to an array.
          */
         toArray(): Promise<TValue[]>;

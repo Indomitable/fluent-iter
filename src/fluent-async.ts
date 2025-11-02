@@ -16,6 +16,9 @@ import {skipAsyncIterator} from "./iterables/skip.ts";
 import {skipWhileAsyncIterator} from "./iterables/skip-while.ts";
 import {distinctAsyncIterator} from "./iterables/set-iterators.ts";
 import {pageAsyncIterator} from "./iterables/page.ts";
+import {zipAsyncIterable} from "./iterables/zip.ts";
+import {takeLastAsyncIterator} from "./iterables/take-last.ts";
+import {skipLastAsyncIterator} from "./iterables/skip-last.ts";
 
 export default class FluentAsync<TValue> implements FluentAsyncIterable<TValue> {
     readonly #source: AsyncIterable<TValue>;
@@ -70,6 +73,19 @@ export default class FluentAsync<TValue> implements FluentAsyncIterable<TValue> 
     page(pageSize: number): FluentAsyncIterable<TValue[]> {
         return new FluentAsync(pageAsyncIterator(this, pageSize));
     }
+
+    zip<TOuter>(second: AsyncIterable<TOuter>): FluentAsyncIterable<[TValue, TOuter]> {
+        return new FluentAsync(zipAsyncIterable(this, second));
+    }
+
+    takeLast(count: number): FluentAsyncIterable<TValue> {
+        return new FluentAsync(takeLastAsyncIterator(this, count));
+    }
+
+    skipLast(count: number): FluentAsyncIterable<TValue> {
+        return new FluentAsync(skipLastAsyncIterator(this, count));
+    }
+
     toArray(): Promise<TValue[]>;
     toArray<TResult>(map: Mapper<TValue, TResult>): Promise<TResult[]>;
     toArray<TResult>(map?: Mapper<TValue, TResult>): Promise<(TValue|TResult)[]> {

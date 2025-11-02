@@ -132,11 +132,16 @@ Transformers
 - map : alias for select
 - take : take first n elements
 - takeWhile : take elements while predicate is true
+- takeLast : take last n elements
 - skip : skip first n elements
 - skipWhile : skip elements while predicate is true
+- skipLast : skip last n elements
 - distinct: removes duplicate elements
 - groupBy: group items by a key
 - page: Split iterable into chunks of a given size.
+
+Combinations:
+- zip: zip two iterables together, where the result is an iterable of tuples, finishes when one of the iterables is finished.
 
 Aggregators:
 - toArray(): convert iterable to array
